@@ -649,6 +649,7 @@ window.joinRoom = async function() {
   state.opponentId = 'p1';
   state.playerName = name;
   state.opponentName = room.host;
+  state.mode = 'multi';
 
   const s = room.settings;
   state.op = s.op; state.diff = s.diff;
