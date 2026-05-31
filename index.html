@@ -698,17 +698,22 @@ function listenToRoom(code) {
     // Live score updates during game
     if (room.status === 'playing') {
       const oppData = room[state.opponentId];
+
+      // Always keep opponent name updated
+      if (oppData?.name) state.opponentName = oppData.name;
+
       if (oppData && document.getElementById('game-screen').classList.contains('active')) {
         state.oppScore = oppData.score || 0;
         updateScoreboard();
       }
 
-      // Both done → show results (works for both players, regardless of who finished first)
+      // Both done → show results from any screen except result screen
       const me  = room[state.playerId];
       const opp = room[state.opponentId];
       if (me?.done && opp?.done &&
           !document.getElementById('result-screen').classList.contains('active')) {
-        state.oppScore = opp.score || 0;
+        state.oppScore  = opp.score  || 0;
+        state.opponentName = opp.name || state.opponentName || 'Opponent';
         showMultiResults(room);
       }
     }
