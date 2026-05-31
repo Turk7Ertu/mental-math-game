@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mental Math Game</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #1e1e2e;
+      --card:     #2a2a3e;
+      --accent:   #7c3aed;
+      --lite:     #a78bfa;
+      --green:    #22c55e;
+      --red:      #ef4444;
+      --yellow:   #f59e0b;
+      --text:     #f1f5f9;
+      --sub:      #94a3b8;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px 16px 40px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 480px;
+    }
+
+    /* ── Screens ── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ── Typography ── */
+    h1 { font-size: 2rem; font-weight: 800; text-align: center; }
+    h2 { font-size: 1.1rem; font-weight: 600; color: var(--sub); margin-bottom: 8px; }
+    .sub { color: var(--sub); text-align: center; font-size: .9rem; margin-top: 4px; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--text);
+      border: none;
+      border-radius: 12px;
+      padding: 12px 28px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s, transform .1s;
+      width: 100%;
+      margin-top: 8px;
+    }
+    .btn:hover  { background: var(--lite); }
+    .btn:active { transform: scale(.97); }
+    .btn.grey   { background: #374151; }
+    .btn.grey:hover { background: #4b5563; }
+
+    /* ── Option Pills ── */
+    .pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .pill {
+      background: var(--card);
+      color: var(--sub);
+      border: 2px solid transparent;
+      border-radius: 999px;
+      padding: 7px 18px;
+      font-size: .9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .pill.selected {
+      background: var(--accent);
+      color: var(--text);
+      border-color: var(--lite);
+    }
+
+    /* ── Section spacing ── */
+    .section { margin-bottom: 6px; }
+
+    /* ── Menu screen ── */
+    #menu-screen .logo { text-align: center; padding: 30px 0 24px; }
+    #menu-screen .logo span { font-size: 3rem; }
+
+    /* ── Game screen ── */
+    #progress-bar-wrap {
+      width: 100%;
+      height: 6px;
+      background: var(--card);
+      border-radius: 3px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    #progress-bar {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+      transition: width .3s;
+      width: 0%;
+    }
+
+    .game-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: .9rem;
+      color: var(--sub);
+      margin-bottom: 16px;
+    }
+    #score-display { color: var(--lite); font-weight: 700; }
+
+    /* Timer */
+    .timer-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    #timer-svg { width: 80px; height: 80px; }
+    #timer-bg { fill: none; stroke: var(--card); stroke-width: 8; }
+    #timer-fg {
+      fill: none;
+      stroke: var(--green);
+      stroke-width: 8;
+      stroke-linecap: round;
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+      transition: stroke-dashoffset .9s linear, stroke .3s;
+    }
+    #timer-text {
+      font-size: 1.3rem;
+      font-weight: 800;
+      fill: var(--text);
+      dominant-baseline: middle;
+      text-anchor: middle;
+    }
+
+    /* Question card */
+    .q-card {
+      background: var(--card);
+      border-radius: 16px;
+      text-align: center;
+      padding: 32px 20px;
+      margin-bottom: 16px;
+    }
+    #question-text {
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
+    /* Answer input */
+    #answer-input {
+      width: 100%;
+      background: var(--card);
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 1.8rem;
+      font-weight: 700;
+      text-align: center;
+      padding: 12px;
+      outline: none;
+      margin-bottom: 10px;
+      transition: border-color .2s;
+    }
+    #answer-input:focus { border-color: var(--lite); }
+    #answer-input:disabled { opacity: .5; }
+
+    #feedback {
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 600;
+      min-height: 24px;
+      margin-bottom: 10px;
+    }
+    .fb-correct { color: var(--green); }
+    .fb-wrong   { color: var(--red); }
+    .fb-timeout { color: var(--yellow); }
+
+    /* ── Result screen ── */
+    #result-screen { text-align: center; padding-top: 30px; }
+    .result-score {
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: var(--lite);
+      margin: 8px 0;
+    }
+    .result-acc { color: var(--sub); font-size: 1rem; margin-bottom: 24px; }
+
+    .review-list { text-align: left; margin-bottom: 20px; }
+    .review-item {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 6px;
+      font-size: .95rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .review-item .icon { font-size: 1.1rem; flex-shrink: 0; }
+    .review-item.ok   { border-left: 4px solid var(--green); }
+    .review-item.bad  { border-left: 4px solid var(--red); }
+    .review-item .q   { font-weight: 700; }
+    .review-item .note { color: var(--sub); font-size: .85rem; }
+
+    .btn-row { display: flex; gap: 10px; }
+    .btn-row .btn { flex: 1; }
+
+    /* ── Responsive ── */
+    @media (max-width: 400px) {
+      #question-text { font-size: 2.2rem; }
+      .pill { padding: 6px 13px; font-size: .82rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ══ MENU SCREEN ══════════════════════════════════════════════════════ -->
+  <div id="menu-screen" class="screen active">
+    <div class="logo">
+      <span>🧠</span>
+      <h1>Mental Math</h1>
+      <p class="sub">Train your brain!</p>
+    </div>
+
+    <h2 class="section">Operation</h2>
+    <div class="pill-group" id="op-group">
+      <button class="pill selected" data-val="Addition">Addition</button>
+      <button class="pill" data-val="Subtraction">Subtraction</button>
+      <button class="pill" data-val="Multiplication">Multiplication</button>
+      <button class="pill" data-val="Division">Division</button>
+      <button class="pill" data-val="Mixed">Mixed ⚡</button>
+    </div>
+
+    <h2 class="section">Difficulty</h2>
+    <div class="pill-group" id="diff-group">
+      <button class="pill selected" data-val="Easy">Easy</button>
+      <button class="pill" data-val="Medium">Medium</button>
+      <button class="pill" data-val="Hard">Hard</button>
+    </div>
+
+    <h2 class="section">Questions</h2>
+    <div class="pill-group" id="q-group">
+      <button class="pill" data-val="5">5</button>
+      <button class="pill selected" data-val="10">10</button>
+      <button class="pill" data-val="20">20</button>
+    </div>
+
+    <h2 class="section">Time per question</h2>
+    <div class="pill-group" id="time-group">
+      <button class="pill" data-val="30">30 sec</button>
+      <button class="pill selected" data-val="15">15 sec</button>
+      <button class="pill" data-val="10">10 sec</button>
+      <button class="pill" data-val="0">No limit</button>
+    </div>
+
+    <button class="btn" onclick="startGame()">▶  Start Game</button>
+  </div>
+
+  <!-- ══ GAME SCREEN ══════════════════════════════════════════════════════ -->
+  <div id="game-screen" class="screen">
+    <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+
+    <div class="game-top">
+      <span id="q-counter">Question 1 / 10</span>
+      <span id="score-display">Score: 0</span>
+    </div>
+
+    <div class="timer-wrap">
+      <svg id="timer-svg" viewBox="0 0 80 80">
+        <circle id="timer-bg" cx="40" cy="40" r="34"/>
+        <circle id="timer-fg" cx="40" cy="40" r="34"
+                stroke-dasharray="213.6" stroke-dashoffset="213.6"/>
+        <text id="timer-text" x="40" y="40">–</text>
+      </svg>
+    </div>
+
+    <div class="q-card">
+      <div id="question-text">–</div>
+    </div>
+
+    <input id="answer-input" type="number" inputmode="numeric"
+           placeholder="?" autocomplete="off"
+           onkeydown="if(event.key==='Enter') submitAnswer()" />
+
+    <div id="feedback"></div>
+    <button class="btn" onclick="submitAnswer()">Submit  ↵</button>
+  </div>
+
+  <!-- ══ RESULT SCREEN ════════════════════════════════════════════════════ -->
+  <div id="result-screen" class="screen">
+    <h1>Game Over 🎉</h1>
+    <div class="result-score" id="final-score">0 pts</div>
+    <div class="result-acc" id="final-acc"></div>
+    <div class="review-list" id="review-list"></div>
+    <div class="btn-row">
+      <button class="btn" onclick="showScreen('menu-screen')">Main Menu</button>
+      <button class="btn grey" onclick="startGame()">Play Again</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Config ────────────────────────────────────────────────────────────────
+const DIFFICULTIES = {
+  Easy:   { a: [1,10],  b: [1,10]  },
+  Medium: { a: [1,50],  b: [1,20]  },
+  Hard:   { a: [1,100], b: [1,50]  },
+};
+
+// ── State ─────────────────────────────────────────────────────────────────
+let state = {};
+let timerInterval = null;
+const CIRCUMFERENCE = 2 * Math.PI * 34; // ≈ 213.6
+
+// ── Pill groups ───────────────────────────────────────────────────────────
+document.querySelectorAll('.pill-group').forEach(group => {
+  group.querySelectorAll('.pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      group.querySelectorAll('.pill').forEach(p => p.classList.remove('selected'));
+      pill.classList.add('selected');
+    });
+  });
+});
+
+function getSelected(groupId) {
+  return document.querySelector(`#${groupId} .pill.selected`)?.dataset.val;
+}
+
+// ── Screens ───────────────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ── Question generation ───────────────────────────────────────────────────
+function randInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function generateQuestion(op, rangeA, rangeB) {
+  if (op === 'Mixed') {
+    op = ['Addition','Subtraction','Multiplication','Division'][randInt(0,3)];
+  }
+  let a = randInt(...rangeA);
+  let b = randInt(...rangeB);
+  let question, answer;
+
+  if (op === 'Addition') {
+    question = `${a} + ${b}`; answer = a + b;
+  } else if (op === 'Subtraction') {
+    [a, b] = [Math.max(a,b), Math.min(a,b)];
+    question = `${a} − ${b}`; answer = a - b;
+  } else if (op === 'Multiplication') {
+    question = `${a} × ${b}`; answer = a * b;
+  } else {
+    b = randInt(1, Math.min(rangeB[1], 12));
+    a = b * randInt(1, Math.max(1, Math.floor(rangeA[1] / b)));
+    question = `${a} ÷ ${b}`; answer = a / b;
+  }
+  return { question, answer };
+}
+
+// ── Game start ────────────────────────────────────────────────────────────
+function startGame() {
+  clearInterval(timerInterval);
+
+  state = {
+    op:        getSelected('op-group'),
+    diff:      getSelected('diff-group'),
+    total:     parseInt(getSelected('q-group')),
+    timeLimit: parseInt(getSelected('time-group')),
+    current:   0,
+    score:     0,
+    results:   [],
+  };
+
+  showScreen('game-screen');
+  nextQuestion();
+}
+
+// ── Question flow ─────────────────────────────────────────────────────────
+function nextQuestion() {
+  clearInterval(timerInterval);
+  state.current++;
+
+  const { a, b } = DIFFICULTIES[state.diff];
+  const { question, answer } = generateQuestion(state.op, a, b);
+  state.question = question;
+  state.answer   = answer;
+  state.startTime = Date.now();
+
+  // UI
+  document.getElementById('q-counter').textContent =
+    `Question ${state.current} / ${state.total}`;
+  document.getElementById('score-display').textContent =
+    `Score: ${state.score}`;
+  document.getElementById('question-text').textContent = question;
+  document.getElementById('answer-input').value = '';
+  document.getElementById('answer-input').disabled = false;
+  document.getElementById('answer-input').focus();
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('feedback').className = '';
+
+  updateProgress(state.current - 1);
+  startTimer();
+}
+
+function updateProgress(done) {
+  const pct = (done / state.total) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+// ── Timer ─────────────────────────────────────────────────────────────────
+function startTimer() {
+  const fg   = document.getElementById('timer-fg');
+  const txt  = document.getElementById('timer-text');
+  const tl   = state.timeLimit;
+
+  if (!tl) {
+    fg.style.strokeDashoffset = CIRCUMFERENCE;
+    txt.textContent = '∞';
+    fg.style.stroke = 'var(--sub)';
+    return;
+  }
+
+  let remaining = tl;
+  renderTimer(remaining, tl, fg, txt);
+
+  timerInterval = setInterval(() => {
+    remaining--;
+    renderTimer(remaining, tl, fg, txt);
+    if (remaining <= 0) {
+      clearInterval(timerInterval);
+      timeout();
+    }
+  }, 1000);
+}
+
+function renderTimer(remaining, total, fg, txt) {
+  const frac   = remaining / total;
+  const offset = CIRCUMFERENCE * (1 - frac);
+  fg.style.strokeDashoffset = offset;
+  txt.textContent = remaining;
+
+  if (frac > 0.5)      fg.style.stroke = 'var(--green)';
+  else if (frac > 0.25) fg.style.stroke = 'var(--yellow)';
+  else                  fg.style.stroke = 'var(--red)';
+
+  document.getElementById('timer-text').style.fill =
+    frac > 0.5 ? 'var(--text)' : frac > 0.25 ? 'var(--yellow)' : 'var(--red)';
+}
+
+// ── Submit ────────────────────────────────────────────────────────────────
+function submitAnswer() {
+  const input = document.getElementById('answer-input');
+  if (input.disabled) return;
+
+  clearInterval(timerInterval);
+  const elapsed = ((Date.now() - state.startTime) / 1000).toFixed(1);
+  const raw = input.value.trim();
+
+  if (raw === '') return;
+
+  const userAns = parseInt(raw);
+  input.disabled = true;
+
+  const fb = document.getElementById('feedback');
+
+  if (userAns === state.answer) {
+    const timeBonus = state.timeLimit
+      ? Math.max(0, state.timeLimit - parseFloat(elapsed)) : 0;
+    const pts = 10 + Math.floor(timeBonus);
+    state.score += pts;
+    fb.textContent = `✓  Correct!  +${pts} pts  (${elapsed}s)`;
+    fb.className = 'fb-correct';
+    state.results.push({ q: state.question, ans: state.answer, given: userAns, ok: true });
+  } else {
+    fb.textContent = `✗  Wrong.  Answer was ${state.answer}`;
+    fb.className = 'fb-wrong';
+    state.results.push({ q: state.question, ans: state.answer, given: userAns, ok: false });
+  }
+
+  setTimeout(advance, 900);
+}
+
+function timeout() {
+  const input = document.getElementById('answer-input');
+  input.disabled = true;
+  const fb = document.getElementById('feedback');
+  fb.textContent = `⏰  Time's up!  Answer: ${state.answer}`;
+  fb.className = 'fb-timeout';
+  state.results.push({ q: state.question, ans: state.answer, given: 'timeout', ok: false });
+  setTimeout(advance, 1200);
+}
+
+function advance() {
+  if (state.current >= state.total) {
+    showResults();
+  } else {
+    nextQuestion();
+  }
+}
+
+// ── Results ───────────────────────────────────────────────────────────────
+function showResults() {
+  showScreen('result-screen');
+  updateProgress(state.total);
+
+  const correct = state.results.filter(r => r.ok).length;
+  const pct = Math.round(correct / state.total * 100);
+
+  document.getElementById('final-score').textContent = `${state.score} pts`;
+  document.getElementById('final-acc').textContent =
+    `${correct} / ${state.total} correct  (${pct}%)`;
+
+  const list = document.getElementById('review-list');
+  list.innerHTML = '';
+
+  state.results.forEach(({ q, ans, given, ok }) => {
+    const div  = document.createElement('div');
+    div.className = `review-item ${ok ? 'ok' : 'bad'}`;
+
+    const note = ok ? `= ${ans}` :
+      given === 'timeout' ? `= ${ans}  (timeout)` : `= ${ans}  (you: ${given})`;
+
+    div.innerHTML = `
+      <span class="icon">${ok ? '✓' : '✗'}</span>
+      <div><div class="q">${q}</div><div class="note">${note}</div></div>`;
+    list.appendChild(div);
+  });
+}
+</script>
+</body>
+</html>
