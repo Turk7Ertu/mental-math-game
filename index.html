@@ -8,15 +8,16 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:       #1e1e2e;
-      --card:     #2a2a3e;
-      --accent:   #7c3aed;
-      --lite:     #a78bfa;
-      --green:    #22c55e;
-      --red:      #ef4444;
-      --yellow:   #f59e0b;
-      --text:     #f1f5f9;
-      --sub:      #94a3b8;
+      --bg:     #1e1e2e;
+      --card:   #2a2a3e;
+      --accent: #7c3aed;
+      --lite:   #a78bfa;
+      --green:  #22c55e;
+      --red:    #ef4444;
+      --yellow: #f59e0b;
+      --blue:   #3b82f6;
+      --text:   #f1f5f9;
+      --sub:    #94a3b8;
     }
 
     body {
@@ -27,50 +28,43 @@
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      padding: 20px 16px 40px;
+      padding: 20px 16px 60px;
     }
 
-    .app {
-      width: 100%;
-      max-width: 480px;
-    }
+    .app { width: 100%; max-width: 480px; }
 
-    /* ── Screens ── */
     .screen { display: none; }
     .screen.active { display: block; }
 
-    /* ── Typography ── */
     h1 { font-size: 2rem; font-weight: 800; text-align: center; }
-    h2 { font-size: 1.1rem; font-weight: 600; color: var(--sub); margin-bottom: 8px; }
+    h2 { font-size: 1rem; font-weight: 600; color: var(--sub); margin-bottom: 8px; }
     .sub { color: var(--sub); text-align: center; font-size: .9rem; margin-top: 4px; }
 
-    /* ── Buttons ── */
     .btn {
-      display: inline-block;
+      display: block;
+      width: 100%;
       background: var(--accent);
       color: var(--text);
       border: none;
       border-radius: 12px;
-      padding: 12px 28px;
+      padding: 13px 28px;
       font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
       transition: background .15s, transform .1s;
-      width: 100%;
-      margin-top: 8px;
+      margin-top: 10px;
+      text-align: center;
     }
     .btn:hover  { background: var(--lite); }
     .btn:active { transform: scale(.97); }
     .btn.grey   { background: #374151; }
     .btn.grey:hover { background: #4b5563; }
+    .btn.green  { background: var(--green); }
+    .btn.green:hover { background: #16a34a; }
+    .btn.blue   { background: var(--blue); }
+    .btn.blue:hover { background: #2563eb; }
 
-    /* ── Option Pills ── */
-    .pill-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
+    .pill-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
     .pill {
       background: var(--card);
       color: var(--sub);
@@ -82,92 +76,15 @@
       cursor: pointer;
       transition: all .15s;
     }
-    .pill.selected {
-      background: var(--accent);
-      color: var(--text);
-      border-color: var(--lite);
-    }
+    .pill.selected { background: var(--accent); color: var(--text); border-color: var(--lite); }
 
-    /* ── Section spacing ── */
-    .section { margin-bottom: 6px; }
-
-    /* ── Menu screen ── */
-    #menu-screen .logo { text-align: center; padding: 30px 0 24px; }
-    #menu-screen .logo span { font-size: 3rem; }
-
-    /* ── Game screen ── */
-    #progress-bar-wrap {
-      width: 100%;
-      height: 6px;
-      background: var(--card);
-      border-radius: 3px;
-      margin-bottom: 16px;
-      overflow: hidden;
-    }
-    #progress-bar {
-      height: 100%;
-      background: var(--accent);
-      border-radius: 3px;
-      transition: width .3s;
-      width: 0%;
-    }
-
-    .game-top {
-      display: flex;
-      justify-content: space-between;
-      font-size: .9rem;
-      color: var(--sub);
-      margin-bottom: 16px;
-    }
-    #score-display { color: var(--lite); font-weight: 700; }
-
-    /* Timer */
-    .timer-wrap {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 16px;
-    }
-    #timer-svg { width: 80px; height: 80px; }
-    #timer-bg { fill: none; stroke: var(--card); stroke-width: 8; }
-    #timer-fg {
-      fill: none;
-      stroke: var(--green);
-      stroke-width: 8;
-      stroke-linecap: round;
-      transform: rotate(-90deg);
-      transform-origin: 50% 50%;
-      transition: stroke-dashoffset .9s linear, stroke .3s;
-    }
-    #timer-text {
-      font-size: 1.3rem;
-      font-weight: 800;
-      fill: var(--text);
-      dominant-baseline: middle;
-      text-anchor: middle;
-    }
-
-    /* Question card */
-    .q-card {
-      background: var(--card);
-      border-radius: 16px;
-      text-align: center;
-      padding: 32px 20px;
-      margin-bottom: 16px;
-    }
-    #question-text {
-      font-size: 2.8rem;
-      font-weight: 800;
-      letter-spacing: 2px;
-    }
-
-    /* Answer input */
-    #answer-input {
+    input[type="text"], input[type="number"] {
       width: 100%;
       background: var(--card);
       border: 2px solid var(--accent);
       border-radius: 12px;
       color: var(--text);
-      font-size: 1.8rem;
+      font-size: 1.4rem;
       font-weight: 700;
       text-align: center;
       padding: 12px;
@@ -175,69 +92,209 @@
       margin-bottom: 10px;
       transition: border-color .2s;
     }
-    #answer-input:focus { border-color: var(--lite); }
-    #answer-input:disabled { opacity: .5; }
+    input:focus { border-color: var(--lite); }
+    input:disabled { opacity: .4; }
+
+    /* ── Home screen ── */
+    #home-screen .logo { text-align: center; padding: 30px 0 28px; }
+    #home-screen .logo span { font-size: 3rem; }
+    .mode-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color .2s;
+    }
+    .mode-card:hover { border-color: var(--accent); }
+    .mode-card h3 { font-size: 1.1rem; margin-bottom: 4px; }
+    .mode-card p  { color: var(--sub); font-size: .88rem; }
+    .mode-card .icon { font-size: 1.6rem; margin-bottom: 8px; }
+
+    /* ── Menu screen ── */
+    #menu-screen .back { color: var(--sub); font-size:.9rem; cursor:pointer; margin-bottom:16px; display:inline-block; }
+    #menu-screen .back:hover { color: var(--text); }
+
+    /* ── Lobby screen ── */
+    .room-code-display {
+      background: var(--card);
+      border-radius: 16px;
+      text-align: center;
+      padding: 28px;
+      margin: 16px 0;
+    }
+    .room-code-display .label { color: var(--sub); font-size: .9rem; margin-bottom: 8px; }
+    .room-code-display .code {
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--lite);
+      letter-spacing: 8px;
+    }
+    .players-list { margin: 16px 0; }
+    .player-row {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+    }
+    .player-row .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--green);
+      flex-shrink: 0;
+    }
+    .player-row .dot.waiting { background: var(--yellow); }
+    .waiting-msg { text-align: center; color: var(--sub); font-size: .9rem; margin: 12px 0; }
+
+    /* ── Game screen ── */
+    #progress-bar-wrap {
+      width: 100%; height: 6px;
+      background: var(--card);
+      border-radius: 3px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    #progress-bar { height: 100%; background: var(--accent); border-radius: 3px; transition: width .3s; width: 0%; }
+
+    .game-top { display: flex; justify-content: space-between; font-size: .9rem; color: var(--sub); margin-bottom: 12px; }
+    #score-display { color: var(--lite); font-weight: 700; }
+
+    /* Live scoreboard */
+    .scoreboard {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .score-card {
+      flex: 1;
+      background: var(--card);
+      border-radius: 12px;
+      padding: 10px 14px;
+      text-align: center;
+      border: 2px solid transparent;
+    }
+    .score-card.me   { border-color: var(--accent); }
+    .score-card.them { border-color: #374151; }
+    .score-card .name { font-size: .8rem; color: var(--sub); margin-bottom: 4px; }
+    .score-card .pts  { font-size: 1.4rem; font-weight: 800; }
+    .score-card.leading .pts { color: var(--green); }
+
+    .timer-wrap { display: flex; justify-content: center; margin-bottom: 14px; }
+    #timer-svg { width: 72px; height: 72px; }
+    #timer-bg  { fill: none; stroke: var(--card); stroke-width: 8; }
+    #timer-fg  {
+      fill: none; stroke: var(--green); stroke-width: 8; stroke-linecap: round;
+      transform: rotate(-90deg); transform-origin: 50% 50%;
+      transition: stroke-dashoffset .9s linear, stroke .3s;
+    }
+    #timer-text { font-size: 1.2rem; font-weight: 800; fill: var(--text); dominant-baseline: middle; text-anchor: middle; }
+
+    .q-card {
+      background: var(--card); border-radius: 16px;
+      text-align: center; padding: 28px 20px; margin-bottom: 14px;
+    }
+    #question-text { font-size: 2.6rem; font-weight: 800; letter-spacing: 2px; }
+
+    #answer-input { font-size: 1.8rem; }
 
     #feedback {
-      text-align: center;
-      font-size: 1rem;
-      font-weight: 600;
-      min-height: 24px;
-      margin-bottom: 10px;
+      text-align: center; font-size: 1rem; font-weight: 600;
+      min-height: 24px; margin-bottom: 10px;
     }
     .fb-correct { color: var(--green); }
     .fb-wrong   { color: var(--red); }
     .fb-timeout { color: var(--yellow); }
 
     /* ── Result screen ── */
-    #result-screen { text-align: center; padding-top: 30px; }
-    .result-score {
-      font-size: 3.5rem;
-      font-weight: 900;
-      color: var(--lite);
-      margin: 8px 0;
-    }
-    .result-acc { color: var(--sub); font-size: 1rem; margin-bottom: 24px; }
-
-    .review-list { text-align: left; margin-bottom: 20px; }
-    .review-item {
+    #result-screen { text-align: center; padding-top: 24px; }
+    .winner-banner {
       background: var(--card);
-      border-radius: 10px;
-      padding: 10px 14px;
-      margin-bottom: 6px;
-      font-size: .95rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      border-radius: 16px;
+      padding: 24px;
+      margin: 16px 0;
     }
-    .review-item .icon { font-size: 1.1rem; flex-shrink: 0; }
-    .review-item.ok   { border-left: 4px solid var(--green); }
-    .review-item.bad  { border-left: 4px solid var(--red); }
-    .review-item .q   { font-weight: 700; }
-    .review-item .note { color: var(--sub); font-size: .85rem; }
+    .winner-banner .trophy { font-size: 3rem; }
+    .winner-banner h2 { font-size: 1.4rem; color: var(--text); margin: 8px 0 4px; }
+    .winner-banner .winner-name { font-size: 2rem; font-weight: 900; color: var(--lite); }
+
+    .final-scores {
+      display: flex; gap: 10px; margin: 16px 0;
+    }
+    .final-score-card {
+      flex: 1; background: var(--card); border-radius: 12px; padding: 14px; text-align: center;
+    }
+    .final-score-card .name { color: var(--sub); font-size: .85rem; margin-bottom: 6px; }
+    .final-score-card .pts  { font-size: 1.8rem; font-weight: 800; }
+    .final-score-card.winner { border: 2px solid var(--green); }
+    .final-score-card.winner .pts { color: var(--green); }
+
+    .review-list { text-align: left; margin-bottom: 16px; }
+    .review-item {
+      background: var(--card); border-radius: 10px;
+      padding: 10px 14px; margin-bottom: 6px;
+      font-size: .9rem; display: flex; align-items: center; gap: 10px;
+    }
+    .review-item.ok  { border-left: 4px solid var(--green); }
+    .review-item.bad { border-left: 4px solid var(--red); }
+    .review-item .note { color: var(--sub); font-size: .82rem; }
 
     .btn-row { display: flex; gap: 10px; }
-    .btn-row .btn { flex: 1; }
+    .btn-row .btn { flex: 1; margin-top: 0; }
 
-    /* ── Responsive ── */
     @media (max-width: 400px) {
-      #question-text { font-size: 2.2rem; }
-      .pill { padding: 6px 13px; font-size: .82rem; }
+      #question-text { font-size: 2rem; }
+      .pill { padding: 6px 12px; font-size: .82rem; }
     }
   </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- ══ MENU SCREEN ══════════════════════════════════════════════════════ -->
-  <div id="menu-screen" class="screen active">
+  <!-- ══ HOME SCREEN ══════════════════════════════════════════════════════ -->
+  <div id="home-screen" class="screen active">
     <div class="logo">
       <span>🧠</span>
       <h1>Mental Math</h1>
       <p class="sub">Train your brain!</p>
     </div>
 
-    <h2 class="section">Operation</h2>
+    <div class="mode-card" onclick="goToMenu('solo')">
+      <div class="icon">🎯</div>
+      <h3>Solo Practice</h3>
+      <p>Practice on your own at your own pace</p>
+    </div>
+
+    <div class="mode-card" onclick="goToMenu('multi')">
+      <div class="icon">⚔️</div>
+      <h3>Challenge a Friend</h3>
+      <p>Create a room and compete in real-time</p>
+    </div>
+
+    <div class="mode-card" onclick="showScreen('join-screen')">
+      <div class="icon">🔗</div>
+      <h3>Join a Game</h3>
+      <p>Enter a room code to join a friend's game</p>
+    </div>
+  </div>
+
+  <!-- ══ MENU SCREEN ══════════════════════════════════════════════════════ -->
+  <div id="menu-screen" class="screen">
+    <span class="back" onclick="showScreen('home-screen')">← Back</span>
+    <h1 style="margin-bottom:6px" id="menu-title">Solo Practice</h1>
+    <p class="sub" style="margin-bottom:24px">Choose your settings</p>
+
+    <div id="name-section">
+      <h2>Your Name</h2>
+      <input type="text" id="player-name-input" placeholder="Enter your name" maxlength="16"
+             style="font-size:1.1rem; margin-bottom:20px" />
+    </div>
+
+    <h2>Operation</h2>
     <div class="pill-group" id="op-group">
       <button class="pill selected" data-val="Addition">Addition</button>
       <button class="pill" data-val="Subtraction">Subtraction</button>
@@ -246,21 +303,21 @@
       <button class="pill" data-val="Mixed">Mixed ⚡</button>
     </div>
 
-    <h2 class="section">Difficulty</h2>
+    <h2>Difficulty</h2>
     <div class="pill-group" id="diff-group">
       <button class="pill selected" data-val="Easy">Easy</button>
       <button class="pill" data-val="Medium">Medium</button>
       <button class="pill" data-val="Hard">Hard</button>
     </div>
 
-    <h2 class="section">Questions</h2>
+    <h2>Questions</h2>
     <div class="pill-group" id="q-group">
       <button class="pill" data-val="5">5</button>
       <button class="pill selected" data-val="10">10</button>
       <button class="pill" data-val="20">20</button>
     </div>
 
-    <h2 class="section">Time per question</h2>
+    <h2>Time per question</h2>
     <div class="pill-group" id="time-group">
       <button class="pill" data-val="30">30 sec</button>
       <button class="pill selected" data-val="15">15 sec</button>
@@ -268,7 +325,44 @@
       <button class="pill" data-val="0">No limit</button>
     </div>
 
-    <button class="btn" onclick="startGame()">▶  Start Game</button>
+    <button class="btn" id="menu-start-btn" onclick="handleMenuStart()">▶  Start Game</button>
+  </div>
+
+  <!-- ══ JOIN SCREEN ═══════════════════════════════════════════════════════ -->
+  <div id="join-screen" class="screen">
+    <span class="back" onclick="showScreen('home-screen')">← Back</span>
+    <h1 style="margin-bottom:24px">Join Game</h1>
+
+    <h2>Your Name</h2>
+    <input type="text" id="join-name-input" placeholder="Enter your name" maxlength="16"
+           style="font-size:1.1rem" />
+
+    <h2 style="margin-top:10px">Room Code</h2>
+    <input type="text" id="join-code-input" placeholder="Enter 4-digit code"
+           maxlength="4" style="letter-spacing:8px; font-size:2rem" />
+
+    <div id="join-error" style="color:var(--red);text-align:center;min-height:24px;font-weight:600;margin-bottom:8px"></div>
+    <button class="btn blue" onclick="joinRoom()">Join Room</button>
+    <button class="btn grey" onclick="showScreen('home-screen')">Cancel</button>
+  </div>
+
+  <!-- ══ LOBBY SCREEN ══════════════════════════════════════════════════════ -->
+  <div id="lobby-screen" class="screen">
+    <h1 style="margin-bottom:4px">Game Room</h1>
+    <p class="sub" style="margin-bottom:16px">Share the code with your friend</p>
+
+    <div class="room-code-display">
+      <div class="label">Room Code</div>
+      <div class="code" id="lobby-code">----</div>
+    </div>
+
+    <div class="players-list" id="players-list"></div>
+    <div class="waiting-msg" id="waiting-msg">Waiting for opponent to join...</div>
+
+    <button class="btn green" id="start-match-btn" onclick="startMultiGame()" style="display:none">
+      ▶  Start Match
+    </button>
+    <button class="btn grey" onclick="leaveRoom()">Leave Room</button>
   </div>
 
   <!-- ══ GAME SCREEN ══════════════════════════════════════════════════════ -->
@@ -278,6 +372,19 @@
     <div class="game-top">
       <span id="q-counter">Question 1 / 10</span>
       <span id="score-display">Score: 0</span>
+    </div>
+
+    <!-- Live scoreboard (multiplayer only) -->
+    <div class="scoreboard" id="scoreboard" style="display:none">
+      <div class="score-card me" id="sc-me">
+        <div class="name" id="sc-me-name">You</div>
+        <div class="pts"  id="sc-me-pts">0</div>
+      </div>
+      <div style="display:flex;align-items:center;color:var(--sub);font-weight:800">VS</div>
+      <div class="score-card them" id="sc-them">
+        <div class="name" id="sc-them-name">Opponent</div>
+        <div class="pts"  id="sc-them-pts">0</div>
+      </div>
     </div>
 
     <div class="timer-wrap">
@@ -303,30 +410,130 @@
 
   <!-- ══ RESULT SCREEN ════════════════════════════════════════════════════ -->
   <div id="result-screen" class="screen">
-    <h1>Game Over 🎉</h1>
-    <div class="result-score" id="final-score">0 pts</div>
-    <div class="result-acc" id="final-acc"></div>
+    <div id="solo-result">
+      <h1 style="padding-top:24px">Game Over 🎉</h1>
+      <div style="font-size:3rem;font-weight:900;color:var(--lite);margin:8px 0" id="final-score">0 pts</div>
+      <div style="color:var(--sub);margin-bottom:20px" id="final-acc"></div>
+    </div>
+
+    <div id="multi-result" style="display:none">
+      <div class="winner-banner">
+        <div class="trophy" id="result-trophy">🏆</div>
+        <div class="winner-name" id="result-winner-name"></div>
+        <h2 id="result-winner-label">wins!</h2>
+      </div>
+      <div class="final-scores">
+        <div class="final-score-card" id="fsc-me">
+          <div class="name" id="fsc-me-name">You</div>
+          <div class="pts"  id="fsc-me-pts">0</div>
+        </div>
+        <div class="final-score-card" id="fsc-them">
+          <div class="name" id="fsc-them-name">Opponent</div>
+          <div class="pts"  id="fsc-them-pts">0</div>
+        </div>
+      </div>
+    </div>
+
     <div class="review-list" id="review-list"></div>
     <div class="btn-row">
-      <button class="btn" onclick="showScreen('menu-screen')">Main Menu</button>
-      <button class="btn grey" onclick="startGame()">Play Again</button>
+      <button class="btn" onclick="showScreen('home-screen')">Home</button>
+      <button class="btn grey" id="play-again-btn" onclick="playAgain()">Play Again</button>
     </div>
   </div>
 
 </div>
 
-<script>
-// ── Config ────────────────────────────────────────────────────────────────
-const DIFFICULTIES = {
-  Easy:   { a: [1,10],  b: [1,10]  },
-  Medium: { a: [1,50],  b: [1,20]  },
-  Hard:   { a: [1,100], b: [1,50]  },
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp }           from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, get, update, onValue, remove, push }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// ══════════════════════════════════════════════════════════════════════════
+//  🔧 PASTE YOUR FIREBASE CONFIG HERE
+//  Go to Firebase Console → Project Settings → Your apps → SDK setup
+// ══════════════════════════════════════════════════════════════════════════
+const firebaseConfig = {
+  apiKey:            "AIzaSyABC8fBUEIj_jpMgWzJO8k0t-pffhyvTJs",
+  authDomain:        "mental-math-game-960db.firebaseapp.com",
+  databaseURL:       "https://mental-math-game-960db-default-rtdb.firebaseio.com",
+  projectId:         "mental-math-game-960db",
+  storageBucket:     "mental-math-game-960db.firebasestorage.app",
+  messagingSenderId: "250468174968",
+  appId:             "1:250468174968:web:932d9893d23129dab1f18d"
 };
 
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+
+// ── Config ────────────────────────────────────────────────────────────────
+const DIFFICULTIES = {
+  Easy:   { a:[1,10],  b:[1,10]  },
+  Medium: { a:[1,50],  b:[1,20]  },
+  Hard:   { a:[1,100], b:[1,50]  },
+};
+const CIRCUMFERENCE = 213.6;
+
 // ── State ─────────────────────────────────────────────────────────────────
-let state = {};
-let timerInterval = null;
-const CIRCUMFERENCE = 2 * Math.PI * 34; // ≈ 213.6
+let state = {
+  mode: 'solo',        // 'solo' | 'host' | 'guest'
+  roomCode: null,
+  playerId: null,      // 'p1' | 'p2'
+  opponentId: null,
+  playerName: '',
+  opponentName: '',
+  op: 'Addition',
+  diff: 'Easy',
+  total: 10,
+  timeLimit: 15,
+  current: 0,
+  score: 0,
+  oppScore: 0,
+  results: [],
+  question: '',
+  answer: 0,
+  startTime: 0,
+};
+let timerInterval  = null;
+let roomListener   = null;
+
+// ── Helpers ───────────────────────────────────────────────────────────────
+function randInt(min, max) { return Math.floor(Math.random()*(max-min+1))+min; }
+
+function generateQuestions(op, rangeA, rangeB, total) {
+  const qs = [];
+  for (let i = 0; i < total; i++) {
+    let o = op === 'Mixed'
+      ? ['Addition','Subtraction','Multiplication','Division'][randInt(0,3)]
+      : op;
+    let a = randInt(...rangeA), b = randInt(...rangeB);
+    let q, ans;
+    if (o==='Addition')       { q=`${a} + ${b}`;  ans=a+b; }
+    else if(o==='Subtraction'){ [a,b]=[Math.max(a,b),Math.min(a,b)]; q=`${a} − ${b}`; ans=a-b; }
+    else if(o==='Multiplication'){ q=`${a} × ${b}`; ans=a*b; }
+    else { b=randInt(1,Math.min(rangeB[1],12)); a=b*randInt(1,Math.max(1,Math.floor(rangeA[1]/b))); q=`${a} ÷ ${b}`; ans=a/b; }
+    qs.push({q, ans});
+  }
+  return qs;
+}
+
+function makeRoomCode() {
+  return String(randInt(1000,9999));
+}
+
+// ── Screen management ─────────────────────────────────────────────────────
+window.showScreen = function(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+};
+
+window.goToMenu = function(mode) {
+  state.mode = mode;
+  document.getElementById('menu-title').textContent =
+    mode === 'solo' ? 'Solo Practice' : 'Challenge a Friend';
+  showScreen('menu-screen');
+};
 
 // ── Pill groups ───────────────────────────────────────────────────────────
 document.querySelectorAll('.pill-group').forEach(group => {
@@ -338,100 +545,244 @@ document.querySelectorAll('.pill-group').forEach(group => {
   });
 });
 
-function getSelected(groupId) {
-  return document.querySelector(`#${groupId} .pill.selected`)?.dataset.val;
+function getSelected(id) {
+  return document.querySelector(`#${id} .pill.selected`)?.dataset.val;
 }
 
-// ── Screens ───────────────────────────────────────────────────────────────
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0, 0);
-}
+// ── Menu Start ────────────────────────────────────────────────────────────
+window.handleMenuStart = function() {
+  const name = document.getElementById('player-name-input').value.trim() || 'Player';
+  state.playerName = name;
+  state.op        = getSelected('op-group');
+  state.diff      = getSelected('diff-group');
+  state.total     = parseInt(getSelected('q-group'));
+  state.timeLimit = parseInt(getSelected('time-group'));
 
-// ── Question generation ───────────────────────────────────────────────────
-function randInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function generateQuestion(op, rangeA, rangeB) {
-  if (op === 'Mixed') {
-    op = ['Addition','Subtraction','Multiplication','Division'][randInt(0,3)];
-  }
-  let a = randInt(...rangeA);
-  let b = randInt(...rangeB);
-  let question, answer;
-
-  if (op === 'Addition') {
-    question = `${a} + ${b}`; answer = a + b;
-  } else if (op === 'Subtraction') {
-    [a, b] = [Math.max(a,b), Math.min(a,b)];
-    question = `${a} − ${b}`; answer = a - b;
-  } else if (op === 'Multiplication') {
-    question = `${a} × ${b}`; answer = a * b;
+  if (state.mode === 'solo') {
+    startSoloGame();
   } else {
-    b = randInt(1, Math.min(rangeB[1], 12));
-    a = b * randInt(1, Math.max(1, Math.floor(rangeA[1] / b)));
-    question = `${a} ÷ ${b}`; answer = a / b;
+    createRoom();
   }
-  return { question, answer };
-}
+};
 
-// ── Game start ────────────────────────────────────────────────────────────
-function startGame() {
-  clearInterval(timerInterval);
-
-  state = {
-    op:        getSelected('op-group'),
-    diff:      getSelected('diff-group'),
-    total:     parseInt(getSelected('q-group')),
-    timeLimit: parseInt(getSelected('time-group')),
-    current:   0,
-    score:     0,
-    results:   [],
-  };
-
+// ══════════════════════════════════════════════════════════════════════════
+//  SOLO GAME
+// ══════════════════════════════════════════════════════════════════════════
+function startSoloGame() {
+  const { a, b } = DIFFICULTIES[state.diff];
+  state.questions = generateQuestions(state.op, a, b, state.total);
+  state.current   = 0;
+  state.score     = 0;
+  state.results   = [];
+  document.getElementById('scoreboard').style.display = 'none';
   showScreen('game-screen');
   nextQuestion();
 }
 
-// ── Question flow ─────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════
+//  MULTIPLAYER — HOST
+// ══════════════════════════════════════════════════════════════════════════
+async function createRoom() {
+  const code = makeRoomCode();
+  state.roomCode  = code;
+  state.playerId  = 'p1';
+  state.opponentId = 'p2';
+
+  const { a, b } = DIFFICULTIES[state.diff];
+  const questions = generateQuestions(state.op, a, b, state.total);
+
+  await set(ref(db, `rooms/${code}`), {
+    host: state.playerName,
+    guest: '',
+    status: 'waiting',
+    settings: {
+      op: state.op, diff: state.diff,
+      total: state.total, timeLimit: state.timeLimit,
+    },
+    questions,
+    p1: { name: state.playerName, score: 0, done: false },
+    p2: { name: '', score: 0, done: false },
+  });
+
+  document.getElementById('lobby-code').textContent = code;
+  showScreen('lobby-screen');
+  listenToRoom(code);
+}
+
+window.startMultiGame = async function() {
+  await update(ref(db, `rooms/${state.roomCode}`), { status: 'playing' });
+};
+
+window.leaveRoom = async function() {
+  if (state.roomCode) {
+    if (state.playerId === 'p1') {
+      await remove(ref(db, `rooms/${state.roomCode}`));
+    } else {
+      await update(ref(db, `rooms/${state.roomCode}`), { guest:'', status:'waiting',
+        'p2/name':'', 'p2/score':0, 'p2/done':false });
+    }
+    state.roomCode = null;
+  }
+  if (roomListener) { roomListener(); roomListener = null; }
+  showScreen('home-screen');
+};
+
+// ══════════════════════════════════════════════════════════════════════════
+//  MULTIPLAYER — JOIN
+// ══════════════════════════════════════════════════════════════════════════
+window.joinRoom = async function() {
+  const name = document.getElementById('join-name-input').value.trim() || 'Player 2';
+  const code = document.getElementById('join-code-input').value.trim();
+  const errEl = document.getElementById('join-error');
+  errEl.textContent = '';
+
+  if (code.length !== 4) { errEl.textContent = 'Enter a 4-digit code'; return; }
+
+  const snap = await get(ref(db, `rooms/${code}`));
+  if (!snap.exists())              { errEl.textContent = 'Room not found'; return; }
+  const room = snap.val();
+  if (room.status !== 'waiting')   { errEl.textContent = 'Game already started'; return; }
+  if (room.guest)                  { errEl.textContent = 'Room is full'; return; }
+
+  state.roomCode   = code;
+  state.playerId   = 'p2';
+  state.opponentId = 'p1';
+  state.playerName = name;
+  state.opponentName = room.host;
+
+  const s = room.settings;
+  state.op = s.op; state.diff = s.diff;
+  state.total = s.total; state.timeLimit = s.timeLimit;
+
+  await update(ref(db, `rooms/${code}`), {
+    guest: name,
+    'p2/name': name,
+  });
+
+  document.getElementById('lobby-code').textContent = code;
+  showScreen('lobby-screen');
+  listenToRoom(code);
+};
+
+// ══════════════════════════════════════════════════════════════════════════
+//  ROOM LISTENER
+// ══════════════════════════════════════════════════════════════════════════
+function listenToRoom(code) {
+  if (roomListener) roomListener();
+  const roomRef = ref(db, `rooms/${code}`);
+  roomListener = onValue(roomRef, snap => {
+    if (!snap.exists()) { showScreen('home-screen'); return; }
+    const room = snap.val();
+
+    // Update lobby UI
+    if (document.getElementById('lobby-screen').classList.contains('active')) {
+      updateLobbyUI(room);
+    }
+
+    // Start game when host fires it
+    if (room.status === 'playing' &&
+        document.getElementById('lobby-screen').classList.contains('active')) {
+      const s = room.settings;
+      state.questions = room.questions;
+      state.current = 0; state.score = 0; state.oppScore = 0; state.results = [];
+      state.opponentName = state.playerId === 'p1' ? room.guest : room.host;
+
+      // Setup scoreboard
+      document.getElementById('sc-me-name').textContent   = state.playerName;
+      document.getElementById('sc-them-name').textContent = state.opponentName;
+      document.getElementById('scoreboard').style.display = 'flex';
+      showScreen('game-screen');
+      nextQuestion();
+    }
+
+    // Live score updates during game
+    if (room.status === 'playing' &&
+        document.getElementById('game-screen').classList.contains('active')) {
+      const oppData = room[state.opponentId];
+      if (oppData) {
+        state.oppScore = oppData.score || 0;
+        updateScoreboard();
+      }
+
+      // Both done → show results
+      const me  = room[state.playerId];
+      const opp = room[state.opponentId];
+      if (me?.done && opp?.done) {
+        showMultiResults(room);
+      }
+    }
+  });
+}
+
+function updateLobbyUI(room) {
+  const list = document.getElementById('players-list');
+  list.innerHTML = '';
+
+  [['p1', room.host || ''], ['p2', room.guest || '']].forEach(([id, name]) => {
+    if (!name) return;
+    const row = document.createElement('div');
+    row.className = 'player-row';
+    const isMe = (id === state.playerId);
+    row.innerHTML = `<span class="dot"></span>
+      <span>${name}${isMe ? ' <span style="color:var(--sub);font-size:.8rem">(you)</span>' : ''}</span>`;
+    list.appendChild(row);
+  });
+
+  const hasGuest = !!room.guest;
+  document.getElementById('waiting-msg').style.display = hasGuest ? 'none' : 'block';
+
+  const startBtn = document.getElementById('start-match-btn');
+  if (state.playerId === 'p1' && hasGuest) {
+    startBtn.style.display = 'block';
+  } else {
+    startBtn.style.display = 'none';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+//  SHARED GAME LOGIC
+// ══════════════════════════════════════════════════════════════════════════
 function nextQuestion() {
   clearInterval(timerInterval);
   state.current++;
 
-  const { a, b } = DIFFICULTIES[state.diff];
-  const { question, answer } = generateQuestion(state.op, a, b);
-  state.question = question;
-  state.answer   = answer;
+  const { q, ans } = state.questions[state.current - 1];
+  state.question = q;
+  state.answer   = ans;
   state.startTime = Date.now();
 
-  // UI
-  document.getElementById('q-counter').textContent =
-    `Question ${state.current} / ${state.total}`;
-  document.getElementById('score-display').textContent =
-    `Score: ${state.score}`;
-  document.getElementById('question-text').textContent = question;
+  document.getElementById('q-counter').textContent = `Question ${state.current} / ${state.total}`;
+  document.getElementById('score-display').textContent = `Score: ${state.score}`;
+  document.getElementById('question-text').textContent = q;
   document.getElementById('answer-input').value = '';
   document.getElementById('answer-input').disabled = false;
   document.getElementById('answer-input').focus();
   document.getElementById('feedback').textContent = '';
-  document.getElementById('feedback').className = '';
+  document.getElementById('feedback').className   = '';
 
   updateProgress(state.current - 1);
   startTimer();
 }
 
 function updateProgress(done) {
-  const pct = (done / state.total) * 100;
-  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-bar').style.width = (done/state.total*100) + '%';
+}
+
+function updateScoreboard() {
+  const meEl   = document.getElementById('sc-me-pts');
+  const themEl = document.getElementById('sc-them-pts');
+  meEl.textContent   = state.score;
+  themEl.textContent = state.oppScore;
+
+  document.getElementById('sc-me').classList.toggle('leading',   state.score > state.oppScore);
+  document.getElementById('sc-them').classList.toggle('leading', state.oppScore > state.score);
 }
 
 // ── Timer ─────────────────────────────────────────────────────────────────
 function startTimer() {
-  const fg   = document.getElementById('timer-fg');
-  const txt  = document.getElementById('timer-text');
-  const tl   = state.timeLimit;
+  const fg  = document.getElementById('timer-fg');
+  const txt = document.getElementById('timer-text');
+  const tl  = state.timeLimit;
 
   if (!tl) {
     fg.style.strokeDashoffset = CIRCUMFERENCE;
@@ -446,10 +797,7 @@ function startTimer() {
   timerInterval = setInterval(() => {
     remaining--;
     renderTimer(remaining, tl, fg, txt);
-    if (remaining <= 0) {
-      clearInterval(timerInterval);
-      timeout();
-    }
+    if (remaining <= 0) { clearInterval(timerInterval); timeout(); }
   }, 1000);
 }
 
@@ -458,94 +806,154 @@ function renderTimer(remaining, total, fg, txt) {
   const offset = CIRCUMFERENCE * (1 - frac);
   fg.style.strokeDashoffset = offset;
   txt.textContent = remaining;
-
-  if (frac > 0.5)      fg.style.stroke = 'var(--green)';
-  else if (frac > 0.25) fg.style.stroke = 'var(--yellow)';
-  else                  fg.style.stroke = 'var(--red)';
-
+  const color = frac > .5 ? 'var(--green)' : frac > .25 ? 'var(--yellow)' : 'var(--red)';
+  fg.style.stroke = color;
   document.getElementById('timer-text').style.fill =
-    frac > 0.5 ? 'var(--text)' : frac > 0.25 ? 'var(--yellow)' : 'var(--red)';
+    frac > .5 ? 'var(--text)' : color;
 }
 
 // ── Submit ────────────────────────────────────────────────────────────────
-function submitAnswer() {
+window.submitAnswer = function() {
   const input = document.getElementById('answer-input');
   if (input.disabled) return;
-
   clearInterval(timerInterval);
-  const elapsed = ((Date.now() - state.startTime) / 1000).toFixed(1);
-  const raw = input.value.trim();
 
-  if (raw === '') return;
+  const elapsed = ((Date.now() - state.startTime)/1000).toFixed(1);
+  const raw = input.value.trim();
+  if (!raw) return;
 
   const userAns = parseInt(raw);
   input.disabled = true;
-
   const fb = document.getElementById('feedback');
 
   if (userAns === state.answer) {
-    const timeBonus = state.timeLimit
-      ? Math.max(0, state.timeLimit - parseFloat(elapsed)) : 0;
-    const pts = 10 + Math.floor(timeBonus);
+    const bonus = state.timeLimit ? Math.max(0, state.timeLimit - parseFloat(elapsed)) : 0;
+    const pts   = 10 + Math.floor(bonus);
     state.score += pts;
     fb.textContent = `✓  Correct!  +${pts} pts  (${elapsed}s)`;
-    fb.className = 'fb-correct';
-    state.results.push({ q: state.question, ans: state.answer, given: userAns, ok: true });
+    fb.className   = 'fb-correct';
+    state.results.push({ q:state.question, ans:state.answer, given:userAns, ok:true });
   } else {
     fb.textContent = `✗  Wrong.  Answer was ${state.answer}`;
-    fb.className = 'fb-wrong';
-    state.results.push({ q: state.question, ans: state.answer, given: userAns, ok: false });
+    fb.className   = 'fb-wrong';
+    state.results.push({ q:state.question, ans:state.answer, given:userAns, ok:false });
   }
 
+  if (state.mode !== 'solo') syncScore();
   setTimeout(advance, 900);
-}
+};
 
 function timeout() {
   const input = document.getElementById('answer-input');
   input.disabled = true;
   const fb = document.getElementById('feedback');
   fb.textContent = `⏰  Time's up!  Answer: ${state.answer}`;
-  fb.className = 'fb-timeout';
-  state.results.push({ q: state.question, ans: state.answer, given: 'timeout', ok: false });
+  fb.className   = 'fb-timeout';
+  state.results.push({ q:state.question, ans:state.answer, given:'timeout', ok:false });
+  if (state.mode !== 'solo') syncScore();
   setTimeout(advance, 1200);
 }
 
+async function syncScore() {
+  if (!state.roomCode) return;
+  await update(ref(db, `rooms/${state.roomCode}/${state.playerId}`), {
+    score: state.score,
+  });
+}
+
 function advance() {
+  updateProgress(state.current);
   if (state.current >= state.total) {
-    showResults();
+    if (state.mode === 'solo') {
+      showSoloResults();
+    } else {
+      markDone();
+    }
   } else {
     nextQuestion();
   }
 }
 
-// ── Results ───────────────────────────────────────────────────────────────
-function showResults() {
+async function markDone() {
+  await update(ref(db, `rooms/${state.roomCode}/${state.playerId}`), {
+    score: state.score,
+    done: true,
+  });
+  document.getElementById('question-text').textContent = '⏳';
+  document.getElementById('answer-input').disabled = true;
+  document.getElementById('feedback').textContent = 'Waiting for opponent to finish...';
+  document.getElementById('feedback').className = '';
+}
+
+// ── Solo Results ──────────────────────────────────────────────────────────
+function showSoloResults() {
   showScreen('result-screen');
-  updateProgress(state.total);
+  document.getElementById('solo-result').style.display  = 'block';
+  document.getElementById('multi-result').style.display = 'none';
 
-  const correct = state.results.filter(r => r.ok).length;
-  const pct = Math.round(correct / state.total * 100);
-
+  const correct = state.results.filter(r=>r.ok).length;
   document.getElementById('final-score').textContent = `${state.score} pts`;
-  document.getElementById('final-acc').textContent =
-    `${correct} / ${state.total} correct  (${pct}%)`;
+  document.getElementById('final-acc').textContent   =
+    `${correct} / ${state.total} correct  (${Math.round(correct/state.total*100)}%)`;
 
+  buildReviewList();
+}
+
+// ── Multi Results ─────────────────────────────────────────────────────────
+function showMultiResults(room) {
+  if (!document.getElementById('result-screen').classList.contains('active')) {
+    showScreen('result-screen');
+  }
+  document.getElementById('solo-result').style.display  = 'none';
+  document.getElementById('multi-result').style.display = 'block';
+
+  const myScore  = room[state.playerId].score;
+  const oppScore = room[state.opponentId].score;
+  const myName   = state.playerName;
+  const oppName  = state.opponentName;
+
+  let winnerName, trophy;
+  if (myScore > oppScore)       { winnerName = myName;  trophy = '🏆'; }
+  else if (oppScore > myScore)  { winnerName = oppName; trophy = '🏆'; }
+  else                          { winnerName = 'Tie!';  trophy = '🤝'; }
+
+  document.getElementById('result-trophy').textContent      = trophy;
+  document.getElementById('result-winner-name').textContent = winnerName;
+  document.getElementById('result-winner-label').textContent =
+    winnerName === 'Tie!' ? "It's a tie!" : 'wins!';
+
+  const myCard  = document.getElementById('fsc-me');
+  const oppCard = document.getElementById('fsc-them');
+  document.getElementById('fsc-me-name').textContent   = myName;
+  document.getElementById('fsc-me-pts').textContent    = myScore;
+  document.getElementById('fsc-them-name').textContent = oppName;
+  document.getElementById('fsc-them-pts').textContent  = oppScore;
+
+  myCard.classList.toggle('winner',  myScore >= oppScore && myScore !== oppScore);
+  oppCard.classList.toggle('winner', oppScore > myScore);
+
+  buildReviewList();
+  if (roomListener) { roomListener(); roomListener = null; }
+}
+
+function buildReviewList() {
   const list = document.getElementById('review-list');
   list.innerHTML = '';
-
   state.results.forEach(({ q, ans, given, ok }) => {
-    const div  = document.createElement('div');
+    const div = document.createElement('div');
     div.className = `review-item ${ok ? 'ok' : 'bad'}`;
-
     const note = ok ? `= ${ans}` :
       given === 'timeout' ? `= ${ans}  (timeout)` : `= ${ans}  (you: ${given})`;
-
-    div.innerHTML = `
-      <span class="icon">${ok ? '✓' : '✗'}</span>
-      <div><div class="q">${q}</div><div class="note">${note}</div></div>`;
+    div.innerHTML = `<span style="font-size:1rem">${ok?'✓':'✗'}</span>
+      <div><div style="font-weight:700">${q}</div><div class="note">${note}</div></div>`;
     list.appendChild(div);
   });
 }
+
+window.playAgain = function() {
+  showScreen('home-screen');
+};
+
 </script>
 </body>
 </html>
