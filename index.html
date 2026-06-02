@@ -218,6 +218,9 @@
   <!-- HOME -->
   <div id="home-screen" class="screen">
     <div class="logo"><span>🧠</span><h1>Mental Math</h1><p class="sub">Train your brain!</p></div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:-10px">
+      <button id="mute-btn" onclick="toggleMute()" style="background:var(--card);border:2px solid var(--accent);border-radius:999px;color:var(--text);font-size:1.1rem;padding:6px 14px;cursor:pointer;">🔊 Sound</button>
+    </div>
 
     <!-- Profile corner badge -->
     <div class="profile-corner" onclick="editProfile()" title="Tap to edit profile">
@@ -1255,6 +1258,16 @@ window.playAgain=function(){ showScreen('home-screen'); };
 // ── Sound Engine ──────────────────────────────────────────────────────────
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;
+let isMuted = localStorage.getItem('mmg_muted') === 'true';
+
+window.toggleMute = function(){
+  isMuted = !isMuted;
+  localStorage.setItem('mmg_muted', isMuted);
+  const btn = document.getElementById('mute-btn');
+  btn.textContent = isMuted ? '🔇 Muted' : '🔊 Sound';
+  btn.style.borderColor = isMuted ? 'var(--sub)' : 'var(--accent)';
+  btn.style.opacity = isMuted ? '0.5' : '1';
+};
 
 function getAudioCtx(){
   if(!audioCtx) audioCtx = new AudioCtx();
@@ -1263,6 +1276,7 @@ function getAudioCtx(){
 }
 
 function playTone(freq, type='sine', duration=0.15, volume=0.3, startDelay=0){
+  if(isMuted) return;
   try {
     const ctx  = getAudioCtx();
     const osc  = ctx.createOscillator();
@@ -1279,6 +1293,7 @@ function playTone(freq, type='sine', duration=0.15, volume=0.3, startDelay=0){
 }
 
 function playNoise(duration=0.1, volume=0.2, startDelay=0){
+  if(isMuted) return;
   try {
     const ctx        = getAudioCtx();
     const bufferSize = ctx.sampleRate * duration;
@@ -1360,6 +1375,15 @@ const SFX = {
 
 // ── Start (must be last — needs showScreen to be defined) ─────────────────
 loadProfile();
+// Apply saved mute state to button
+(function(){
+  const btn = document.getElementById('mute-btn');
+  if(isMuted){
+    btn.textContent='🔇 Muted';
+    btn.style.borderColor='var(--sub)';
+    btn.style.opacity='0.5';
+  }
+})();
 </script>
 </body>
 </html>
