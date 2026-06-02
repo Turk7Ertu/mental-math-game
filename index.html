@@ -7,201 +7,140 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg:     #1e1e2e;
-      --card:   #2a2a3e;
-      --accent: #7c3aed;
-      --lite:   #a78bfa;
-      --green:  #22c55e;
-      --red:    #ef4444;
-      --yellow: #f59e0b;
-      --blue:   #3b82f6;
-      --text:   #f1f5f9;
-      --sub:    #94a3b8;
+      --bg:     #1e1e2e; --card:   #2a2a3e; --accent: #7c3aed; --lite:   #a78bfa;
+      --green:  #22c55e; --red:    #ef4444; --yellow: #f59e0b; --blue:   #3b82f6;
+      --text:   #f1f5f9; --sub:    #94a3b8;
     }
-    body {
-      background: var(--bg); color: var(--text);
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      min-height: 100vh; display: flex;
-      justify-content: center; align-items: flex-start;
-      padding: 20px 16px 60px;
-    }
-    .app { width: 100%; max-width: 480px; }
-    .screen { display: none; }
-    .screen.active { display: block; }
-    h1 { font-size: 2rem; font-weight: 800; text-align: center; }
-    h2 { font-size: 1rem; font-weight: 600; color: var(--sub); margin-bottom: 8px; }
-    .sub { color: var(--sub); text-align: center; font-size: .9rem; margin-top: 4px; }
-    .btn {
-      display: block; width: 100%; background: var(--accent); color: var(--text);
-      border: none; border-radius: 12px; padding: 13px 28px;
-      font-size: 1rem; font-weight: 700; cursor: pointer;
-      transition: background .15s, transform .1s; margin-top: 10px; text-align: center;
-    }
-    .btn:hover  { background: var(--lite); }
-    .btn:active { transform: scale(.97); }
-    .btn.grey  { background: #374151; } .btn.grey:hover  { background: #4b5563; }
-    .btn.green { background: var(--green); } .btn.green:hover { background: #16a34a; }
-    .btn.blue  { background: var(--blue); } .btn.blue:hover  { background: #2563eb; }
-    .pill-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-    .pill {
-      background: var(--card); color: var(--sub); border: 2px solid transparent;
-      border-radius: 999px; padding: 7px 18px; font-size: .9rem; font-weight: 600;
-      cursor: pointer; transition: all .15s;
-    }
-    .pill.selected { background: var(--accent); color: var(--text); border-color: var(--lite); }
-    input[type="text"], input[type="number"] {
-      width: 100%; background: var(--card); border: 2px solid var(--accent);
-      border-radius: 12px; color: var(--text); font-size: 1.4rem; font-weight: 700;
-      text-align: center; padding: 12px; outline: none; margin-bottom: 10px;
-      transition: border-color .2s;
-    }
-    input:focus { border-color: var(--lite); }
-    input:disabled { opacity: .4; }
+    body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; min-height:100vh; display:flex; justify-content:center; align-items:flex-start; padding:20px 16px 60px; }
+    .app { width:100%; max-width:480px; }
+    .screen { display:none; } .screen.active { display:block; }
+    h1 { font-size:2rem; font-weight:800; text-align:center; }
+    h2 { font-size:1rem; font-weight:600; color:var(--sub); margin-bottom:8px; }
+    .sub { color:var(--sub); text-align:center; font-size:.9rem; margin-top:4px; }
+    .btn { display:block; width:100%; background:var(--accent); color:var(--text); border:none; border-radius:12px; padding:13px 28px; font-size:1rem; font-weight:700; cursor:pointer; transition:background .15s,transform .1s; margin-top:10px; text-align:center; }
+    .btn:hover { background:var(--lite); } .btn:active { transform:scale(.97); }
+    .btn.grey  { background:#374151; } .btn.grey:hover  { background:#4b5563; }
+    .btn.green { background:var(--green); } .btn.green:hover { background:#16a34a; }
+    .btn.blue  { background:var(--blue); } .btn.blue:hover  { background:#2563eb; }
+    .pill-group { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
+    .pill { background:var(--card); color:var(--sub); border:2px solid transparent; border-radius:999px; padding:7px 18px; font-size:.9rem; font-weight:600; cursor:pointer; transition:all .15s; }
+    .pill.selected { background:var(--accent); color:var(--text); border-color:var(--lite); }
+    input[type="text"],input[type="number"] { width:100%; background:var(--card); border:2px solid var(--accent); border-radius:12px; color:var(--text); font-size:1.4rem; font-weight:700; text-align:center; padding:12px; outline:none; margin-bottom:10px; transition:border-color .2s; }
+    input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 
     /* Home */
-    #home-screen .logo { text-align: center; padding: 30px 0 28px; }
-    #home-screen .logo span { font-size: 3rem; }
-    .mode-card {
-      background: var(--card); border-radius: 16px; padding: 20px; margin-bottom: 12px;
-      cursor: pointer; border: 2px solid transparent; transition: border-color .2s;
-    }
-    .mode-card:hover { border-color: var(--accent); }
-    .mode-card h3 { font-size: 1.1rem; margin-bottom: 4px; }
-    .mode-card p  { color: var(--sub); font-size: .88rem; }
-    .mode-card .icon { font-size: 1.6rem; margin-bottom: 8px; }
+    #home-screen .logo { text-align:center; padding:30px 0 28px; }
+    #home-screen .logo span { font-size:3rem; }
+    .mode-card { background:var(--card); border-radius:16px; padding:20px; margin-bottom:12px; cursor:pointer; border:2px solid transparent; transition:border-color .2s; }
+    .mode-card:hover { border-color:var(--accent); }
+    .mode-card h3 { font-size:1.1rem; margin-bottom:4px; }
+    .mode-card p  { color:var(--sub); font-size:.88rem; }
+    .mode-card .icon { font-size:1.6rem; margin-bottom:8px; }
 
     /* Menu */
-    #menu-screen .back { color: var(--sub); font-size:.9rem; cursor:pointer; margin-bottom:16px; display:inline-block; }
-    #menu-screen .back:hover { color: var(--text); }
+    #menu-screen .back { color:var(--sub); font-size:.9rem; cursor:pointer; margin-bottom:16px; display:inline-block; }
+    #menu-screen .back:hover { color:var(--text); }
 
     /* Lobby */
-    .room-code-display { background: var(--card); border-radius: 16px; text-align: center; padding: 28px; margin: 16px 0; }
-    .room-code-display .label { color: var(--sub); font-size: .9rem; margin-bottom: 8px; }
-    .room-code-display .code { font-size: 3rem; font-weight: 900; color: var(--lite); letter-spacing: 8px; }
-    .players-list { margin: 16px 0; }
-    .player-row { background: var(--card); border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; font-weight: 600; }
-    .player-row .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
-    .waiting-msg { text-align: center; color: var(--sub); font-size: .9rem; margin: 12px 0; }
+    .room-code-display { background:var(--card); border-radius:16px; text-align:center; padding:28px; margin:16px 0; }
+    .room-code-display .label { color:var(--sub); font-size:.9rem; margin-bottom:8px; }
+    .room-code-display .code { font-size:3rem; font-weight:900; color:var(--lite); letter-spacing:8px; }
+    .players-list { margin:16px 0; }
+    .player-row { background:var(--card); border-radius:10px; padding:12px 16px; margin-bottom:8px; display:flex; align-items:center; gap:10px; font-weight:600; }
+    .player-row .dot { width:10px; height:10px; border-radius:50%; background:var(--green); flex-shrink:0; }
+    .waiting-msg { text-align:center; color:var(--sub); font-size:.9rem; margin:12px 0; }
 
     /* Game */
-    #progress-bar-wrap { width: 100%; height: 6px; background: var(--card); border-radius: 3px; margin-bottom: 16px; overflow: hidden; }
-    #progress-bar { height: 100%; background: var(--accent); border-radius: 3px; transition: width .3s; width: 0%; }
-    .game-top { display: flex; justify-content: space-between; font-size: .9rem; color: var(--sub); margin-bottom: 12px; }
-    #score-display { color: var(--lite); font-weight: 700; }
+    #progress-bar-wrap { width:100%; height:6px; background:var(--card); border-radius:3px; margin-bottom:16px; overflow:hidden; }
+    #progress-bar { height:100%; background:var(--accent); border-radius:3px; transition:width .3s; width:0%; }
+    .game-top { display:flex; justify-content:space-between; font-size:.9rem; color:var(--sub); margin-bottom:12px; }
+    #score-display { color:var(--lite); font-weight:700; }
 
     /* Scoreboard */
-    .scoreboard { display: flex; gap: 8px; margin-bottom: 14px; }
-    .score-card { flex: 1; background: var(--card); border-radius: 12px; padding: 10px 14px; text-align: center; border: 2px solid transparent; }
-    .score-card.me   { border-color: var(--accent); }
-    .score-card.them { border-color: #374151; }
-    .score-card .name { font-size: .8rem; color: var(--sub); margin-bottom: 2px; }
-    .score-card .pts  { font-size: 1.4rem; font-weight: 800; }
-    .score-card.leading .pts { color: var(--green); }
-    .score-card .status { font-size: .75rem; font-weight: 700; min-height: 16px; margin-top: 4px; }
-    .status-correct { color: var(--green); }
-    .status-wrong   { color: var(--red); }
+    .scoreboard { display:flex; gap:8px; margin-bottom:10px; }
+    .score-card { flex:1; background:var(--card); border-radius:12px; padding:10px 14px; text-align:center; border:2px solid transparent; }
+    .score-card.me   { border-color:var(--accent); }
+    .score-card.them { border-color:#374151; }
+    .score-card .name { font-size:.8rem; color:var(--sub); margin-bottom:2px; }
+    .score-card .pts  { font-size:1.4rem; font-weight:800; }
+    .score-card.leading .pts { color:var(--green); }
+    .score-card .status { font-size:.75rem; font-weight:700; min-height:16px; margin-top:4px; }
+    .status-correct { color:var(--green); } .status-wrong { color:var(--red); }
 
-    /* Power-up badge */
-    .powerup-badge {
-      text-align: center; font-size: .8rem; color: var(--yellow);
-      font-weight: 700; min-height: 18px; margin-bottom: 6px;
-    }
+    /* Streak badge */
+    .powerup-badge { text-align:center; font-size:.8rem; color:var(--yellow); font-weight:700; min-height:18px; margin-bottom:6px; }
 
     /* Timer */
-    .timer-wrap { display: flex; justify-content: center; margin-bottom: 14px; }
-    #timer-svg { width: 72px; height: 72px; }
-    #timer-bg  { fill: none; stroke: var(--card); stroke-width: 8; }
-    #timer-fg  { fill: none; stroke: var(--green); stroke-width: 8; stroke-linecap: round; transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset .9s linear, stroke .3s; }
-    #timer-text { font-size: 1.2rem; font-weight: 800; fill: var(--text); dominant-baseline: middle; text-anchor: middle; }
+    .timer-wrap { display:flex; justify-content:center; margin-bottom:14px; }
+    #timer-svg { width:72px; height:72px; }
+    #timer-bg  { fill:none; stroke:var(--card); stroke-width:8; }
+    #timer-fg  { fill:none; stroke:var(--green); stroke-width:8; stroke-linecap:round; transform:rotate(-90deg); transform-origin:50% 50%; transition:stroke-dashoffset .9s linear,stroke .3s; }
+    #timer-text { font-size:1.2rem; font-weight:800; fill:var(--text); dominant-baseline:middle; text-anchor:middle; }
 
-    .q-card { background: var(--card); border-radius: 16px; text-align: center; padding: 28px 20px; margin-bottom: 14px; }
-    #question-text { font-size: 2.6rem; font-weight: 800; letter-spacing: 2px; }
-    #answer-input { font-size: 1.8rem; }
-    #feedback { text-align: center; font-size: 1rem; font-weight: 600; min-height: 24px; margin-bottom: 10px; }
-    .fb-correct { color: var(--green); }
-    .fb-wrong   { color: var(--red); }
-    .fb-timeout { color: var(--yellow); }
+    .q-card { background:var(--card); border-radius:16px; text-align:center; padding:28px 20px; margin-bottom:14px; }
+    #question-text { font-size:2.6rem; font-weight:800; letter-spacing:2px; }
+    #answer-input  { font-size:1.8rem; }
+    #feedback { text-align:center; font-size:1rem; font-weight:600; min-height:24px; margin-bottom:10px; }
+    .fb-correct { color:var(--green); } .fb-wrong { color:var(--red); } .fb-timeout { color:var(--yellow); }
 
-    /* Power-up popup overlay */
-    .popup-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,.7);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 100; padding: 20px;
-    }
-    .popup-overlay.hidden { display: none; }
-    .popup-box {
-      background: var(--card); border-radius: 20px;
-      padding: 28px 24px; width: 100%; max-width: 400px; text-align: center;
-      border: 2px solid var(--accent);
-    }
-    .popup-box h2 { color: var(--yellow); font-size: 1.3rem; margin-bottom: 6px; }
-    .popup-box p  { color: var(--sub); font-size: .9rem; margin-bottom: 20px; }
-    .powerup-options { display: flex; gap: 12px; }
-    .powerup-btn {
-      flex: 1; background: var(--bg); border: 2px solid var(--accent);
-      border-radius: 14px; padding: 16px 10px; cursor: pointer;
-      color: var(--text); transition: background .15s, transform .1s;
-    }
-    .powerup-btn:hover { background: var(--accent); transform: scale(1.03); }
-    .powerup-btn .pu-icon { font-size: 2rem; margin-bottom: 8px; }
-    .powerup-btn .pu-name { font-weight: 800; font-size: 1rem; margin-bottom: 4px; }
-    .powerup-btn .pu-desc { font-size: .78rem; color: var(--sub); }
+    /* Power-up popup */
+    .popup-overlay { position:fixed; inset:0; background:rgba(0,0,0,.75); display:flex; align-items:center; justify-content:center; z-index:100; padding:20px; }
+    .popup-overlay.hidden { display:none; }
+    .popup-box { background:var(--card); border-radius:20px; padding:28px 24px; width:100%; max-width:400px; text-align:center; border:2px solid var(--accent); }
+    .popup-box h2 { color:var(--yellow); font-size:1.3rem; margin-bottom:6px; }
+    .popup-box p  { color:var(--sub); font-size:.9rem; margin-bottom:20px; }
+    .powerup-options { display:flex; gap:12px; }
+    .powerup-btn { flex:1; background:var(--bg); border:2px solid var(--accent); border-radius:14px; padding:16px 10px; cursor:pointer; color:var(--text); transition:background .15s,transform .1s; }
+    .powerup-btn:hover { background:var(--accent); transform:scale(1.03); }
+    .powerup-btn .pu-icon { font-size:2rem; margin-bottom:8px; }
+    .powerup-btn .pu-name { font-weight:800; font-size:1rem; margin-bottom:4px; }
+    .powerup-btn .pu-desc { font-size:.78rem; color:var(--sub); }
+
+    /* Opponent choosing popup */
+    .opp-choosing-overlay { position:fixed; inset:0; background:rgba(0,0,0,.7); display:flex; align-items:center; justify-content:center; z-index:98; padding:20px; }
+    .opp-choosing-overlay.hidden { display:none; }
+    .opp-choosing-box { background:var(--card); border-radius:20px; padding:32px 24px; text-align:center; border:2px solid var(--yellow); max-width:360px; width:100%; }
+    .opp-choosing-box .icon { font-size:2.5rem; margin-bottom:12px; }
+    .opp-choosing-box h2 { color:var(--yellow); font-size:1.2rem; margin-bottom:6px; }
+    .opp-choosing-box p  { color:var(--sub); font-size:.9rem; }
 
     /* Freeze overlay */
-    .freeze-overlay {
-      position: fixed; inset: 0; background: rgba(59,130,246,.25);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 90; pointer-events: none;
-    }
-    .freeze-overlay.hidden { display: none; }
-    .freeze-box {
-      background: rgba(30,30,46,.95); border: 3px solid var(--blue);
-      border-radius: 20px; padding: 28px 32px; text-align: center;
-    }
-    .freeze-box .freeze-icon { font-size: 3rem; }
-    .freeze-box h2 { color: var(--blue); font-size: 1.3rem; margin: 8px 0 4px; }
-    .freeze-box .freeze-count { font-size: 3rem; font-weight: 900; color: var(--blue); }
+    .freeze-overlay { position:fixed; inset:0; background:rgba(59,130,246,.2); display:flex; align-items:center; justify-content:center; z-index:90; }
+    .freeze-overlay.hidden { display:none; }
+    .freeze-box { background:rgba(30,30,46,.96); border:3px solid var(--blue); border-radius:20px; padding:28px 32px; text-align:center; }
+    .freeze-box .freeze-icon { font-size:3rem; }
+    .freeze-box h2 { color:var(--blue); font-size:1.3rem; margin:8px 0 4px; }
+    .freeze-box .freeze-count { font-size:3rem; font-weight:900; color:var(--blue); }
 
-    /* Double points notification */
-    .double-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,.8);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 95; padding: 20px;
-    }
-    .double-overlay.hidden { display: none; }
-    .double-box {
-      background: var(--card); border-radius: 20px;
-      padding: 32px 24px; text-align: center;
-      border: 3px solid var(--yellow); max-width: 380px; width: 100%;
-    }
-    .double-box .d-icon { font-size: 3rem; margin-bottom: 12px; }
-    .double-box h2 { color: var(--yellow); font-size: 1.3rem; margin-bottom: 8px; }
-    .double-box p  { color: var(--sub); font-size: .9rem; }
+    /* Double points */
+    .double-overlay { position:fixed; inset:0; background:rgba(0,0,0,.8); display:flex; align-items:center; justify-content:center; z-index:95; padding:20px; }
+    .double-overlay.hidden { display:none; }
+    .double-box { background:var(--card); border-radius:20px; padding:32px 24px; text-align:center; border:3px solid var(--yellow); max-width:380px; width:100%; }
+    .double-box .d-icon { font-size:3rem; margin-bottom:12px; }
+    .double-box h2 { color:var(--yellow); font-size:1.3rem; margin-bottom:8px; }
+    .double-box p  { color:var(--sub); font-size:.9rem; }
 
     /* Results */
-    #result-screen { text-align: center; padding-top: 24px; }
-    .winner-banner { background: var(--card); border-radius: 16px; padding: 24px; margin: 16px 0; }
-    .winner-banner .trophy { font-size: 3rem; }
-    .winner-banner .winner-name { font-size: 2rem; font-weight: 900; color: var(--lite); }
-    .winner-banner h2 { font-size: 1.4rem; color: var(--text); margin: 8px 0 4px; }
-    .final-scores { display: flex; gap: 10px; margin: 16px 0; }
-    .final-score-card { flex: 1; background: var(--card); border-radius: 12px; padding: 14px; text-align: center; }
-    .final-score-card .name { color: var(--sub); font-size: .85rem; margin-bottom: 6px; }
-    .final-score-card .pts  { font-size: 1.8rem; font-weight: 800; }
-    .final-score-card.winner { border: 2px solid var(--green); }
-    .final-score-card.winner .pts { color: var(--green); }
-    .review-list { text-align: left; margin-bottom: 16px; }
-    .review-item { background: var(--card); border-radius: 10px; padding: 10px 14px; margin-bottom: 6px; font-size: .9rem; display: flex; align-items: center; gap: 10px; }
-    .review-item.ok  { border-left: 4px solid var(--green); }
-    .review-item.bad { border-left: 4px solid var(--red); }
-    .review-item .note { color: var(--sub); font-size: .82rem; }
-    .btn-row { display: flex; gap: 10px; }
-    .btn-row .btn { flex: 1; margin-top: 0; }
+    #result-screen { text-align:center; padding-top:24px; }
+    .winner-banner { background:var(--card); border-radius:16px; padding:24px; margin:16px 0; }
+    .winner-banner .trophy { font-size:3rem; }
+    .winner-banner .winner-name { font-size:2rem; font-weight:900; color:var(--lite); }
+    .winner-banner h2 { font-size:1.4rem; color:var(--text); margin:8px 0 4px; }
+    .final-scores { display:flex; gap:10px; margin:16px 0; }
+    .final-score-card { flex:1; background:var(--card); border-radius:12px; padding:14px; text-align:center; }
+    .final-score-card .name { color:var(--sub); font-size:.85rem; margin-bottom:6px; }
+    .final-score-card .pts  { font-size:1.8rem; font-weight:800; }
+    .final-score-card.winner { border:2px solid var(--green); }
+    .final-score-card.winner .pts { color:var(--green); }
+    .review-list { text-align:left; margin-bottom:16px; }
+    .review-item { background:var(--card); border-radius:10px; padding:10px 14px; margin-bottom:6px; font-size:.9rem; display:flex; align-items:center; gap:10px; }
+    .review-item.ok  { border-left:4px solid var(--green); }
+    .review-item.bad { border-left:4px solid var(--red); }
+    .review-item .note { color:var(--sub); font-size:.82rem; }
+    .btn-row { display:flex; gap:10px; }
+    .btn-row .btn { flex:1; margin-top:0; }
 
-    @media (max-width: 400px) {
-      #question-text { font-size: 2rem; }
-      .pill { padding: 6px 12px; font-size: .82rem; }
-    }
+    @media (max-width:400px) { #question-text { font-size:2rem; } .pill { padding:6px 12px; font-size:.82rem; } }
   </style>
 </head>
 <body>
@@ -286,8 +225,6 @@
       <span id="q-counter">Question 1 / 10</span>
       <span id="score-display">Score: 0</span>
     </div>
-
-    <!-- Scoreboard -->
     <div class="scoreboard" id="scoreboard" style="display:none">
       <div class="score-card me" id="sc-me">
         <div class="name" id="sc-me-name">You</div>
@@ -301,10 +238,7 @@
         <div class="status" id="sc-them-status"></div>
       </div>
     </div>
-
-    <!-- Power-up streak badge -->
     <div class="powerup-badge" id="powerup-badge"></div>
-
     <div class="timer-wrap">
       <svg id="timer-svg" viewBox="0 0 80 80">
         <circle id="timer-bg" cx="40" cy="40" r="34"/>
@@ -343,14 +277,13 @@
       <button class="btn grey" onclick="playAgain()">Play Again</button>
     </div>
   </div>
-
 </div>
 
-<!-- Power-up popup -->
+<!-- Power-up popup (my screen) -->
 <div class="popup-overlay hidden" id="powerup-popup">
   <div class="popup-box">
     <h2>⚡ Power-Up Unlocked!</h2>
-    <p>You answered 4 in a row faster than your opponent!<br>Choose your power-up:</p>
+    <p>You answered 3 in a row correctly & faster!<br>Choose your power-up:</p>
     <div class="powerup-options">
       <div class="powerup-btn" onclick="usePowerUp('freeze')">
         <div class="pu-icon">❄️</div>
@@ -360,13 +293,22 @@
       <div class="powerup-btn" onclick="usePowerUp('blast')">
         <div class="pu-icon">💥</div>
         <div class="pu-name">Blast</div>
-        <div class="pu-desc">Remove 5 points from opponent</div>
+        <div class="pu-desc">Remove 10 points from opponent</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Freeze overlay (shown on frozen player's screen) -->
+<!-- Opponent is choosing (shown on opponent's screen while I pick) -->
+<div class="opp-choosing-overlay hidden" id="opp-choosing-overlay">
+  <div class="opp-choosing-box">
+    <div class="icon">⚡</div>
+    <h2>Opponent earned a Power-Up!</h2>
+    <p>Waiting for opponent to choose...<br>Your game is paused.</p>
+  </div>
+</div>
+
+<!-- Freeze overlay -->
 <div class="freeze-overlay hidden" id="freeze-overlay">
   <div class="freeze-box">
     <div class="freeze-icon">❄️</div>
@@ -410,462 +352,499 @@ const DIFFICULTIES = {
 const CIRCUMFERENCE = 213.6;
 
 let state = {
-  mode: 'solo',
-  roomCode: null,
-  playerId: null,
-  opponentId: null,
-  playerName: '',
-  opponentName: '',
-  op: 'Addition', diff: 'Easy', total: 10, timeLimit: 15,
-  current: 0, score: 0, oppScore: 0,
-  results: [], question: '', answer: 0, startTime: 0,
-  // Power-up tracking
-  streak: 0,           // consecutive correct answers faster than opponent
-  powerupsUsed: 0,     // max 2
-  powerupReady: false, // popup waiting to show
-  lastAnswerTime: 0,   // my answer timestamp for this question
-  allCorrect: true,    // track perfect game for double pts
-  isLastQuestion: false,
-  isFrozen: false,
-  freezeInterval: null,
+  mode:'solo', roomCode:null, playerId:null, opponentId:null,
+  playerName:'', opponentName:'',
+  op:'Addition', diff:'Easy', total:10, timeLimit:15,
+  current:0, score:0, oppScore:0,
+  results:[], question:'', answer:0, startTime:0,
+  streak:0, powerupsUsed:0, allCorrect:true,
+  isLastQuestion:false, isFrozen:false,
+  gameFinished:false,   // true when I submitted my last answer
 };
-let timerInterval = null;
-let roomListener  = null;
+let timerInterval   = null;
+let roomListener    = null;
+let freezeTickTimer = null;
+// track last opp answerTime per question to compare speeds
+let lastOppAnswerTime = 0;
+let lastSeenPowerupChoosingBy = '';
+let lastSeenPowerupAction     = '';
 
 // ── Helpers ───────────────────────────────────────────────────────────────
-function randInt(min, max) { return Math.floor(Math.random()*(max-min+1))+min; }
-
-function generateQuestions(op, rangeA, rangeB, total) {
-  const qs = [];
-  for (let i = 0; i < total; i++) {
-    let o = op==='Mixed' ? ['Addition','Subtraction','Multiplication','Division'][randInt(0,3)] : op;
-    let a = randInt(...rangeA), b = randInt(...rangeB), q, ans;
-    if (o==='Addition')          { q=`${a} + ${b}`;  ans=a+b; }
-    else if(o==='Subtraction')   { [a,b]=[Math.max(a,b),Math.min(a,b)]; q=`${a} − ${b}`; ans=a-b; }
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function generateQuestions(op,rangeA,rangeB,total){
+  const qs=[];
+  for(let i=0;i<total;i++){
+    let o=op==='Mixed'?['Addition','Subtraction','Multiplication','Division'][randInt(0,3)]:op;
+    let a=randInt(...rangeA),b=randInt(...rangeB),q,ans;
+    if(o==='Addition')         { q=`${a} + ${b}`;  ans=a+b; }
+    else if(o==='Subtraction') { [a,b]=[Math.max(a,b),Math.min(a,b)]; q=`${a} − ${b}`; ans=a-b; }
     else if(o==='Multiplication'){ q=`${a} × ${b}`; ans=a*b; }
     else { b=randInt(1,Math.min(rangeB[1],12)); a=b*randInt(1,Math.max(1,Math.floor(rangeA[1]/b))); q=`${a} ÷ ${b}`; ans=a/b; }
     qs.push({q,ans});
   }
   return qs;
 }
-
-function makeRoomCode() { return String(randInt(1000,9999)); }
+function makeRoomCode(){ return String(randInt(1000,9999)); }
 
 // ── Screens ───────────────────────────────────────────────────────────────
-window.showScreen = function(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+window.showScreen = function(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
 };
-window.goToMenu = function(mode) {
-  state.mode = mode;
-  document.getElementById('menu-title').textContent = mode==='solo' ? 'Solo Practice' : 'Challenge a Friend';
+window.goToMenu = function(mode){
+  state.mode=mode;
+  document.getElementById('menu-title').textContent=mode==='solo'?'Solo Practice':'Challenge a Friend';
   showScreen('menu-screen');
 };
-
-// Pills
-document.querySelectorAll('.pill-group').forEach(group => {
-  group.querySelectorAll('.pill').forEach(pill => {
-    pill.addEventListener('click', () => {
-      group.querySelectorAll('.pill').forEach(p => p.classList.remove('selected'));
+document.querySelectorAll('.pill-group').forEach(group=>{
+  group.querySelectorAll('.pill').forEach(pill=>{
+    pill.addEventListener('click',()=>{
+      group.querySelectorAll('.pill').forEach(p=>p.classList.remove('selected'));
       pill.classList.add('selected');
     });
   });
 });
-function getSelected(id) { return document.querySelector(`#${id} .pill.selected`)?.dataset.val; }
+function getSelected(id){ return document.querySelector(`#${id} .pill.selected`)?.dataset.val; }
 
 // ── Menu start ────────────────────────────────────────────────────────────
-window.handleMenuStart = function() {
-  const name = document.getElementById('player-name-input').value.trim() || 'Player';
-  state.playerName = name;
-  state.op        = getSelected('op-group');
-  state.diff      = getSelected('diff-group');
-  state.total     = parseInt(getSelected('q-group'));
-  state.timeLimit = parseInt(getSelected('time-group'));
-  state.mode === 'solo' ? startSoloGame() : createRoom();
+window.handleMenuStart = function(){
+  const name=document.getElementById('player-name-input').value.trim()||'Player';
+  state.playerName=name; state.op=getSelected('op-group'); state.diff=getSelected('diff-group');
+  state.total=parseInt(getSelected('q-group')); state.timeLimit=parseInt(getSelected('time-group'));
+  state.mode==='solo'?startSoloGame():createRoom();
 };
 
 // ── Solo ──────────────────────────────────────────────────────────────────
-function startSoloGame() {
-  const {a,b} = DIFFICULTIES[state.diff];
-  state.questions = generateQuestions(state.op, a, b, state.total);
-  state.current=0; state.score=0; state.results=[];
-  state.streak=0; state.powerupsUsed=0; state.allCorrect=true;
-  document.getElementById('scoreboard').style.display = 'none';
-  document.getElementById('powerup-badge').textContent = '';
+function startSoloGame(){
+  const{a,b}=DIFFICULTIES[state.diff];
+  state.questions=generateQuestions(state.op,a,b,state.total);
+  state.current=0; state.score=0; state.results=[]; state.allCorrect=true; state.gameFinished=false;
+  document.getElementById('scoreboard').style.display='none';
+  document.getElementById('powerup-badge').textContent='';
   showScreen('game-screen');
   nextQuestion();
 }
 
-// ── Multiplayer host ──────────────────────────────────────────────────────
-async function createRoom() {
-  const code = makeRoomCode();
+// ── Host ──────────────────────────────────────────────────────────────────
+async function createRoom(){
+  const code=makeRoomCode();
   state.roomCode=code; state.playerId='p1'; state.opponentId='p2';
-  const {a,b} = DIFFICULTIES[state.diff];
-  const questions = generateQuestions(state.op, a, b, state.total);
-  await set(ref(db,`rooms/${code}`), {
-    host: state.playerName, guest: '', status: 'waiting',
-    settings: { op:state.op, diff:state.diff, total:state.total, timeLimit:state.timeLimit },
+  const{a,b}=DIFFICULTIES[state.diff];
+  const questions=generateQuestions(state.op,a,b,state.total);
+  await set(ref(db,`rooms/${code}`),{
+    host:state.playerName, guest:'', status:'waiting',
+    settings:{op:state.op,diff:state.diff,total:state.total,timeLimit:state.timeLimit},
     questions,
-    p1: { name:state.playerName, score:0, done:false, answerStatus:'', answerTime:0, powerup:'' },
-    p2: { name:'',               score:0, done:false, answerStatus:'', answerTime:0, powerup:'' },
+    p1:{name:state.playerName,score:0,done:false,answerStatus:'',answerTime:0,powerupChoosing:false,powerupAction:'',powerupsUsed:0},
+    p2:{name:'',              score:0,done:false,answerStatus:'',answerTime:0,powerupChoosing:false,powerupAction:'',powerupsUsed:0},
   });
-  document.getElementById('lobby-code').textContent = code;
+  document.getElementById('lobby-code').textContent=code;
   showScreen('lobby-screen');
   listenToRoom(code);
 }
-
-window.startMultiGame = async function() {
-  await update(ref(db,`rooms/${state.roomCode}`), { status:'playing' });
+window.startMultiGame=async function(){
+  await update(ref(db,`rooms/${state.roomCode}`),{status:'playing'});
 };
-
-window.leaveRoom = async function() {
-  if (state.roomCode) {
-    if (state.playerId==='p1') { await remove(ref(db,`rooms/${state.roomCode}`)); }
-    else { await update(ref(db,`rooms/${state.roomCode}`), { guest:'', status:'waiting', 'p2/name':'', 'p2/score':0, 'p2/done':false }); }
-    state.roomCode = null;
+window.leaveRoom=async function(){
+  if(state.roomCode){
+    if(state.playerId==='p1'){ await remove(ref(db,`rooms/${state.roomCode}`)); }
+    else{ await update(ref(db,`rooms/${state.roomCode}`),{guest:'',status:'waiting','p2/name':'','p2/score':0,'p2/done':false}); }
+    state.roomCode=null;
   }
-  if (roomListener) { roomListener(); roomListener=null; }
+  if(roomListener){roomListener();roomListener=null;}
   showScreen('home-screen');
 };
 
-// ── Multiplayer join ──────────────────────────────────────────────────────
-window.joinRoom = async function() {
-  const name = document.getElementById('join-name-input').value.trim() || 'Player 2';
-  const code = document.getElementById('join-code-input').value.trim();
-  const errEl = document.getElementById('join-error');
-  errEl.textContent = '';
-  if (code.length!==4)          { errEl.textContent='Enter a 4-digit code'; return; }
-  const snap = await get(ref(db,`rooms/${code}`));
-  if (!snap.exists())           { errEl.textContent='Room not found'; return; }
-  const room = snap.val();
-  if (room.status!=='waiting')  { errEl.textContent='Game already started'; return; }
-  if (room.guest)               { errEl.textContent='Room is full'; return; }
+// ── Join ──────────────────────────────────────────────────────────────────
+window.joinRoom=async function(){
+  const name=document.getElementById('join-name-input').value.trim()||'Player 2';
+  const code=document.getElementById('join-code-input').value.trim();
+  const errEl=document.getElementById('join-error'); errEl.textContent='';
+  if(code.length!==4){errEl.textContent='Enter a 4-digit code';return;}
+  const snap=await get(ref(db,`rooms/${code}`));
+  if(!snap.exists()){errEl.textContent='Room not found';return;}
+  const room=snap.val();
+  if(room.status!=='waiting'){errEl.textContent='Game already started';return;}
+  if(room.guest){errEl.textContent='Room is full';return;}
   state.roomCode=code; state.playerId='p2'; state.opponentId='p1';
   state.playerName=name; state.opponentName=room.host; state.mode='multi';
-  const s=room.settings;
-  state.op=s.op; state.diff=s.diff; state.total=s.total; state.timeLimit=s.timeLimit;
-  await update(ref(db,`rooms/${code}`), { guest:name, 'p2/name':name });
-  document.getElementById('lobby-code').textContent = code;
+  const s=room.settings; state.op=s.op; state.diff=s.diff; state.total=s.total; state.timeLimit=s.timeLimit;
+  await update(ref(db,`rooms/${code}`),{guest:name,'p2/name':name});
+  document.getElementById('lobby-code').textContent=code;
   showScreen('lobby-screen');
   listenToRoom(code);
 };
 
 // ── Room listener ─────────────────────────────────────────────────────────
-function listenToRoom(code) {
-  if (roomListener) roomListener();
-  roomListener = onValue(ref(db,`rooms/${code}`), snap => {
-    if (!snap.exists()) { showScreen('home-screen'); return; }
-    const room = snap.val();
+function listenToRoom(code){
+  if(roomListener)roomListener();
+  roomListener=onValue(ref(db,`rooms/${code}`),snap=>{
+    if(!snap.exists()){showScreen('home-screen');return;}
+    const room=snap.val();
 
-    if (document.getElementById('lobby-screen').classList.contains('active')) updateLobbyUI(room);
+    if(document.getElementById('lobby-screen').classList.contains('active')) updateLobbyUI(room);
 
     // Start game
-    if (room.status==='playing' && document.getElementById('lobby-screen').classList.contains('active')) {
-      state.questions=room.questions; state.current=0; state.score=0; state.oppScore=0; state.results=[];
-      state.streak=0; state.powerupsUsed=0; state.allCorrect=true; state.powerupReady=false;
-      state.opponentName = state.playerId==='p1' ? room.guest : room.host;
-      document.getElementById('sc-me-name').textContent   = state.playerName;
-      document.getElementById('sc-them-name').textContent = state.opponentName;
-      document.getElementById('scoreboard').style.display = 'flex';
-      document.getElementById('powerup-badge').textContent = '';
+    if(room.status==='playing'&&document.getElementById('lobby-screen').classList.contains('active')){
+      state.questions=room.questions; state.current=0; state.score=0; state.oppScore=0;
+      state.results=[]; state.streak=0; state.powerupsUsed=0; state.allCorrect=true;
+      state.gameFinished=false; lastOppAnswerTime=0; lastSeenPowerupChoosingBy=''; lastSeenPowerupAction='';
+      state.opponentName=state.playerId==='p1'?room.guest:room.host;
+      document.getElementById('sc-me-name').textContent=state.playerName;
+      document.getElementById('sc-them-name').textContent=state.opponentName;
+      document.getElementById('scoreboard').style.display='flex';
+      document.getElementById('powerup-badge').textContent='';
       showScreen('game-screen');
       nextQuestion();
     }
 
-    if (room.status==='playing') {
-      const oppData = room[state.opponentId];
-      const meData  = room[state.playerId];
-      if (oppData?.name) state.opponentName = oppData.name;
+    if(room.status==='playing'){
+      const oppData=room[state.opponentId];
+      const meData =room[state.playerId];
+      if(oppData?.name) state.opponentName=oppData.name;
 
-      // Live score + status update
-      if (oppData && document.getElementById('game-screen').classList.contains('active')) {
-        state.oppScore = oppData.score || 0;
-        updateScoreboard(oppData.answerStatus || '');
+      const onGameScreen=document.getElementById('game-screen').classList.contains('active');
 
-        // Check power-up used on me
-        if (oppData.powerup) {
-          handleIncomingPowerup(oppData.powerup, room);
+      // ── Opponent choosing power-up → pause my game ──
+      if(oppData?.powerupChoosing && oppData.powerupChoosing!==lastSeenPowerupChoosingBy){
+        lastSeenPowerupChoosingBy=oppData.powerupChoosing;
+        if(onGameScreen && !state.gameFinished){
+          pauseForOpponentChoosing();
+        }
+      }
+      // Opponent finished choosing → resume my game
+      if(!oppData?.powerupChoosing && lastSeenPowerupChoosingBy){
+        lastSeenPowerupChoosingBy='';
+        resumeAfterOpponentChose();
+      }
+
+      // ── Opponent used a power-up on me ──
+      const oppAction=oppData?.powerupAction||'';
+      if(oppAction && oppAction!==lastSeenPowerupAction){
+        lastSeenPowerupAction=oppAction;
+        if(onGameScreen && !state.gameFinished){
+          if(oppAction==='freeze') applyFreeze();
+          else if(oppAction==='blast') applyBlast();
+        }
+        // Clear after 1.5s
+        setTimeout(()=>{ lastSeenPowerupAction=''; },1500);
+      }
+
+      // ── Live scores & answer status ──
+      if(oppData && onGameScreen){
+        state.oppScore=oppData.score||0;
+        updateScoreboardUI(oppData.answerStatus||'');
+        // Track opp answer time for streak comparison
+        if(oppData.answerTime && oppData.answerTime!==lastOppAnswerTime){
+          lastOppAnswerTime=oppData.answerTime;
         }
       }
 
-      // Both done
-      const opp = room[state.opponentId];
-      if (meData?.done && opp?.done && !document.getElementById('result-screen').classList.contains('active')) {
-        state.oppScore = opp.score || 0;
-        state.opponentName = opp.name || state.opponentName || 'Opponent';
+      // ── Both done ──
+      if(meData?.done && oppData?.done && !document.getElementById('result-screen').classList.contains('active')){
+        state.oppScore=oppData.score||0;
+        state.opponentName=oppData.name||state.opponentName||'Opponent';
         showMultiResults(room);
       }
     }
   });
 }
 
-function updateLobbyUI(room) {
-  const list = document.getElementById('players-list');
-  list.innerHTML = '';
-  [['p1',room.host||''],['p2',room.guest||'']].forEach(([id,name]) => {
-    if (!name) return;
-    const row = document.createElement('div');
-    row.className = 'player-row';
-    const isMe = id===state.playerId;
-    row.innerHTML = `<span class="dot"></span><span>${name}${isMe?' <span style="color:var(--sub);font-size:.8rem">(you)</span>':''}</span>`;
+function updateLobbyUI(room){
+  const list=document.getElementById('players-list'); list.innerHTML='';
+  [['p1',room.host||''],['p2',room.guest||'']].forEach(([id,name])=>{
+    if(!name)return;
+    const row=document.createElement('div'); row.className='player-row';
+    const isMe=id===state.playerId;
+    row.innerHTML=`<span class="dot"></span><span>${name}${isMe?' <span style="color:var(--sub);font-size:.8rem">(you)</span>':''}</span>`;
     list.appendChild(row);
   });
-  const hasGuest = !!room.guest;
-  document.getElementById('waiting-msg').style.display = hasGuest ? 'none' : 'block';
-  document.getElementById('start-match-btn').style.display = (state.playerId==='p1' && hasGuest) ? 'block' : 'none';
+  const hasGuest=!!room.guest;
+  document.getElementById('waiting-msg').style.display=hasGuest?'none':'block';
+  document.getElementById('start-match-btn').style.display=(state.playerId==='p1'&&hasGuest)?'block':'none';
 }
 
 // ── Game logic ────────────────────────────────────────────────────────────
-async function nextQuestion() {
+async function nextQuestion(){
   clearInterval(timerInterval);
   state.current++;
-  state.isLastQuestion = state.current === state.total;
+  state.isLastQuestion=(state.current===state.total);
 
-  // Show double points notification if last question and all correct so far
-  if (state.isLastQuestion && state.allCorrect && state.mode !== 'solo' && state.current > 1) {
+  // Double points notification
+  if(state.isLastQuestion&&state.allCorrect&&state.mode!=='solo'&&state.current>1){
     await showDoubleNotification();
   }
 
-  const {q,ans} = state.questions[state.current-1];
+  const{q,ans}=state.questions[state.current-1];
   state.question=q; state.answer=ans; state.startTime=Date.now();
+  lastOppAnswerTime=0; // reset for each question
 
-  document.getElementById('q-counter').textContent = `Question ${state.current} / ${state.total}`;
-  document.getElementById('score-display').textContent = `Score: ${state.score}`;
-  document.getElementById('question-text').textContent = q;
-  document.getElementById('answer-input').value = '';
-  document.getElementById('answer-input').disabled = false;
+  document.getElementById('q-counter').textContent=`Question ${state.current} / ${state.total}`;
+  document.getElementById('score-display').textContent=`Score: ${state.score}`;
+  document.getElementById('question-text').textContent=q;
+  document.getElementById('answer-input').value='';
+  document.getElementById('answer-input').disabled=false;
   document.getElementById('answer-input').focus();
-  document.getElementById('feedback').textContent = '';
-  document.getElementById('feedback').className   = '';
+  document.getElementById('feedback').textContent='';
+  document.getElementById('feedback').className='';
   updateProgress(state.current-1);
   updatePowerupBadge();
   startTimer();
 }
 
-function showDoubleNotification() {
-  return new Promise(resolve => {
-    const ov = document.getElementById('double-overlay');
+function showDoubleNotification(){
+  return new Promise(resolve=>{
+    const ov=document.getElementById('double-overlay');
     ov.classList.remove('hidden');
-    setTimeout(() => { ov.classList.add('hidden'); resolve(); }, 2500);
+    setTimeout(()=>{ov.classList.add('hidden');resolve();},2500);
   });
 }
 
-function updateProgress(done) {
-  document.getElementById('progress-bar').style.width = (done/state.total*100)+'%';
+function updateProgress(done){
+  document.getElementById('progress-bar').style.width=(done/state.total*100)+'%';
 }
 
-function updatePowerupBadge() {
-  if (state.mode === 'solo') return;
-  const badge = document.getElementById('powerup-badge');
-  if (state.powerupsUsed >= 2) { badge.textContent = ''; return; }
-  if (state.streak === 0) { badge.textContent = ''; return; }
-  badge.textContent = `⚡ ${state.streak}/4 correct streak`;
+function updatePowerupBadge(){
+  if(state.mode==='solo')return;
+  const badge=document.getElementById('powerup-badge');
+  if(state.gameFinished||state.powerupsUsed>=2){badge.textContent='';return;}
+  if(state.streak===0){badge.textContent='';return;}
+  badge.textContent=`⚡ ${state.streak}/3 faster streak`;
 }
 
-function updateScoreboard(oppStatus) {
-  document.getElementById('sc-me-pts').textContent   = state.score;
-  document.getElementById('sc-them-pts').textContent = state.oppScore;
-  document.getElementById('sc-me').classList.toggle('leading',   state.score > state.oppScore);
-  document.getElementById('sc-them').classList.toggle('leading', state.oppScore > state.score);
-
-  if (oppStatus === 'correct') {
-    const el = document.getElementById('sc-them-status');
-    el.textContent = '✓ Answered'; el.className = 'status status-correct';
-  } else if (oppStatus === 'wrong') {
-    const el = document.getElementById('sc-them-status');
-    el.textContent = '✗ Missed'; el.className = 'status status-wrong';
+function updateScoreboardUI(oppStatus){
+  document.getElementById('sc-me-pts').textContent  =state.score;
+  document.getElementById('sc-them-pts').textContent=state.oppScore;
+  document.getElementById('sc-me').classList.toggle('leading',  state.score>state.oppScore);
+  document.getElementById('sc-them').classList.toggle('leading',state.oppScore>state.score);
+  if(oppStatus==='correct'){
+    const el=document.getElementById('sc-them-status');
+    el.textContent='✓ Answered'; el.className='status status-correct';
+  } else if(oppStatus==='wrong'){
+    const el=document.getElementById('sc-them-status');
+    el.textContent='✗ Missed'; el.className='status status-wrong';
   }
 }
-
-function setMyStatus(ok) {
-  const el = document.getElementById('sc-me-status');
-  if (ok) { el.textContent='✓ Answered'; el.className='status status-correct'; }
-  else    { el.textContent='✗ Missed';   el.className='status status-wrong'; }
+function setMyStatus(ok){
+  const el=document.getElementById('sc-me-status');
+  if(ok){el.textContent='✓ Answered';el.className='status status-correct';}
+  else  {el.textContent='✗ Missed';  el.className='status status-wrong';}
 }
 
 // ── Timer ─────────────────────────────────────────────────────────────────
-function startTimer() {
-  const fg=document.getElementById('timer-fg'), txt=document.getElementById('timer-text');
+function startTimer(){
+  const fg=document.getElementById('timer-fg'),txt=document.getElementById('timer-text');
   const tl=state.timeLimit;
-  if (!tl) { fg.style.strokeDashoffset=CIRCUMFERENCE; txt.textContent='∞'; fg.style.stroke='var(--sub)'; return; }
+  if(!tl){fg.style.strokeDashoffset=CIRCUMFERENCE;txt.textContent='∞';fg.style.stroke='var(--sub)';return;}
   let remaining=tl;
   renderTimer(remaining,tl,fg,txt);
-  timerInterval = setInterval(() => {
+  timerInterval=setInterval(()=>{
     remaining--;
     renderTimer(remaining,tl,fg,txt);
-    if (remaining<=0) { clearInterval(timerInterval); timeout(); }
+    if(remaining<=0){clearInterval(timerInterval);timeout();}
   },1000);
 }
-
-function renderTimer(remaining,total,fg,txt) {
+function renderTimer(remaining,total,fg,txt){
   const frac=remaining/total;
-  fg.style.strokeDashoffset = CIRCUMFERENCE*(1-frac);
-  txt.textContent = remaining;
-  const color = frac>.5?'var(--green)':frac>.25?'var(--yellow)':'var(--red)';
+  fg.style.strokeDashoffset=CIRCUMFERENCE*(1-frac);
+  txt.textContent=remaining;
+  const color=frac>.5?'var(--green)':frac>.25?'var(--yellow)':'var(--red)';
   fg.style.stroke=color;
-  document.getElementById('timer-text').style.fill = frac>.5?'var(--text)':color;
+  document.getElementById('timer-text').style.fill=frac>.5?'var(--text)':color;
+}
+
+// ── Pause / resume for opponent's power-up choosing ───────────────────────
+let pausedRemainingTime = 0;
+function pauseForOpponentChoosing(){
+  clearInterval(timerInterval);
+  // Calculate how much time is left
+  const elapsed=Math.floor((Date.now()-state.startTime)/1000);
+  pausedRemainingTime=Math.max(0,(state.timeLimit||30)-elapsed);
+  document.getElementById('answer-input').disabled=true;
+  document.getElementById('opp-choosing-overlay').classList.remove('hidden');
+}
+function resumeAfterOpponentChose(){
+  document.getElementById('opp-choosing-overlay').classList.add('hidden');
+  if(state.isFrozen||state.gameFinished)return;
+  const input=document.getElementById('answer-input');
+  input.disabled=false; input.focus();
+  // Resume timer from where it paused
+  if(state.timeLimit&&pausedRemainingTime>0){
+    const fg=document.getElementById('timer-fg'),txt=document.getElementById('timer-text');
+    let remaining=pausedRemainingTime;
+    renderTimer(remaining,state.timeLimit,fg,txt);
+    timerInterval=setInterval(()=>{
+      remaining--;
+      renderTimer(remaining,state.timeLimit,fg,txt);
+      if(remaining<=0){clearInterval(timerInterval);timeout();}
+    },1000);
+  }
 }
 
 // ── Submit ────────────────────────────────────────────────────────────────
-window.submitAnswer = function() {
+window.submitAnswer=function(){
   const input=document.getElementById('answer-input');
-  if (input.disabled) return;
+  if(input.disabled)return;
   clearInterval(timerInterval);
   const elapsed=((Date.now()-state.startTime)/1000).toFixed(1);
   const raw=input.value.trim();
-  if (!raw) return;
+  if(!raw)return;
   const userAns=parseInt(raw);
-  if (isNaN(userAns)) return;
+  if(isNaN(userAns))return;
   input.disabled=true;
-  state.lastAnswerTime = Date.now();
 
+  const myAnswerTime=Date.now();
   const fb=document.getElementById('feedback');
-  let isCorrect = (userAns===state.answer);
+  const isCorrect=(userAns===state.answer);
 
-  // Double points on last question if all correct
-  let multiplier = 1;
-  if (state.isLastQuestion && state.allCorrect && isCorrect && state.current > 1) multiplier = 2;
+  // Double pts on last question if all correct
+  let multiplier=1;
+  if(state.isLastQuestion&&state.allCorrect&&isCorrect&&state.current>1) multiplier=2;
 
-  if (isCorrect) {
-    const bonus = state.timeLimit ? Math.max(0, state.timeLimit-parseFloat(elapsed)) : 0;
-    const pts   = Math.round((10+Math.floor(bonus)) * multiplier);
-    state.score += pts;
-    const label = multiplier===2 ? `✓ Correct! 🌟 2× = +${pts} pts (${elapsed}s)` : `✓ Correct!  +${pts} pts  (${elapsed}s)`;
-    fb.textContent=label; fb.className='fb-correct';
-    state.results.push({q:state.question, ans:state.answer, given:userAns, ok:true});
-    if (state.mode!=='solo') setMyStatus(true);
+  if(isCorrect){
+    const bonus=state.timeLimit?Math.max(0,state.timeLimit-parseFloat(elapsed)):0;
+    const pts=Math.round((10+Math.floor(bonus))*multiplier);
+    state.score+=pts;
+    fb.textContent=multiplier===2?`✓ Correct! 🌟 2× = +${pts} pts (${elapsed}s)`:`✓ Correct!  +${pts} pts  (${elapsed}s)`;
+    fb.className='fb-correct';
+    state.results.push({q:state.question,ans:state.answer,given:userAns,ok:true});
+    if(state.mode!=='solo') setMyStatus(true);
   } else {
-    fb.textContent=`✗  Wrong.  Answer was ${state.answer}`; fb.className='fb-wrong';
-    state.results.push({q:state.question, ans:state.answer, given:userAns, ok:false});
-    state.allCorrect = false;
-    if (state.mode!=='solo') setMyStatus(false);
+    fb.textContent=`✗  Wrong.  Answer was ${state.answer}`;
+    fb.className='fb-wrong';
+    state.results.push({q:state.question,ans:state.answer,given:userAns,ok:false});
+    state.allCorrect=false;
+    if(state.mode!=='solo') setMyStatus(false);
   }
 
-  if (state.mode!=='solo') {
-    syncScore(isCorrect ? 'correct' : 'wrong');
-    checkPowerupStreak(isCorrect);
+  if(state.mode!=='solo'){
+    syncScore(isCorrect?'correct':'wrong', myAnswerTime);
+    // Check streak ONLY if game not finished and under powerup limit
+    if(!state.gameFinished && state.powerupsUsed<2){
+      checkPowerupStreak(isCorrect, myAnswerTime);
+    }
   }
-  setTimeout(advance, 900);
+
+  setTimeout(advance,900);
 };
 
-function timeout() {
-  const input=document.getElementById('answer-input');
-  input.disabled=true;
+function timeout(){
+  const input=document.getElementById('answer-input'); input.disabled=true;
   const fb=document.getElementById('feedback');
   fb.textContent=`⏰  Time's up!  Answer: ${state.answer}`; fb.className='fb-timeout';
-  state.results.push({q:state.question, ans:state.answer, given:'timeout', ok:false});
+  state.results.push({q:state.question,ans:state.answer,given:'timeout',ok:false});
   state.allCorrect=false;
-  if (state.mode!=='solo') { setMyStatus(false); syncScore('wrong'); checkPowerupStreak(false); }
-  setTimeout(advance, 1200);
+  if(state.mode!=='solo'){
+    setMyStatus(false);
+    syncScore('wrong',Date.now());
+    if(!state.gameFinished && state.powerupsUsed<2) checkPowerupStreak(false, Date.now());
+  }
+  setTimeout(advance,1200);
 }
 
-async function syncScore(answerStatus) {
-  if (!state.roomCode) return;
-  await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`), {
-    score: state.score,
-    answerStatus,
-    answerTime: state.lastAnswerTime,
+async function syncScore(answerStatus, answerTime){
+  if(!state.roomCode)return;
+  await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`),{
+    score:state.score, answerStatus, answerTime,
   });
 }
 
-// ── Power-up streak tracking ──────────────────────────────────────────────
-function checkPowerupStreak(isCorrect) {
-  if (state.powerupsUsed >= 2) return;
-
-  if (isCorrect) {
+// ── Streak logic ──────────────────────────────────────────────────────────
+function checkPowerupStreak(isCorrect, myAnswerTime){
+  if(!isCorrect){
+    // Wrong answer resets streak
+    state.streak=0;
+    updatePowerupBadge();
+    return;
+  }
+  // Was I faster than opponent on this question?
+  // lastOppAnswerTime is updated from Firebase listener
+  // If opp hasn't answered yet (0), I'm faster by default (I answered first)
+  const iFaster = (lastOppAnswerTime===0) || (myAnswerTime < lastOppAnswerTime);
+  if(iFaster){
     state.streak++;
-    if (state.streak >= 4) {
-      // Check if I was faster than opponent this question
-      // We show popup immediately; speed check happens via Firebase answerTime
-      state.streak = 0;
-      state.powerupReady = true;
-      setTimeout(() => showPowerupPopup(), 950); // show after feedback
+    if(state.streak>=3){
+      state.streak=0;
+      // Show power-up popup after feedback delay
+      setTimeout(()=>showPowerupPopup(),950);
     }
   } else {
-    state.streak = 0;
+    // Opponent was faster, reset streak
+    state.streak=0;
   }
   updatePowerupBadge();
 }
 
-function showPowerupPopup() {
-  if (!state.powerupReady || state.powerupsUsed >= 2) return;
-  document.getElementById('answer-input').disabled = true;
+async function showPowerupPopup(){
+  if(state.gameFinished||state.powerupsUsed>=2)return;
   clearInterval(timerInterval);
+  document.getElementById('answer-input').disabled=true;
+  // Tell Firebase I'm choosing (pauses opponent)
+  await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`),{
+    powerupChoosing: state.playerId
+  });
   document.getElementById('powerup-popup').classList.remove('hidden');
 }
 
-window.usePowerUp = async function(type) {
+window.usePowerUp=async function(type){
   document.getElementById('powerup-popup').classList.add('hidden');
-  state.powerupReady = false;
   state.powerupsUsed++;
 
-  // Write power-up action to Firebase so opponent sees it
-  await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`), { powerup: type });
+  // Write chosen power-up action to Firebase (opponent sees it)
+  await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`),{
+    powerupAction: type,
+    powerupChoosing: false,
+    powerupsUsed: state.powerupsUsed,
+  });
 
-  // Clear it after 1 second so it doesn't re-trigger
-  setTimeout(async () => {
-    await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`), { powerup: '' });
-  }, 1000);
+  // Clear action after 2s so it doesn't retrigger
+  setTimeout(async()=>{
+    await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`),{powerupAction:''});
+  },2000);
 
-  // Re-enable input and restart timer
-  document.getElementById('answer-input').disabled = false;
+  // Resume my game
+  document.getElementById('answer-input').disabled=false;
   document.getElementById('answer-input').focus();
   startTimer();
+  updatePowerupBadge();
 };
 
-// ── Handle incoming power-up ──────────────────────────────────────────────
-let lastSeenPowerup = '';
-function handleIncomingPowerup(type, room) {
-  if (!type || type === lastSeenPowerup) return;
-  lastSeenPowerup = type;
-  setTimeout(() => { lastSeenPowerup = ''; }, 2000);
+// ── Power-up effects ──────────────────────────────────────────────────────
+function applyFreeze(){
+  if(state.isFrozen)return;
+  state.isFrozen=true;
+  clearInterval(timerInterval);
+  clearInterval(freezeTickTimer);
+  document.getElementById('answer-input').disabled=true;
 
-  if (type === 'freeze') {
-    applyFreeze();
-  } else if (type === 'blast') {
-    applyBlast();
-  }
-}
-
-function applyFreeze() {
-  if (state.isFrozen) return;
-  state.isFrozen = true;
-  clearInterval(timerInterval); // timer keeps visually running but input disabled
-  const input = document.getElementById('answer-input');
-  input.disabled = true;
-
-  const overlay = document.getElementById('freeze-overlay');
-  const countEl = document.getElementById('freeze-count');
+  const overlay=document.getElementById('freeze-overlay');
+  const countEl=document.getElementById('freeze-count');
   overlay.classList.remove('hidden');
-  let count = 5;
-  countEl.textContent = count;
 
-  // Keep the timer ticking visually (re-read current timer value)
-  const fg  = document.getElementById('timer-fg');
-  const txt = document.getElementById('timer-text');
-  const tl  = state.timeLimit;
-  let elapsed = Math.round((Date.now()-state.startTime)/1000);
-  let remaining = Math.max(0, (tl||30) - elapsed);
+  const fg=document.getElementById('timer-fg'),txt=document.getElementById('timer-text');
+  const tl=state.timeLimit||30;
+  let elapsed=Math.floor((Date.now()-state.startTime)/1000);
+  let remaining=Math.max(0,tl-elapsed);
+  let count=5;
+  countEl.textContent=count;
 
-  // Tick timer while frozen
-  const freezeTick = setInterval(() => {
-    remaining = Math.max(0, remaining-1);
-    if (tl) renderTimer(remaining, tl, fg, txt);
+  freezeTickTimer=setInterval(()=>{
+    remaining=Math.max(0,remaining-1);
+    if(tl) renderTimer(remaining,tl,fg,txt);
     count--;
-    countEl.textContent = Math.max(0,count);
-    if (count <= 0) {
-      clearInterval(freezeTick);
+    countEl.textContent=Math.max(0,count);
+    if(count<=0){
+      clearInterval(freezeTickTimer);
       overlay.classList.add('hidden');
-      state.isFrozen = false;
-      if (remaining > 0) {
-        // Resume timer from remaining
-        input.disabled = false;
-        input.focus();
-        timerInterval = setInterval(() => {
+      state.isFrozen=false;
+      if(remaining>0){
+        document.getElementById('answer-input').disabled=false;
+        document.getElementById('answer-input').focus();
+        timerInterval=setInterval(()=>{
           remaining--;
-          renderTimer(remaining, tl, fg, txt);
-          if (remaining<=0) { clearInterval(timerInterval); timeout(); }
+          renderTimer(remaining,tl,fg,txt);
+          if(remaining<=0){clearInterval(timerInterval);timeout();}
         },1000);
       } else {
         timeout();
@@ -874,85 +853,82 @@ function applyFreeze() {
   },1000);
 }
 
-function applyBlast() {
-  state.score = Math.max(0, state.score - 5);
-  document.getElementById('score-display').textContent = `Score: ${state.score}`;
-  document.getElementById('sc-me-pts').textContent = state.score;
-  // Flash red on my score card
-  const card = document.getElementById('sc-me');
-  card.style.borderColor = 'var(--red)';
-  const fb = document.getElementById('feedback');
-  fb.textContent = '💥 Opponent used Blast! -5 pts'; fb.className = 'fb-wrong';
-  setTimeout(() => { card.style.borderColor='var(--accent)'; }, 1500);
+function applyBlast(){
+  state.score=Math.max(0,state.score-10);
+  document.getElementById('score-display').textContent=`Score: ${state.score}`;
+  document.getElementById('sc-me-pts').textContent=state.score;
+  const card=document.getElementById('sc-me');
+  card.style.borderColor='var(--red)';
+  const fb=document.getElementById('feedback');
+  fb.textContent='💥 Opponent used Blast! -10 pts'; fb.className='fb-wrong';
+  setTimeout(()=>{card.style.borderColor='var(--accent)';},1500);
 }
 
 // ── Advance ───────────────────────────────────────────────────────────────
-function advance() {
+function advance(){
   updateProgress(state.current);
-  if (state.current>=state.total) {
-    state.mode==='solo' ? showSoloResults() : markDone();
+  if(state.current>=state.total){
+    state.gameFinished=true; // I'm done — no more power-ups
+    state.mode==='solo'?showSoloResults():markDone();
   } else {
     nextQuestion();
   }
 }
 
-async function markDone() {
-  await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`), { score:state.score, done:true });
-  document.getElementById('question-text').textContent = '⏳';
-  document.getElementById('answer-input').disabled = true;
-  document.getElementById('feedback').textContent = 'Waiting for opponent to finish...';
-  document.getElementById('feedback').className = '';
+async function markDone(){
+  await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`),{score:state.score,done:true,powerupChoosing:false});
+  document.getElementById('question-text').textContent='⏳';
+  document.getElementById('answer-input').disabled=true;
+  document.getElementById('feedback').textContent='Waiting for opponent to finish...';
+  document.getElementById('feedback').className='';
+  document.getElementById('powerup-badge').textContent='';
 }
 
 // ── Results ───────────────────────────────────────────────────────────────
-function showSoloResults() {
+function showSoloResults(){
   showScreen('result-screen');
-  document.getElementById('solo-result').style.display  = 'block';
-  document.getElementById('multi-result').style.display = 'none';
+  document.getElementById('solo-result').style.display='block';
+  document.getElementById('multi-result').style.display='none';
   const correct=state.results.filter(r=>r.ok).length;
-  document.getElementById('final-score').textContent = `${state.score} pts`;
-  document.getElementById('final-acc').textContent   = `${correct} / ${state.total} correct  (${Math.round(correct/state.total*100)}%)`;
+  document.getElementById('final-score').textContent=`${state.score} pts`;
+  document.getElementById('final-acc').textContent=`${correct} / ${state.total} correct  (${Math.round(correct/state.total*100)}%)`;
   buildReviewList();
 }
 
-function showMultiResults(room) {
-  if (!document.getElementById('result-screen').classList.contains('active')) showScreen('result-screen');
-  document.getElementById('solo-result').style.display  = 'none';
-  document.getElementById('multi-result').style.display = 'block';
+function showMultiResults(room){
+  if(!document.getElementById('result-screen').classList.contains('active')) showScreen('result-screen');
+  document.getElementById('solo-result').style.display='none';
+  document.getElementById('multi-result').style.display='block';
   const myScore=room[state.playerId].score, oppScore=room[state.opponentId].score;
   const myName=state.playerName, oppName=state.opponentName;
   let winnerName,trophy;
-  if (myScore>oppScore)      { winnerName=myName;  trophy='🏆'; }
-  else if(oppScore>myScore)  { winnerName=oppName; trophy='🏆'; }
-  else                       { winnerName='Tie!';  trophy='🤝'; }
-  document.getElementById('result-trophy').textContent      = trophy;
-  document.getElementById('result-winner-name').textContent = winnerName;
-  document.getElementById('result-winner-label').textContent= winnerName==='Tie!'?"It's a tie!":'wins!';
-  const myCard=document.getElementById('fsc-me'), oppCard=document.getElementById('fsc-them');
-  document.getElementById('fsc-me-name').textContent   = myName;
-  document.getElementById('fsc-me-pts').textContent    = myScore;
-  document.getElementById('fsc-them-name').textContent = oppName;
-  document.getElementById('fsc-them-pts').textContent  = oppScore;
-  myCard.classList.toggle('winner',  myScore>oppScore);
-  oppCard.classList.toggle('winner', oppScore>myScore);
+  if(myScore>oppScore)     {winnerName=myName; trophy='🏆';}
+  else if(oppScore>myScore){winnerName=oppName;trophy='🏆';}
+  else                     {winnerName='Tie!'; trophy='🤝';}
+  document.getElementById('result-trophy').textContent=trophy;
+  document.getElementById('result-winner-name').textContent=winnerName;
+  document.getElementById('result-winner-label').textContent=winnerName==='Tie!`'?"It's a tie!":'wins!';
+  document.getElementById('fsc-me-name').textContent=myName;
+  document.getElementById('fsc-me-pts').textContent=myScore;
+  document.getElementById('fsc-them-name').textContent=oppName;
+  document.getElementById('fsc-them-pts').textContent=oppScore;
+  document.getElementById('fsc-me').classList.toggle('winner',myScore>oppScore);
+  document.getElementById('fsc-them').classList.toggle('winner',oppScore>myScore);
   buildReviewList();
-  if (roomListener) { roomListener(); roomListener=null; }
+  if(roomListener){roomListener();roomListener=null;}
 }
 
-function buildReviewList() {
-  const list=document.getElementById('review-list');
-  list.innerHTML='';
-  state.results.forEach(({q,ans,given,ok}) => {
-    const div=document.createElement('div');
-    div.className=`review-item ${ok?'ok':'bad'}`;
+function buildReviewList(){
+  const list=document.getElementById('review-list'); list.innerHTML='';
+  state.results.forEach(({q,ans,given,ok})=>{
+    const div=document.createElement('div'); div.className=`review-item ${ok?'ok':'bad'}`;
     const note=ok?`= ${ans}`:given==='timeout'?`= ${ans}  (timeout)`:`= ${ans}  (you: ${given})`;
     div.innerHTML=`<span style="font-size:1rem">${ok?'✓':'✗'}</span><div><div style="font-weight:700">${q}</div><div class="note">${note}</div></div>`;
     list.appendChild(div);
   });
 }
 
-window.playAgain = function() { showScreen('home-screen'); };
-
+window.playAgain=function(){ showScreen('home-screen'); };
 </script>
 </body>
 </html>
