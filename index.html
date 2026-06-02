@@ -1074,6 +1074,29 @@ async function markDone(){
   document.getElementById('powerup-badge').textContent='';
 }
 
+// ── Activity logging ──────────────────────────────────────────────────────
+async function logActivity(mode, extraData={}){
+  try {
+    const now  = new Date();
+    const date = now.toLocaleDateString('en-GB');  // e.g. 02/06/2026
+    const time = now.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'}); // e.g. 14:35
+    const logRef = ref(db, 'activity_log');
+    const entry = {
+      date, time,
+      name:   profile.name,
+      avatar: profile.avatar,
+      mode,
+      score:     state.score,
+      correct:   state.results.filter(r=>r.ok).length,
+      total:     state.total,
+      operation: state.op,
+      difficulty:state.diff,
+      ...extraData,
+    };
+    await set(ref(db, `activity_log/${Date.now()}_${Math.random().toString(36).slice(2,7)}`), entry);
+  } catch(e){ /* silent fail — don't break the game */ }
+}
+
 // ── Results ───────────────────────────────────────────────────────────────
 function showSoloResults(){
   showScreen('result-screen');
@@ -1083,6 +1106,7 @@ function showSoloResults(){
   document.getElementById('final-score').textContent=`${state.score} pts`;
   document.getElementById('final-acc').textContent=`${correct} / ${state.total} correct  (${Math.round(correct/state.total*100)}%)`;
   buildReviewList();
+  logActivity('Solo');
 }
 
 function showMultiResults(room){
@@ -1105,6 +1129,10 @@ function showMultiResults(room){
   document.getElementById('fsc-me').classList.toggle('winner',myScore>oppScore);
   document.getElementById('fsc-them').classList.toggle('winner',oppScore>myScore);
   buildReviewList();
+  logActivity('Multiplayer', {
+    opponent: oppName,
+    result: myScore>oppScore ? 'Win' : oppScore>myScore ? 'Loss' : 'Tie',
+  });
   // Show rematch button for multiplayer
   document.getElementById('rematch-section').style.display='block';
   document.getElementById('rematch-btn').disabled=false;
