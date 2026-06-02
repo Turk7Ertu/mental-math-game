@@ -140,6 +140,43 @@
     .btn-row { display:flex; gap:10px; }
     .btn-row .btn { flex:1; margin-top:0; }
 
+    /* Profile setup screen */
+    #profile-screen { padding-top:30px; text-align:center; }
+    #profile-screen h1 { margin-bottom:6px; }
+    #profile-screen .sub { margin-bottom:28px; }
+    #profile-name-input { font-size:1.2rem; text-align:center; }
+    .avatar-grid { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:16px 0 24px; }
+    .avatar-opt {
+      width:60px; height:60px; font-size:2rem;
+      background:var(--card); border:3px solid transparent;
+      border-radius:16px; cursor:pointer; display:flex;
+      align-items:center; justify-content:center;
+      transition:all .15s;
+    }
+    .avatar-opt:hover  { border-color:var(--lite); transform:scale(1.1); }
+    .avatar-opt.picked { border-color:var(--accent); background:var(--accent); transform:scale(1.08); }
+
+    /* Profile corner badge (home screen) */
+    .profile-corner {
+      display:flex; align-items:center; gap:10px;
+      background:var(--card); border-radius:16px;
+      padding:10px 16px 10px 12px;
+      margin-bottom:20px;
+      cursor:pointer;
+      border:2px solid var(--accent);
+      transition:border-color .2s, transform .1s;
+      box-shadow: 0 4px 16px rgba(124,58,237,.25);
+    }
+    .profile-corner:hover  { border-color:var(--lite); transform:scale(1.02); }
+    .profile-corner:active { transform:scale(.98); }
+    .profile-corner .p-avatar { font-size:2.2rem; }
+    .profile-corner .p-info   { display:flex; flex-direction:column; }
+    .profile-corner .p-name   { font-weight:800; font-size:1rem; color:var(--text); }
+    .profile-corner .p-edit   { font-size:.75rem; color:var(--sub); margin-top:1px; }
+
+    /* Avatar on scoreboard */
+    .score-card .avatar { font-size:1.4rem; margin-bottom:2px; }
+
     /* Countdown overlay */
     .countdown-overlay { position:fixed; inset:0; background:rgba(0,0,0,.85); display:flex; align-items:center; justify-content:center; z-index:200; }
     .countdown-overlay.hidden { display:none; }
@@ -155,9 +192,34 @@
 <body>
 <div class="app">
 
+  <!-- PROFILE SETUP (first time only) -->
+  <div id="profile-screen" class="screen">
+    <h1>👋 Welcome!</h1>
+    <p class="sub">Set up your profile — only takes 10 seconds</p>
+
+    <h2 style="text-align:center;margin-top:20px">Your Name</h2>
+    <input type="text" id="profile-name-input" placeholder="Enter your name" maxlength="16"/>
+
+    <h2 style="text-align:center;margin-top:4px">Pick Your Avatar</h2>
+    <div class="avatar-grid" id="avatar-grid"></div>
+
+    <div id="profile-error" style="color:var(--red);text-align:center;min-height:20px;font-size:.9rem;margin-bottom:6px"></div>
+    <button class="btn" onclick="saveProfile()">Let's Play! 🚀</button>
+  </div>
+
   <!-- HOME -->
-  <div id="home-screen" class="screen active">
+  <div id="home-screen" class="screen">
     <div class="logo"><span>🧠</span><h1>Mental Math</h1><p class="sub">Train your brain!</p></div>
+
+    <!-- Profile corner badge -->
+    <div class="profile-corner" onclick="editProfile()" title="Tap to edit profile">
+      <span class="p-avatar" id="home-avatar">😀</span>
+      <div class="p-info">
+        <span class="p-name" id="home-name">Player</span>
+        <span class="p-edit">✏️ tap to edit</span>
+      </div>
+    </div>
+
     <div class="mode-card" onclick="goToMenu('solo')"><div class="icon">🎯</div><h3>Solo Practice</h3><p>Practice on your own at your own pace</p></div>
     <div class="mode-card" onclick="goToMenu('multi')"><div class="icon">⚔️</div><h3>Challenge a Friend</h3><p>Create a room and compete in real-time</p></div>
     <div class="mode-card" onclick="showScreen('join-screen')"><div class="icon">🔗</div><h3>Join a Game</h3><p>Enter a room code to join a friend's game</p></div>
@@ -168,8 +230,6 @@
     <span class="back" onclick="showScreen('home-screen')">← Back</span>
     <h1 style="margin-bottom:6px" id="menu-title">Solo Practice</h1>
     <p class="sub" style="margin-bottom:24px">Choose your settings</p>
-    <h2>Your Name</h2>
-    <input type="text" id="player-name-input" placeholder="Enter your name" maxlength="16" style="font-size:1.1rem;margin-bottom:20px"/>
     <h2>Operation</h2>
     <div class="pill-group" id="op-group">
       <button class="pill selected" data-val="Addition">Addition</button>
@@ -204,9 +264,7 @@
   <div id="join-screen" class="screen">
     <span class="back" onclick="showScreen('home-screen')">← Back</span>
     <h1 style="margin-bottom:24px">Join Game</h1>
-    <h2>Your Name</h2>
-    <input type="text" id="join-name-input" placeholder="Enter your name" maxlength="16" style="font-size:1.1rem"/>
-    <h2 style="margin-top:10px">Room Code</h2>
+    <h2>Room Code</h2>
     <input type="text" id="join-code-input" placeholder="Enter 4-digit code" maxlength="4" style="letter-spacing:8px;font-size:2rem"/>
     <div id="join-error" style="color:var(--red);text-align:center;min-height:24px;font-weight:600;margin-bottom:8px"></div>
     <button class="btn blue" onclick="joinRoom()">Join Room</button>
@@ -236,14 +294,16 @@
     </div>
     <div class="scoreboard" id="scoreboard" style="display:none">
       <div class="score-card me" id="sc-me">
-        <div class="name" id="sc-me-name">You</div>
-        <div class="pts"  id="sc-me-pts">0</div>
+        <div class="avatar" id="sc-me-avatar">😀</div>
+        <div class="name"   id="sc-me-name">You</div>
+        <div class="pts"    id="sc-me-pts">0</div>
         <div class="status" id="sc-me-status"></div>
       </div>
       <div style="display:flex;align-items:center;color:var(--sub);font-weight:800;flex-shrink:0">VS</div>
       <div class="score-card them" id="sc-them">
-        <div class="name" id="sc-them-name">Opponent</div>
-        <div class="pts"  id="sc-them-pts">0</div>
+        <div class="avatar" id="sc-them-avatar">😀</div>
+        <div class="name"   id="sc-them-name">Opponent</div>
+        <div class="pts"    id="sc-them-pts">0</div>
         <div class="status" id="sc-them-status"></div>
       </div>
     </div>
@@ -364,6 +424,68 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db  = getDatabase(app);
 
+// ── Profile ───────────────────────────────────────────────────────────────
+const AVATARS = ['😀','😎','🤓','😈','👻','🤖','👾','🦊','🐯','🦁','🐸','🦄'];
+let profile = { name:'Player', avatar:'😀' };
+
+function loadProfile(){
+  const saved = localStorage.getItem('mmg_profile');
+  if(saved){
+    profile = JSON.parse(saved);
+    applyProfile();
+    showScreen('home-screen');
+  } else {
+    buildAvatarGrid();
+    showScreen('profile-screen');
+  }
+}
+
+function applyProfile(){
+  document.getElementById('home-avatar').textContent = profile.avatar;
+  document.getElementById('home-name').textContent   = profile.name;
+}
+
+function buildAvatarGrid(){
+  const grid = document.getElementById('avatar-grid');
+  grid.innerHTML = '';
+  AVATARS.forEach(a => {
+    const div = document.createElement('div');
+    div.className = 'avatar-opt';
+    div.textContent = a;
+    div.onclick = () => {
+      grid.querySelectorAll('.avatar-opt').forEach(el=>el.classList.remove('picked'));
+      div.classList.add('picked');
+    };
+    grid.appendChild(div);
+  });
+  // Select first by default
+  grid.firstChild.classList.add('picked');
+}
+
+window.saveProfile = function(){
+  const name = document.getElementById('profile-name-input').value.trim();
+  const errEl = document.getElementById('profile-error');
+  if(!name){ errEl.textContent='Please enter your name!'; return; }
+  const picked = document.querySelector('.avatar-opt.picked');
+  profile = { name, avatar: picked ? picked.textContent : '😀' };
+  localStorage.setItem('mmg_profile', JSON.stringify(profile));
+  applyProfile();
+  showScreen('home-screen');
+};
+
+window.editProfile = function(){
+  buildAvatarGrid();
+  document.getElementById('profile-name-input').value = profile.name;
+  // Pre-select current avatar
+  document.querySelectorAll('.avatar-opt').forEach(el=>{
+    if(el.textContent===profile.avatar) el.classList.add('picked');
+  });
+  showScreen('profile-screen');
+};
+
+// ── Start ─────────────────────────────────────────────────────────────────
+loadProfile();
+
 const DIFFICULTIES = {
   Easy:   { a:[1,10],  b:[1,10]  },
   Medium: { a:[1,50],  b:[1,20]  },
@@ -373,7 +495,7 @@ const CIRCUMFERENCE = 213.6;
 
 let state = {
   mode:'solo', roomCode:null, playerId:null, opponentId:null,
-  playerName:'', opponentName:'',
+  playerName:'', opponentName:'', playerAvatar:'😀', opponentAvatar:'😀',
   op:'Addition', diff:'Easy', total:10, timeLimit:15,
   current:0, score:0, oppScore:0,
   results:[], question:'', answer:0, startTime:0,
@@ -431,8 +553,9 @@ function getSelected(id){ return document.querySelector(`#${id} .pill.selected`)
 
 // ── Menu start ────────────────────────────────────────────────────────────
 window.handleMenuStart = function(){
-  const name=document.getElementById('player-name-input').value.trim()||'Player';
-  state.playerName=name; state.op=getSelected('op-group'); state.diff=getSelected('diff-group');
+  state.playerName   = profile.name;
+  state.playerAvatar = profile.avatar;
+  state.op=getSelected('op-group'); state.diff=getSelected('diff-group');
   state.total=parseInt(getSelected('q-group')); state.timeLimit=parseInt(getSelected('time-group'));
   state.mode==='solo'?startSoloGame():createRoom();
 };
@@ -486,8 +609,8 @@ async function createRoom(){
     host:state.playerName, guest:'', status:'waiting',
     settings:{op:state.op,diff:state.diff,total:state.total,timeLimit:state.timeLimit},
     questions,
-    p1:{name:state.playerName,score:0,done:false,answerStatus:'',answerTime:0,powerupChoosing:false,powerupAction:'',powerupsUsed:0},
-    p2:{name:'',              score:0,done:false,answerStatus:'',answerTime:0,powerupChoosing:false,powerupAction:'',powerupsUsed:0},
+    p1:{name:state.playerName,avatar:profile.avatar,score:0,done:false,answerStatus:'',answerTime:0,powerupChoosing:false,powerupAction:'',powerupsUsed:0},
+    p2:{name:'',avatar:'',              score:0,done:false,answerStatus:'',answerTime:0,powerupChoosing:false,powerupAction:'',powerupsUsed:0},
   });
   document.getElementById('lobby-code').textContent=code;
   showScreen('lobby-screen');
@@ -508,7 +631,6 @@ window.leaveRoom=async function(){
 
 // ── Join ──────────────────────────────────────────────────────────────────
 window.joinRoom=async function(){
-  const name=document.getElementById('join-name-input').value.trim()||'Player 2';
   const code=document.getElementById('join-code-input').value.trim();
   const errEl=document.getElementById('join-error'); errEl.textContent='';
   if(code.length!==4){errEl.textContent='Enter a 4-digit code';return;}
@@ -518,9 +640,10 @@ window.joinRoom=async function(){
   if(room.status!=='waiting'){errEl.textContent='Game already started';return;}
   if(room.guest){errEl.textContent='Room is full';return;}
   state.roomCode=code; state.playerId='p2'; state.opponentId='p1';
-  state.playerName=name; state.opponentName=room.host; state.mode='multi';
+  state.playerName=profile.name; state.playerAvatar=profile.avatar;
+  state.opponentName=room.host; state.mode='multi';
   const s=room.settings; state.op=s.op; state.diff=s.diff; state.total=s.total; state.timeLimit=s.timeLimit;
-  await update(ref(db,`rooms/${code}`),{guest:name,'p2/name':name});
+  await update(ref(db,`rooms/${code}`),{guest:profile.name,'p2/name':profile.name,'p2/avatar':profile.avatar});
   document.getElementById('lobby-code').textContent=code;
   showScreen('lobby-screen');
   listenToRoom(code);
@@ -542,9 +665,12 @@ function listenToRoom(code){
       state.gameFinished=false;
       Object.keys(oppAnswerTimes).forEach(k=>delete oppAnswerTimes[k]);
       lastSeenPowerupChoosingBy=''; lastSeenPowerupAction=''; lastSeenStreakReset=0;
-      state.opponentName=state.playerId==='p1'?room.guest:room.host;
-      document.getElementById('sc-me-name').textContent=state.playerName;
-      document.getElementById('sc-them-name').textContent=state.opponentName;
+      state.opponentName  = state.playerId==='p1' ? room.guest : room.host;
+      state.opponentAvatar= state.playerId==='p1' ? (room.p2?.avatar||'😀') : (room.p1?.avatar||'😀');
+      document.getElementById('sc-me-name').textContent    = state.playerName;
+      document.getElementById('sc-me-avatar').textContent  = profile.avatar;
+      document.getElementById('sc-them-name').textContent  = state.opponentName;
+      document.getElementById('sc-them-avatar').textContent= state.opponentAvatar;
       document.getElementById('scoreboard').style.display='flex';
       document.getElementById('powerup-badge').textContent='';
       showScreen('game-screen');
