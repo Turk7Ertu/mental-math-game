@@ -402,7 +402,7 @@
 
     <input id="answer-input" type="number" inputmode="numeric"
            placeholder="?" autocomplete="off"
-           onkeydown="if(event.key==='Enter') submitAnswer()" />
+           onkeydown="if(event.key==='Enter') submitAnswer(); if(['e','E','+','-','.'].includes(event.key)) event.preventDefault();" />
 
     <div id="feedback"></div>
     <button class="btn" onclick="submitAnswer()">Submit  ↵</button>
@@ -830,6 +830,7 @@ window.submitAnswer = function() {
   if (!raw) return;
 
   const userAns = parseInt(raw);
+  if (isNaN(userAns)) return;
   input.disabled = true;
   const fb = document.getElementById('feedback');
 
