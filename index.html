@@ -272,9 +272,12 @@
       </div>
     </div>
     <div class="review-list" id="review-list"></div>
+    <div id="rematch-section" style="display:none; margin-bottom:10px">
+      <button class="btn green" id="rematch-btn" onclick="requestRematch()">🔄  Rematch</button>
+      <div id="rematch-status" style="text-align:center;color:var(--sub);font-size:.9rem;min-height:20px;margin-top:6px"></div>
+    </div>
     <div class="btn-row">
-      <button class="btn" onclick="showScreen('home-screen')">Home</button>
-      <button class="btn grey" onclick="playAgain()">Play Again</button>
+      <button class="btn grey" onclick="showScreen('home-screen')">Home</button>
     </div>
   </div>
 </div>
@@ -934,7 +937,13 @@ function showMultiResults(room){
   document.getElementById('fsc-me').classList.toggle('winner',myScore>oppScore);
   document.getElementById('fsc-them').classList.toggle('winner',oppScore>myScore);
   buildReviewList();
-  if(roomListener){roomListener();roomListener=null;}
+  // Show rematch button for multiplayer
+  document.getElementById('rematch-section').style.display='block';
+  document.getElementById('rematch-btn').disabled=false;
+  document.getElementById('rematch-btn').textContent='🔄  Rematch';
+  document.getElementById('rematch-status').textContent='';
+  // Keep listener alive for rematch
+  listenForRematch(state.roomCode);
 }
 
 function buildReviewList(){
@@ -944,6 +953,83 @@ function buildReviewList(){
     const note=ok?`= ${ans}`:given==='timeout'?`= ${ans}  (timeout)`:`= ${ans}  (you: ${given})`;
     div.innerHTML=`<span style="font-size:1rem">${ok?'✓':'✗'}</span><div><div style="font-weight:700">${q}</div><div class="note">${note}</div></div>`;
     list.appendChild(div);
+  });
+}
+
+// ── Rematch ───────────────────────────────────────────────────────────────
+window.requestRematch = async function(){
+  const btn = document.getElementById('rematch-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳  Waiting for opponent...';
+  document.getElementById('rematch-status').textContent = 'Waiting for opponent to accept rematch...';
+
+  await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`),{ rematch: true });
+};
+
+function listenForRematch(code){
+  if(roomListener){ roomListener(); roomListener=null; }
+  roomListener = onValue(ref(db,`rooms/${code}`), async snap=>{
+    if(!snap.exists()) return;
+    const room = snap.val();
+    const p1 = room.p1, p2 = room.p2;
+
+    // Update rematch status label
+    const oppData = room[state.opponentId];
+    if(oppData?.rematch && !room[state.playerId]?.rematch){
+      document.getElementById('rematch-status').textContent = 'Opponent wants a rematch!';
+    }
+
+    // Both accepted → host resets the room and starts new game
+    if(p1?.rematch && p2?.rematch){
+      if(roomListener){ roomListener(); roomListener=null; }
+
+      if(state.playerId==='p1'){
+        // Host: generate new questions and reset room
+        const{a,b}=DIFFICULTIES[state.diff];
+        const questions=generateQuestions(state.op,a,b,state.total);
+        await update(ref(db,`rooms/${code}`),{
+          status:'playing',
+          questions,
+          streakResetAt:0,
+          'p1/score':0,'p1/done':false,'p1/answerStatus':'','p1/answerTime':0,
+          'p1/powerupChoosing':false,'p1/powerupAction':'','p1/powerupsUsed':0,
+          'p1/answeredQuestion':0,'p1/rematch':false,
+          'p2/score':0,'p2/done':false,'p2/answerStatus':'','p2/answerTime':0,
+          'p2/powerupChoosing':false,'p2/powerupAction':'','p2/powerupsUsed':0,
+          'p2/answeredQuestion':0,'p2/rematch':false,
+        });
+      }
+      // Both players: reset local state and start
+      startRematchGame(room);
+    }
+  });
+}
+
+function startRematchGame(room){
+  // Reset all local state for new game
+  state.current=0; state.score=0; state.oppScore=0;
+  state.results=[]; state.streak=0; state.powerupsUsed=0;
+  state.allCorrect=true; state.gameFinished=false;
+  Object.keys(oppAnswerTimes).forEach(k=>delete oppAnswerTimes[k]);
+  lastSeenPowerupChoosingBy=''; lastSeenPowerupAction=''; lastSeenStreakReset=0;
+
+  document.getElementById('rematch-section').style.display='none';
+  document.getElementById('sc-me-pts').textContent='0';
+  document.getElementById('sc-them-pts').textContent='0';
+  document.getElementById('sc-me-status').textContent='';
+  document.getElementById('sc-them-status').textContent='';
+  document.getElementById('scoreboard').style.display='flex';
+  document.getElementById('powerup-badge').textContent='';
+
+  showScreen('game-screen');
+
+  // Re-attach live listener
+  listenToRoom(state.roomCode);
+
+  // Load questions from Firebase (host already wrote them)
+  get(ref(db,`rooms/${state.roomCode}/questions`)).then(snap=>{
+    state.questions = snap.val();
+    nextQuestion();
   });
 }
 
