@@ -1208,7 +1208,12 @@ const SFX = {
   freeze()       { playSound('freeze'); },
   blast()        { playSound('blast'); },
   powerupReady() { playSound('powerup'); },
-  countdown(n)   { playSound(n > 0 ? 'countdown' : 'go'); },
+  countdown(n)   {
+    // Stop any still-playing countdown sound before each beep
+    SOUNDS.countdown.pause();
+    SOUNDS.countdown.currentTime = 0;
+    playSound(n > 0 ? 'countdown' : 'go');
+  },
   win()          { playSound('win'); },
   lose()         { playSound('lose'); },
   tie()          { playSound('tie'); },
