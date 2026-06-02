@@ -364,10 +364,12 @@ let state = {
 let timerInterval   = null;
 let roomListener    = null;
 let freezeTickTimer = null;
-// track last opp answerTime per question to compare speeds
-let lastOppAnswerTime = 0;
 let lastSeenPowerupChoosingBy = '';
 let lastSeenPowerupAction     = '';
+let lastSeenStreakReset        = 0;
+// Store opponent answer times keyed by question number
+// e.g. oppAnswerTimes[3] = timestamp when opp answered Q3
+const oppAnswerTimes = {};
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
@@ -489,7 +491,9 @@ function listenToRoom(code){
     if(room.status==='playing'&&document.getElementById('lobby-screen').classList.contains('active')){
       state.questions=room.questions; state.current=0; state.score=0; state.oppScore=0;
       state.results=[]; state.streak=0; state.powerupsUsed=0; state.allCorrect=true;
-      state.gameFinished=false; lastOppAnswerTime=0; lastSeenPowerupChoosingBy=''; lastSeenPowerupAction='';
+      state.gameFinished=false;
+      Object.keys(oppAnswerTimes).forEach(k=>delete oppAnswerTimes[k]);
+      lastSeenPowerupChoosingBy=''; lastSeenPowerupAction=''; lastSeenStreakReset=0;
       state.opponentName=state.playerId==='p1'?room.guest:room.host;
       document.getElementById('sc-me-name').textContent=state.playerName;
       document.getElementById('sc-them-name').textContent=state.opponentName;
@@ -531,13 +535,21 @@ function listenToRoom(code){
         setTimeout(()=>{ lastSeenPowerupAction=''; },1500);
       }
 
+      // ── Streak reset (when a power-up was used by either player) ──
+      const roomStreakReset = room.streakResetAt || 0;
+      if(roomStreakReset && roomStreakReset !== lastSeenStreakReset){
+        lastSeenStreakReset = roomStreakReset;
+        state.streak = 0;
+        updatePowerupBadge();
+      }
+
       // ── Live scores & answer status ──
       if(oppData && onGameScreen){
         state.oppScore=oppData.score||0;
         updateScoreboardUI(oppData.answerStatus||'');
-        // Track opp answer time for streak comparison
-        if(oppData.answerTime && oppData.answerTime!==lastOppAnswerTime){
-          lastOppAnswerTime=oppData.answerTime;
+        // Store opp answer time keyed by question number
+        if(oppData.answeredQuestion && oppData.answerTime){
+          oppAnswerTimes[oppData.answeredQuestion] = oppData.answerTime;
         }
       }
 
@@ -747,31 +759,30 @@ async function syncScore(answerStatus, answerTime){
   if(!state.roomCode)return;
   await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`),{
     score:state.score, answerStatus, answerTime,
+    answeredQuestion: state.current,
   });
 }
 
 // ── Streak logic ──────────────────────────────────────────────────────────
 function checkPowerupStreak(isCorrect, myAnswerTime){
   if(!isCorrect){
-    // Wrong answer resets streak
     state.streak=0;
     updatePowerupBadge();
     return;
   }
-  // Was I faster than opponent on THIS question?
-  // Only count opp's answer if it happened after this question started.
-  // If their stored time is from a previous question, treat as "not answered yet".
-  const oppAnsweredThisQuestion = lastOppAnswerTime > state.startTime;
-  const iFaster = !oppAnsweredThisQuestion || (myAnswerTime < lastOppAnswerTime);
+  // Use question-number keyed opp answer times — no timing ambiguity
+  const oppTimeForThisQ = oppAnswerTimes[state.current];
+  // If opponent hasn't answered this question yet → I was first → faster
+  // If opponent answered → compare actual timestamps
+  const iFaster = !oppTimeForThisQ || (myAnswerTime < oppTimeForThisQ);
+
   if(iFaster){
     state.streak++;
     if(state.streak>=3){
       state.streak=0;
-      // Show power-up popup after feedback delay
       setTimeout(()=>showPowerupPopup(),950);
     }
   } else {
-    // Opponent was faster, reset streak
     state.streak=0;
   }
   updatePowerupBadge();
@@ -793,11 +804,18 @@ window.usePowerUp=async function(type){
   state.powerupsUsed++;
 
   // Write chosen power-up action to Firebase (opponent sees it)
+  // Also write streakResetAt to reset BOTH players' streaks
   await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`),{
     powerupAction: type,
     powerupChoosing: false,
     powerupsUsed: state.powerupsUsed,
   });
+  await update(ref(db,`rooms/${state.roomCode}`),{
+    streakResetAt: Date.now(),
+  });
+  // Reset my own streak too
+  state.streak=0;
+  updatePowerupBadge();
 
   // Clear action after 2s so it doesn't retrigger
   setTimeout(async()=>{
