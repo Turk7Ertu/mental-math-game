@@ -483,9 +483,6 @@ window.editProfile = function(){
   showScreen('profile-screen');
 };
 
-// ── Start ─────────────────────────────────────────────────────────────────
-loadProfile();
-
 const DIFFICULTIES = {
   Easy:   { a:[1,10],  b:[1,10]  },
   Medium: { a:[1,50],  b:[1,20]  },
@@ -1205,6 +1202,9 @@ function startRematchGame(room){
 }
 
 window.playAgain=function(){ showScreen('home-screen'); };
+
+// ── Start (must be last — needs showScreen to be defined) ─────────────────
+loadProfile();
 </script>
 </body>
 </html>
