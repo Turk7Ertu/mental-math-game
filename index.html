@@ -140,6 +140,15 @@
     .btn-row { display:flex; gap:10px; }
     .btn-row .btn { flex:1; margin-top:0; }
 
+    /* Countdown overlay */
+    .countdown-overlay { position:fixed; inset:0; background:rgba(0,0,0,.85); display:flex; align-items:center; justify-content:center; z-index:200; }
+    .countdown-overlay.hidden { display:none; }
+    .countdown-box { text-align:center; }
+    .countdown-number { font-size:8rem; font-weight:900; line-height:1; animation:popIn .4s ease; }
+    .countdown-go { font-size:5rem; font-weight:900; color:var(--green); animation:popIn .4s ease; }
+    .countdown-label { color:var(--sub); font-size:1rem; margin-top:12px; }
+    @keyframes popIn { 0%{transform:scale(1.6);opacity:0} 100%{transform:scale(1);opacity:1} }
+
     @media (max-width:400px) { #question-text { font-size:2rem; } .pill { padding:6px 12px; font-size:.82rem; } }
   </style>
 </head>
@@ -282,6 +291,14 @@
   </div>
 </div>
 
+<!-- Countdown overlay -->
+<div class="countdown-overlay hidden" id="countdown-overlay">
+  <div class="countdown-box">
+    <div id="countdown-number" class="countdown-number">3</div>
+    <div class="countdown-label">Get ready!</div>
+  </div>
+</div>
+
 <!-- Power-up popup (my screen) -->
 <div class="popup-overlay hidden" id="powerup-popup">
   <div class="popup-box">
@@ -420,6 +437,34 @@ window.handleMenuStart = function(){
   state.mode==='solo'?startSoloGame():createRoom();
 };
 
+// ── Countdown ─────────────────────────────────────────────────────────────
+function showCountdown(callback){
+  const overlay = document.getElementById('countdown-overlay');
+  const numEl   = document.getElementById('countdown-number');
+  overlay.classList.remove('hidden');
+  let count = 3;
+
+  function tick(){
+    if(count > 0){
+      numEl.className = 'countdown-number';
+      numEl.textContent = count;
+      // Re-trigger animation
+      void numEl.offsetWidth;
+      numEl.className = 'countdown-number';
+      count--;
+      setTimeout(tick, 900);
+    } else {
+      numEl.className = 'countdown-go';
+      numEl.textContent = 'GO!';
+      setTimeout(()=>{
+        overlay.classList.add('hidden');
+        callback();
+      }, 700);
+    }
+  }
+  tick();
+}
+
 // ── Solo ──────────────────────────────────────────────────────────────────
 function startSoloGame(){
   const{a,b}=DIFFICULTIES[state.diff];
@@ -428,7 +473,7 @@ function startSoloGame(){
   document.getElementById('scoreboard').style.display='none';
   document.getElementById('powerup-badge').textContent='';
   showScreen('game-screen');
-  nextQuestion();
+  showCountdown(()=>nextQuestion());
 }
 
 // ── Host ──────────────────────────────────────────────────────────────────
@@ -503,7 +548,7 @@ function listenToRoom(code){
       document.getElementById('scoreboard').style.display='flex';
       document.getElementById('powerup-badge').textContent='';
       showScreen('game-screen');
-      nextQuestion();
+      showCountdown(()=>nextQuestion());
     }
 
     if(room.status==='playing'){
@@ -1029,7 +1074,7 @@ function startRematchGame(room){
   // Load questions from Firebase (host already wrote them)
   get(ref(db,`rooms/${state.roomCode}/questions`)).then(snap=>{
     state.questions = snap.val();
-    nextQuestion();
+    showCountdown(()=>nextQuestion());
   });
 }
 
