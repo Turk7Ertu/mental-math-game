@@ -61,8 +61,9 @@
     /* Game */
     #progress-bar-wrap { width:100%; height:6px; background:var(--card); border-radius:3px; margin-bottom:16px; overflow:hidden; }
     #progress-bar { height:100%; background:var(--accent); border-radius:3px; transition:width .3s; width:0%; }
-    .game-top { display:flex; justify-content:space-between; font-size:.9rem; color:var(--sub); margin-bottom:12px; }
+    .game-top { display:flex; justify-content:space-between; align-items:center; font-size:.9rem; color:var(--sub); margin-bottom:12px; }
     #score-display { color:var(--lite); font-weight:700; }
+    #game-mute-btn { background:var(--card); border:2px solid var(--accent); border-radius:999px; color:var(--text); font-size:.85rem; padding:4px 10px; cursor:pointer; line-height:1; flex-shrink:0; }
 
     /* Scoreboard */
     .scoreboard { display:flex; gap:8px; margin-bottom:10px; }
@@ -302,6 +303,7 @@
     <div class="game-top">
       <span id="q-counter">Question 1 / 10</span>
       <span id="score-display">Score: 0</span>
+      <button id="game-mute-btn" onclick="toggleMute()">🔊</button>
     </div>
     <div class="scoreboard" id="scoreboard" style="display:none">
       <div class="score-card me" id="sc-me">
@@ -469,7 +471,6 @@ function buildAvatarGrid(){
     };
     grid.appendChild(div);
   });
-  // Select first by default
   grid.firstChild.classList.add('picked');
 }
 
@@ -487,7 +488,6 @@ window.saveProfile = function(){
 window.editProfile = function(){
   buildAvatarGrid();
   document.getElementById('profile-name-input').value = profile.name;
-  // Pre-select current avatar
   document.querySelectorAll('.avatar-opt').forEach(el=>{
     if(el.textContent===profile.avatar) el.classList.add('picked');
   });
@@ -509,7 +509,7 @@ let state = {
   results:[], question:'', answer:0, startTime:0,
   streak:0, powerupsUsed:0, allCorrect:true,
   isLastQuestion:false, isFrozen:false,
-  gameFinished:false,   // true when I submitted my last answer
+  gameFinished:false,
 };
 let timerInterval   = null;
 let roomListener    = null;
@@ -517,8 +517,6 @@ let freezeTickTimer = null;
 let lastSeenPowerupChoosingBy = '';
 let lastSeenPowerupAction     = '';
 let lastSeenStreakReset        = 0;
-// Store opponent answer times keyed by question number
-// e.g. oppAnswerTimes[3] = timestamp when opp answered Q3
 const oppAnswerTimes = {};
 
 // ── Helpers ───────────────────────────────────────────────────────────────
@@ -574,7 +572,6 @@ function showCountdown(callback){
   const numEl   = document.getElementById('countdown-number');
   overlay.classList.remove('hidden');
   let count = 3;
-
   function tick(){
     if(count > 0){
       numEl.className = 'countdown-number';
@@ -588,10 +585,7 @@ function showCountdown(callback){
       numEl.className = 'countdown-go';
       numEl.textContent = 'GO!';
       SFX.countdown(0);
-      setTimeout(()=>{
-        overlay.classList.add('hidden');
-        callback();
-      }, 700);
+      setTimeout(()=>{ overlay.classList.add('hidden'); callback(); }, 700);
     }
   }
   tick();
@@ -619,7 +613,7 @@ async function createRoom(){
     settings:{op:state.op,diff:state.diff,total:state.total,timeLimit:state.timeLimit},
     questions,
     p1:{name:state.playerName,avatar:profile.avatar,score:0,done:false,answerStatus:'',answerTime:0,powerupChoosing:false,powerupAction:'',powerupsUsed:0},
-    p2:{name:'',avatar:'',              score:0,done:false,answerStatus:'',answerTime:0,powerupChoosing:false,powerupAction:'',powerupsUsed:0},
+    p2:{name:'',avatar:'',score:0,done:false,answerStatus:'',answerTime:0,powerupChoosing:false,powerupAction:'',powerupsUsed:0},
   });
   document.getElementById('lobby-code').textContent=code;
   showScreen('lobby-screen');
@@ -667,7 +661,6 @@ function listenToRoom(code){
 
     if(document.getElementById('lobby-screen').classList.contains('active')) updateLobbyUI(room);
 
-    // Start game
     if(room.status==='playing'&&document.getElementById('lobby-screen').classList.contains('active')){
       state.questions=room.questions; state.current=0; state.score=0; state.oppScore=0;
       state.results=[]; state.streak=0; state.powerupsUsed=0; state.allCorrect=true;
@@ -693,20 +686,15 @@ function listenToRoom(code){
 
       const onGameScreen=document.getElementById('game-screen').classList.contains('active');
 
-      // ── Opponent choosing power-up → pause my game ──
       if(oppData?.powerupChoosing && oppData.powerupChoosing!==lastSeenPowerupChoosingBy){
         lastSeenPowerupChoosingBy=oppData.powerupChoosing;
-        if(onGameScreen && !state.gameFinished){
-          pauseForOpponentChoosing();
-        }
+        if(onGameScreen && !state.gameFinished) pauseForOpponentChoosing();
       }
-      // Opponent finished choosing → resume my game
       if(!oppData?.powerupChoosing && lastSeenPowerupChoosingBy){
         lastSeenPowerupChoosingBy='';
         resumeAfterOpponentChose();
       }
 
-      // ── Opponent used a power-up on me ──
       const oppAction=oppData?.powerupAction||'';
       if(oppAction && oppAction!==lastSeenPowerupAction){
         lastSeenPowerupAction=oppAction;
@@ -714,11 +702,9 @@ function listenToRoom(code){
           if(oppAction==='freeze') applyFreeze();
           else if(oppAction==='blast') applyBlast();
         }
-        // Clear after 1.5s
         setTimeout(()=>{ lastSeenPowerupAction=''; },1500);
       }
 
-      // ── Streak reset (when a power-up was used by either player) ──
       const roomStreakReset = room.streakResetAt || 0;
       if(roomStreakReset && roomStreakReset !== lastSeenStreakReset){
         lastSeenStreakReset = roomStreakReset;
@@ -726,17 +712,14 @@ function listenToRoom(code){
         updatePowerupBadge();
       }
 
-      // ── Live scores & answer status ──
       if(oppData && onGameScreen){
         state.oppScore=oppData.score||0;
         updateScoreboardUI(oppData.answerStatus||'');
-        // Store opp answer time keyed by question number
         if(oppData.answeredQuestion && oppData.answerTime){
           oppAnswerTimes[oppData.answeredQuestion] = oppData.answerTime;
         }
       }
 
-      // ── Both done ──
       if(meData?.done && oppData?.done && !document.getElementById('result-screen').classList.contains('active')){
         state.oppScore=oppData.score||0;
         state.opponentName=oppData.name||state.opponentName||'Opponent';
@@ -766,14 +749,12 @@ async function nextQuestion(){
   state.current++;
   state.isLastQuestion=(state.current===state.total);
 
-  // Double points notification
   if(state.isLastQuestion&&state.allCorrect&&state.mode!=='solo'&&state.current>1){
     await showDoubleNotification();
   }
 
   const{q,ans}=state.questions[state.current-1];
   state.question=q; state.answer=ans; state.startTime=Date.now();
-  // Don't reset lastOppAnswerTime here — instead we compare against startTime
 
   document.getElementById('q-counter').textContent=`Question ${state.current} / ${state.total}`;
   document.getElementById('score-display').textContent=`Score: ${state.score}`;
@@ -854,7 +835,6 @@ function renderTimer(remaining,total,fg,txt){
 let pausedRemainingTime = 0;
 function pauseForOpponentChoosing(){
   clearInterval(timerInterval);
-  // Calculate how much time is left
   const elapsed=Math.floor((Date.now()-state.startTime)/1000);
   pausedRemainingTime=Math.max(0,(state.timeLimit||30)-elapsed);
   document.getElementById('answer-input').disabled=true;
@@ -865,7 +845,6 @@ function resumeAfterOpponentChose(){
   if(state.isFrozen||state.gameFinished)return;
   const input=document.getElementById('answer-input');
   input.disabled=false; input.focus();
-  // Resume timer from where it paused
   if(state.timeLimit&&pausedRemainingTime>0){
     const fg=document.getElementById('timer-fg'),txt=document.getElementById('timer-text');
     let remaining=pausedRemainingTime;
@@ -894,7 +873,6 @@ window.submitAnswer=function(){
   const fb=document.getElementById('feedback');
   const isCorrect=(userAns===state.answer);
 
-  // Double pts on last question if all correct
   let multiplier=1;
   if(state.isLastQuestion&&state.allCorrect&&isCorrect&&state.current>1) multiplier=2;
 
@@ -918,10 +896,7 @@ window.submitAnswer=function(){
 
   if(state.mode!=='solo'){
     syncScore(isCorrect?'correct':'wrong', myAnswerTime);
-    // Check streak ONLY if game not finished and under powerup limit
-    if(!state.gameFinished && state.powerupsUsed<2){
-      checkPowerupStreak(isCorrect, myAnswerTime);
-    }
+    if(!state.gameFinished && state.powerupsUsed<2) checkPowerupStreak(isCorrect, myAnswerTime);
   }
 
   setTimeout(advance,900);
@@ -952,17 +927,9 @@ async function syncScore(answerStatus, answerTime){
 
 // ── Streak logic ──────────────────────────────────────────────────────────
 function checkPowerupStreak(isCorrect, myAnswerTime){
-  if(!isCorrect){
-    state.streak=0;
-    updatePowerupBadge();
-    return;
-  }
-  // Use question-number keyed opp answer times — no timing ambiguity
+  if(!isCorrect){ state.streak=0; updatePowerupBadge(); return; }
   const oppTimeForThisQ = oppAnswerTimes[state.current];
-  // If opponent hasn't answered this question yet → I was first → faster
-  // If opponent answered → compare actual timestamps
   const iFaster = !oppTimeForThisQ || (myAnswerTime < oppTimeForThisQ);
-
   if(iFaster){
     state.streak++;
     if(state.streak>=3){
@@ -980,37 +947,22 @@ async function showPowerupPopup(){
   if(state.gameFinished||state.powerupsUsed>=2)return;
   clearInterval(timerInterval);
   document.getElementById('answer-input').disabled=true;
-  // Tell Firebase I'm choosing (pauses opponent)
-  await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`),{
-    powerupChoosing: state.playerId
-  });
+  await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`),{ powerupChoosing: state.playerId });
   document.getElementById('powerup-popup').classList.remove('hidden');
 }
 
 window.usePowerUp=async function(type){
   document.getElementById('powerup-popup').classList.add('hidden');
   state.powerupsUsed++;
-
-  // Write chosen power-up action to Firebase (opponent sees it)
-  // Also write streakResetAt to reset BOTH players' streaks
   await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`),{
-    powerupAction: type,
-    powerupChoosing: false,
-    powerupsUsed: state.powerupsUsed,
+    powerupAction: type, powerupChoosing: false, powerupsUsed: state.powerupsUsed,
   });
-  await update(ref(db,`rooms/${state.roomCode}`),{
-    streakResetAt: Date.now(),
-  });
-  // Reset my own streak too
+  await update(ref(db,`rooms/${state.roomCode}`),{ streakResetAt: Date.now() });
   state.streak=0;
   updatePowerupBadge();
-
-  // Clear action after 2s so it doesn't retrigger
   setTimeout(async()=>{
     await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`),{powerupAction:''});
   },2000);
-
-  // Resume my game
   document.getElementById('answer-input').disabled=false;
   document.getElementById('answer-input').focus();
   startTimer();
@@ -1025,18 +977,15 @@ function applyFreeze(){
   clearInterval(timerInterval);
   clearInterval(freezeTickTimer);
   document.getElementById('answer-input').disabled=true;
-
   const overlay=document.getElementById('freeze-overlay');
   const countEl=document.getElementById('freeze-count');
   overlay.classList.remove('hidden');
-
   const fg=document.getElementById('timer-fg'),txt=document.getElementById('timer-text');
   const tl=state.timeLimit||30;
   let elapsed=Math.floor((Date.now()-state.startTime)/1000);
   let remaining=Math.max(0,tl-elapsed);
   let count=5;
   countEl.textContent=count;
-
   freezeTickTimer=setInterval(()=>{
     remaining=Math.max(0,remaining-1);
     if(tl) renderTimer(remaining,tl,fg,txt);
@@ -1054,9 +1003,7 @@ function applyFreeze(){
           renderTimer(remaining,tl,fg,txt);
           if(remaining<=0){clearInterval(timerInterval);timeout();}
         },1000);
-      } else {
-        timeout();
-      }
+      } else { timeout(); }
     }
   },1000);
 }
@@ -1077,7 +1024,7 @@ function applyBlast(){
 function advance(){
   updateProgress(state.current);
   if(state.current>=state.total){
-    state.gameFinished=true; // I'm done — no more power-ups
+    state.gameFinished=true;
     state.mode==='solo'?showSoloResults():markDone();
   } else {
     nextQuestion();
@@ -1097,23 +1044,16 @@ async function markDone(){
 async function logActivity(mode, extraData={}){
   try {
     const now  = new Date();
-    const date = now.toLocaleDateString('en-GB');  // e.g. 02/06/2026
-    const time = now.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'}); // e.g. 14:35
-    const logRef = ref(db, 'activity_log');
+    const date = now.toLocaleDateString('en-GB');
+    const time = now.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
     const entry = {
-      date, time,
-      name:   profile.name,
-      avatar: profile.avatar,
-      mode,
-      score:     state.score,
-      correct:   state.results.filter(r=>r.ok).length,
-      total:     state.total,
-      operation: state.op,
-      difficulty:state.diff,
+      date, time, name: profile.name, avatar: profile.avatar, mode,
+      score: state.score, correct: state.results.filter(r=>r.ok).length,
+      total: state.total, operation: state.op, difficulty: state.diff,
       ...extraData,
     };
     await set(ref(db, `activity_log/${Date.now()}_${Math.random().toString(36).slice(2,7)}`), entry);
-  } catch(e){ /* silent fail — don't break the game */ }
+  } catch(e){}
 }
 
 // ── Results ───────────────────────────────────────────────────────────────
@@ -1126,8 +1066,7 @@ function showSoloResults(){
   document.getElementById('final-acc').textContent=`${correct} / ${state.total} correct  (${Math.round(correct/state.total*100)}%)`;
   buildReviewList();
   logActivity('Solo');
-  const correct2=state.results.filter(r=>r.ok).length;
-  if(correct2===state.total) SFX.win(); else SFX.lose();
+  if(correct===state.total) SFX.win(); else SFX.lose();
 }
 
 function showMultiResults(room){
@@ -1142,7 +1081,7 @@ function showMultiResults(room){
   else                     {winnerName='Tie!'; trophy='🤝';}
   document.getElementById('result-trophy').textContent=trophy;
   document.getElementById('result-winner-name').textContent=winnerName;
-  document.getElementById('result-winner-label').textContent=winnerName==='Tie!`'?"It's a tie!":'wins!';
+  document.getElementById('result-winner-label').textContent=winnerName==='Tie!'?"It's a tie!":'wins!';
   document.getElementById('fsc-me-name').textContent=myName;
   document.getElementById('fsc-me-pts').textContent=myScore;
   document.getElementById('fsc-them-name').textContent=oppName;
@@ -1157,12 +1096,10 @@ function showMultiResults(room){
   if(myScore>oppScore) SFX.win();
   else if(oppScore>myScore) SFX.lose();
   else SFX.tie();
-  // Show rematch button for multiplayer
   document.getElementById('rematch-section').style.display='block';
   document.getElementById('rematch-btn').disabled=false;
   document.getElementById('rematch-btn').textContent='🔄  Rematch';
   document.getElementById('rematch-status').textContent='';
-  // Keep listener alive for rematch
   listenForRematch(state.roomCode);
 }
 
@@ -1182,7 +1119,6 @@ window.requestRematch = async function(){
   btn.disabled = true;
   btn.textContent = '⏳  Waiting for opponent...';
   document.getElementById('rematch-status').textContent = 'Waiting for opponent to accept rematch...';
-
   await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`),{ rematch: true });
 };
 
@@ -1192,47 +1128,34 @@ function listenForRematch(code){
     if(!snap.exists()) return;
     const room = snap.val();
     const p1 = room.p1, p2 = room.p2;
-
-    // Update rematch status label
     const oppData = room[state.opponentId];
     if(oppData?.rematch && !room[state.playerId]?.rematch){
       document.getElementById('rematch-status').textContent = 'Opponent wants a rematch!';
     }
-
-    // Both accepted → host resets the room and starts new game
     if(p1?.rematch && p2?.rematch){
       if(roomListener){ roomListener(); roomListener=null; }
-
       if(state.playerId==='p1'){
-        // Host: generate new questions and reset room
         const{a,b}=DIFFICULTIES[state.diff];
         const questions=generateQuestions(state.op,a,b,state.total);
         await update(ref(db,`rooms/${code}`),{
-          status:'playing',
-          questions,
-          streakResetAt:0,
+          status:'playing', questions, streakResetAt:0,
           'p1/score':0,'p1/done':false,'p1/answerStatus':'','p1/answerTime':0,
-          'p1/powerupChoosing':false,'p1/powerupAction':'','p1/powerupsUsed':0,
-          'p1/answeredQuestion':0,'p1/rematch':false,
+          'p1/powerupChoosing':false,'p1/powerupAction':'','p1/powerupsUsed':0,'p1/answeredQuestion':0,'p1/rematch':false,
           'p2/score':0,'p2/done':false,'p2/answerStatus':'','p2/answerTime':0,
-          'p2/powerupChoosing':false,'p2/powerupAction':'','p2/powerupsUsed':0,
-          'p2/answeredQuestion':0,'p2/rematch':false,
+          'p2/powerupChoosing':false,'p2/powerupAction':'','p2/powerupsUsed':0,'p2/answeredQuestion':0,'p2/rematch':false,
         });
       }
-      // Both players: reset local state and start
       startRematchGame(room);
     }
   });
 }
 
 function startRematchGame(room){
-  // Reset all local state for new game
   state.current=0; state.score=0; state.oppScore=0;
   state.results=[]; state.streak=0; state.powerupsUsed=0;
   state.allCorrect=true; state.gameFinished=false;
   Object.keys(oppAnswerTimes).forEach(k=>delete oppAnswerTimes[k]);
   lastSeenPowerupChoosingBy=''; lastSeenPowerupAction=''; lastSeenStreakReset=0;
-
   document.getElementById('rematch-section').style.display='none';
   document.getElementById('sc-me-pts').textContent='0';
   document.getElementById('sc-them-pts').textContent='0';
@@ -1240,13 +1163,8 @@ function startRematchGame(room){
   document.getElementById('sc-them-status').textContent='';
   document.getElementById('scoreboard').style.display='flex';
   document.getElementById('powerup-badge').textContent='';
-
   showScreen('game-screen');
-
-  // Re-attach live listener
   listenToRoom(state.roomCode);
-
-  // Load questions from Firebase (host already wrote them)
   get(ref(db,`rooms/${state.roomCode}/questions`)).then(snap=>{
     state.questions = snap.val();
     showCountdown(()=>nextQuestion());
@@ -1256,134 +1174,67 @@ function startRematchGame(room){
 window.playAgain=function(){ showScreen('home-screen'); };
 
 // ── Sound Engine ──────────────────────────────────────────────────────────
-const AudioCtx = window.AudioContext || window.webkitAudioContext;
-let audioCtx = null;
 let isMuted = localStorage.getItem('mmg_muted') === 'true';
+
+const SOUNDS = {
+  correct:     new Audio('sounds/correct.wav'),
+  wrong:       new Audio('sounds/wrong.wav'),
+  timeout:     new Audio('sounds/lose.wav'),
+  tick:        new Audio('sounds/tick.wav'),
+  tick_urgent: new Audio('sounds/tick.wav'),
+  freeze:      new Audio('sounds/freeze.wav'),
+  blast:       new Audio('sounds/blast.mp3'),
+  powerup:     new Audio('sounds/powerup.wav'),
+  countdown:   new Audio('sounds/countdown.wav'),
+  go:          new Audio('sounds/countdown.wav'),
+  win:         new Audio('sounds/win.wav'),
+  lose:        new Audio('sounds/lose.wav'),
+  tie:         new Audio('sounds/win.wav'),
+};
+
+function playSound(name){
+  if(isMuted) return;
+  const audio = SOUNDS[name];
+  if(!audio) return;
+  audio.currentTime = 0;
+  audio.play().catch(()=>{});
+}
+
+const SFX = {
+  correct()      { playSound('correct'); },
+  wrong()        { playSound('wrong'); },
+  timeout()      { playSound('timeout'); },
+  tick(remaining){ playSound(remaining <= 5 ? 'tick_urgent' : 'tick'); },
+  freeze()       { playSound('freeze'); },
+  blast()        { playSound('blast'); },
+  powerupReady() { playSound('powerup'); },
+  countdown(n)   { playSound(n > 0 ? 'countdown' : 'go'); },
+  win()          { playSound('win'); },
+  lose()         { playSound('lose'); },
+  tie()          { playSound('tie'); },
+};
+
+function applyMuteUI(){
+  const homeBtn = document.getElementById('mute-btn');
+  const gameBtn = document.getElementById('game-mute-btn');
+  if(isMuted){
+    if(homeBtn){ homeBtn.textContent='🔇 Muted'; homeBtn.style.borderColor='var(--sub)'; homeBtn.style.opacity='0.5'; }
+    if(gameBtn){ gameBtn.textContent='🔇'; gameBtn.style.borderColor='var(--sub)'; gameBtn.style.opacity='0.5'; }
+  } else {
+    if(homeBtn){ homeBtn.textContent='🔊 Sound'; homeBtn.style.borderColor='var(--accent)'; homeBtn.style.opacity='1'; }
+    if(gameBtn){ gameBtn.textContent='🔊'; gameBtn.style.borderColor='var(--accent)'; gameBtn.style.opacity='1'; }
+  }
+}
 
 window.toggleMute = function(){
   isMuted = !isMuted;
   localStorage.setItem('mmg_muted', isMuted);
-  const btn = document.getElementById('mute-btn');
-  btn.textContent = isMuted ? '🔇 Muted' : '🔊 Sound';
-  btn.style.borderColor = isMuted ? 'var(--sub)' : 'var(--accent)';
-  btn.style.opacity = isMuted ? '0.5' : '1';
+  applyMuteUI();
 };
 
-function getAudioCtx(){
-  if(!audioCtx) audioCtx = new AudioCtx();
-  if(audioCtx.state === 'suspended') audioCtx.resume();
-  return audioCtx;
-}
-
-function playTone(freq, type='sine', duration=0.15, volume=0.3, startDelay=0){
-  if(isMuted) return;
-  try {
-    const ctx  = getAudioCtx();
-    const osc  = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, ctx.currentTime + startDelay);
-    gain.gain.setValueAtTime(volume, ctx.currentTime + startDelay);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startDelay + duration);
-    osc.start(ctx.currentTime + startDelay);
-    osc.stop(ctx.currentTime + startDelay + duration + 0.05);
-  } catch(e){}
-}
-
-function playNoise(duration=0.1, volume=0.2, startDelay=0){
-  if(isMuted) return;
-  try {
-    const ctx        = getAudioCtx();
-    const bufferSize = ctx.sampleRate * duration;
-    const buffer     = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data       = buffer.getChannelData(0);
-    for(let i=0;i<bufferSize;i++) data[i] = Math.random()*2-1;
-    const source = ctx.createBufferSource();
-    source.buffer = buffer;
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(volume, ctx.currentTime + startDelay);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startDelay + duration);
-    source.connect(gain);
-    gain.connect(ctx.destination);
-    source.start(ctx.currentTime + startDelay);
-  } catch(e){}
-}
-
-// Individual sounds
-const SFX = {
-  correct() {
-    playTone(523, 'sine', 0.1, 0.3);
-    playTone(659, 'sine', 0.1, 0.3, 0.1);
-    playTone(784, 'sine', 0.2, 0.3, 0.2);
-  },
-  wrong() {
-    playTone(220, 'sawtooth', 0.15, 0.3);
-    playTone(180, 'sawtooth', 0.15, 0.3, 0.15);
-  },
-  timeout() {
-    playTone(300, 'square', 0.1, 0.25);
-    playTone(250, 'square', 0.1, 0.25, 0.1);
-    playTone(200, 'square', 0.15, 0.25, 0.2);
-  },
-  tick(remaining) {
-    // Normal tick
-    if(remaining > 5){
-      playTone(880, 'sine', 0.05, 0.15);
-    } else {
-      // Last 5 seconds — faster, higher pitch, louder
-      const freq = 880 + (5 - remaining) * 80;
-      playTone(freq, 'square', 0.08, 0.25 + (5-remaining)*0.04);
-    }
-  },
-  freeze() {
-    // Icy descending shimmer
-    for(let i=0;i<6;i++){
-      playTone(1200 - i*120, 'sine', 0.12, 0.2, i*0.07);
-    }
-  },
-  blast() {
-    playNoise(0.08, 0.4);
-    playTone(120, 'sawtooth', 0.2, 0.35, 0.05);
-    playNoise(0.06, 0.3, 0.15);
-  },
-  powerupReady() {
-    // Ascending fanfare
-    [523,659,784,1047].forEach((f,i)=>playTone(f,'sine',0.1,0.3,i*0.08));
-  },
-  countdown(n) {
-    if(n > 0) playTone(440, 'sine', 0.12, 0.4);
-    else      { // GO!
-      playTone(523,'sine',0.08,0.4);
-      playTone(659,'sine',0.08,0.4,0.08);
-      playTone(784,'sine',0.08,0.4,0.16);
-      playTone(1047,'sine',0.2,0.5,0.24);
-    }
-  },
-  win() {
-    const melody = [523,659,784,659,784,1047];
-    melody.forEach((f,i)=>playTone(f,'sine',0.15,0.35,i*0.12));
-  },
-  lose() {
-    [440,415,392,349].forEach((f,i)=>playTone(f,'sine',0.18,0.3,i*0.13));
-  },
-  tie() {
-    [523,523,659].forEach((f,i)=>playTone(f,'sine',0.15,0.3,i*0.12));
-  },
-};
-
-// ── Start (must be last — needs showScreen to be defined) ─────────────────
+// ── Start ─────────────────────────────────────────────────────────────────
 loadProfile();
-// Apply saved mute state to button
-(function(){
-  const btn = document.getElementById('mute-btn');
-  if(isMuted){
-    btn.textContent='🔇 Muted';
-    btn.style.borderColor='var(--sub)';
-    btn.style.opacity='0.5';
-  }
-})();
+applyMuteUI();
 </script>
 </body>
 </html>
