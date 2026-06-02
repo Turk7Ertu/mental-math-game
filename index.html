@@ -576,14 +576,15 @@ function showCountdown(callback){
     if(count > 0){
       numEl.className = 'countdown-number';
       numEl.textContent = count;
-      // Re-trigger animation
       void numEl.offsetWidth;
       numEl.className = 'countdown-number';
+      SFX.countdown(count);
       count--;
       setTimeout(tick, 900);
     } else {
       numEl.className = 'countdown-go';
       numEl.textContent = 'GO!';
+      SFX.countdown(0);
       setTimeout(()=>{
         overlay.classList.add('hidden');
         callback();
@@ -837,6 +838,7 @@ function startTimer(){
   },1000);
 }
 function renderTimer(remaining,total,fg,txt){
+  SFX.tick(remaining);
   const frac=remaining/total;
   fg.style.strokeDashoffset=CIRCUMFERENCE*(1-frac);
   txt.textContent=remaining;
@@ -899,11 +901,13 @@ window.submitAnswer=function(){
     state.score+=pts;
     fb.textContent=multiplier===2?`✓ Correct! 🌟 2× = +${pts} pts (${elapsed}s)`:`✓ Correct!  +${pts} pts  (${elapsed}s)`;
     fb.className='fb-correct';
+    SFX.correct();
     state.results.push({q:state.question,ans:state.answer,given:userAns,ok:true});
     if(state.mode!=='solo') setMyStatus(true);
   } else {
     fb.textContent=`✗  Wrong.  Answer was ${state.answer}`;
     fb.className='fb-wrong';
+    SFX.wrong();
     state.results.push({q:state.question,ans:state.answer,given:userAns,ok:false});
     state.allCorrect=false;
     if(state.mode!=='solo') setMyStatus(false);
@@ -924,6 +928,7 @@ function timeout(){
   const input=document.getElementById('answer-input'); input.disabled=true;
   const fb=document.getElementById('feedback');
   fb.textContent=`⏰  Time's up!  Answer: ${state.answer}`; fb.className='fb-timeout';
+  SFX.timeout();
   state.results.push({q:state.question,ans:state.answer,given:'timeout',ok:false});
   state.allCorrect=false;
   if(state.mode!=='solo'){
@@ -959,6 +964,7 @@ function checkPowerupStreak(isCorrect, myAnswerTime){
     state.streak++;
     if(state.streak>=3){
       state.streak=0;
+      SFX.powerupReady();
       setTimeout(()=>showPowerupPopup(),950);
     }
   } else {
@@ -1012,6 +1018,7 @@ window.usePowerUp=async function(type){
 function applyFreeze(){
   if(state.isFrozen)return;
   state.isFrozen=true;
+  SFX.freeze();
   clearInterval(timerInterval);
   clearInterval(freezeTickTimer);
   document.getElementById('answer-input').disabled=true;
@@ -1052,6 +1059,7 @@ function applyFreeze(){
 }
 
 function applyBlast(){
+  SFX.blast();
   state.score=Math.max(0,state.score-10);
   document.getElementById('score-display').textContent=`Score: ${state.score}`;
   document.getElementById('sc-me-pts').textContent=state.score;
@@ -1115,6 +1123,8 @@ function showSoloResults(){
   document.getElementById('final-acc').textContent=`${correct} / ${state.total} correct  (${Math.round(correct/state.total*100)}%)`;
   buildReviewList();
   logActivity('Solo');
+  const correct2=state.results.filter(r=>r.ok).length;
+  if(correct2===state.total) SFX.win(); else SFX.lose();
 }
 
 function showMultiResults(room){
@@ -1141,6 +1151,9 @@ function showMultiResults(room){
     opponent: oppName,
     result: myScore>oppScore ? 'Win' : oppScore>myScore ? 'Loss' : 'Tie',
   });
+  if(myScore>oppScore) SFX.win();
+  else if(oppScore>myScore) SFX.lose();
+  else SFX.tie();
   // Show rematch button for multiplayer
   document.getElementById('rematch-section').style.display='block';
   document.getElementById('rematch-btn').disabled=false;
@@ -1238,6 +1251,112 @@ function startRematchGame(room){
 }
 
 window.playAgain=function(){ showScreen('home-screen'); };
+
+// ── Sound Engine ──────────────────────────────────────────────────────────
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+
+function getAudioCtx(){
+  if(!audioCtx) audioCtx = new AudioCtx();
+  if(audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+function playTone(freq, type='sine', duration=0.15, volume=0.3, startDelay=0){
+  try {
+    const ctx  = getAudioCtx();
+    const osc  = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime + startDelay);
+    gain.gain.setValueAtTime(volume, ctx.currentTime + startDelay);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startDelay + duration);
+    osc.start(ctx.currentTime + startDelay);
+    osc.stop(ctx.currentTime + startDelay + duration + 0.05);
+  } catch(e){}
+}
+
+function playNoise(duration=0.1, volume=0.2, startDelay=0){
+  try {
+    const ctx        = getAudioCtx();
+    const bufferSize = ctx.sampleRate * duration;
+    const buffer     = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data       = buffer.getChannelData(0);
+    for(let i=0;i<bufferSize;i++) data[i] = Math.random()*2-1;
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(volume, ctx.currentTime + startDelay);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startDelay + duration);
+    source.connect(gain);
+    gain.connect(ctx.destination);
+    source.start(ctx.currentTime + startDelay);
+  } catch(e){}
+}
+
+// Individual sounds
+const SFX = {
+  correct() {
+    playTone(523, 'sine', 0.1, 0.3);
+    playTone(659, 'sine', 0.1, 0.3, 0.1);
+    playTone(784, 'sine', 0.2, 0.3, 0.2);
+  },
+  wrong() {
+    playTone(220, 'sawtooth', 0.15, 0.3);
+    playTone(180, 'sawtooth', 0.15, 0.3, 0.15);
+  },
+  timeout() {
+    playTone(300, 'square', 0.1, 0.25);
+    playTone(250, 'square', 0.1, 0.25, 0.1);
+    playTone(200, 'square', 0.15, 0.25, 0.2);
+  },
+  tick(remaining) {
+    // Normal tick
+    if(remaining > 5){
+      playTone(880, 'sine', 0.05, 0.15);
+    } else {
+      // Last 5 seconds — faster, higher pitch, louder
+      const freq = 880 + (5 - remaining) * 80;
+      playTone(freq, 'square', 0.08, 0.25 + (5-remaining)*0.04);
+    }
+  },
+  freeze() {
+    // Icy descending shimmer
+    for(let i=0;i<6;i++){
+      playTone(1200 - i*120, 'sine', 0.12, 0.2, i*0.07);
+    }
+  },
+  blast() {
+    playNoise(0.08, 0.4);
+    playTone(120, 'sawtooth', 0.2, 0.35, 0.05);
+    playNoise(0.06, 0.3, 0.15);
+  },
+  powerupReady() {
+    // Ascending fanfare
+    [523,659,784,1047].forEach((f,i)=>playTone(f,'sine',0.1,0.3,i*0.08));
+  },
+  countdown(n) {
+    if(n > 0) playTone(440, 'sine', 0.12, 0.4);
+    else      { // GO!
+      playTone(523,'sine',0.08,0.4);
+      playTone(659,'sine',0.08,0.4,0.08);
+      playTone(784,'sine',0.08,0.4,0.16);
+      playTone(1047,'sine',0.2,0.5,0.24);
+    }
+  },
+  win() {
+    const melody = [523,659,784,659,784,1047];
+    melody.forEach((f,i)=>playTone(f,'sine',0.15,0.35,i*0.12));
+  },
+  lose() {
+    [440,415,392,349].forEach((f,i)=>playTone(f,'sine',0.18,0.3,i*0.13));
+  },
+  tie() {
+    [523,523,659].forEach((f,i)=>playTone(f,'sine',0.15,0.3,i*0.12));
+  },
+};
 
 // ── Start (must be last — needs showScreen to be defined) ─────────────────
 loadProfile();
