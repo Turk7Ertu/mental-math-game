@@ -578,7 +578,7 @@ async function nextQuestion(){
 
   const{q,ans}=state.questions[state.current-1];
   state.question=q; state.answer=ans; state.startTime=Date.now();
-  lastOppAnswerTime=0; // reset for each question
+  // Don't reset lastOppAnswerTime here — instead we compare against startTime
 
   document.getElementById('q-counter').textContent=`Question ${state.current} / ${state.total}`;
   document.getElementById('score-display').textContent=`Score: ${state.score}`;
@@ -758,10 +758,11 @@ function checkPowerupStreak(isCorrect, myAnswerTime){
     updatePowerupBadge();
     return;
   }
-  // Was I faster than opponent on this question?
-  // lastOppAnswerTime is updated from Firebase listener
-  // If opp hasn't answered yet (0), I'm faster by default (I answered first)
-  const iFaster = (lastOppAnswerTime===0) || (myAnswerTime < lastOppAnswerTime);
+  // Was I faster than opponent on THIS question?
+  // Only count opp's answer if it happened after this question started.
+  // If their stored time is from a previous question, treat as "not answered yet".
+  const oppAnsweredThisQuestion = lastOppAnswerTime > state.startTime;
+  const iFaster = !oppAnsweredThisQuestion || (myAnswerTime < lastOppAnswerTime);
   if(iFaster){
     state.streak++;
     if(state.streak>=3){
