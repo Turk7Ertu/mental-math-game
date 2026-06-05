@@ -720,7 +720,7 @@ function listenToRoom(code){
         }
       }
 
-      if(meData?.done && oppData?.done && !document.getElementById('result-screen').classList.contains('active')){
+      if(meData?.done && oppData?.done && state.current > 0 && !document.getElementById('result-screen').classList.contains('active')){
         state.oppScore=oppData.score||0;
         state.opponentName=oppData.name||state.opponentName||'Opponent';
         showMultiResults(room);
@@ -861,10 +861,10 @@ function resumeAfterOpponentChose(){
 window.submitAnswer=function(){
   const input=document.getElementById('answer-input');
   if(input.disabled)return;
-  clearInterval(timerInterval);
-  const elapsed=((Date.now()-state.startTime)/1000).toFixed(1);
   const raw=input.value.trim();
   if(!raw)return;
+  clearInterval(timerInterval);
+  const elapsed=((Date.now()-state.startTime)/1000).toFixed(1);
   const userAns=parseInt(raw);
   if(isNaN(userAns))return;
   input.disabled=true;
@@ -1144,13 +1144,25 @@ function listenForRematch(code){
           'p2/score':0,'p2/done':false,'p2/answerStatus':'','p2/answerTime':0,
           'p2/powerupChoosing':false,'p2/powerupAction':'','p2/powerupsUsed':0,'p2/answeredQuestion':0,'p2/rematch':false,
         });
+        // p1 already has questions — start immediately
+        startRematchGame(questions);
+      } else {
+        // p2 waits for p1 to finish writing the reset to Firebase
+        const unsub = onValue(ref(db,`rooms/${code}`), snap2=>{
+          if(!snap2.exists()) return;
+          const r = snap2.val();
+          // Wait until p1 has cleared rematch flags and written new questions
+          if(!r.p1?.rematch && !r.p2?.rematch && r.questions){
+            unsub();
+            startRematchGame(r.questions);
+          }
+        });
       }
-      startRematchGame(room);
     }
   });
 }
 
-function startRematchGame(room){
+function startRematchGame(questions){
   state.current=0; state.score=0; state.oppScore=0;
   state.results=[]; state.streak=0; state.powerupsUsed=0;
   state.allCorrect=true; state.gameFinished=false;
@@ -1165,10 +1177,8 @@ function startRematchGame(room){
   document.getElementById('powerup-badge').textContent='';
   showScreen('game-screen');
   listenToRoom(state.roomCode);
-  get(ref(db,`rooms/${state.roomCode}/questions`)).then(snap=>{
-    state.questions = snap.val();
-    showCountdown(()=>nextQuestion());
-  });
+  state.questions = questions;
+  showCountdown(()=>nextQuestion());
 }
 
 window.playAgain=function(){ showScreen('home-screen'); };
