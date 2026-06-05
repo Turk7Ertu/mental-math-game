@@ -211,14 +211,16 @@
       .sidebar { display:block; }
       body { padding-left:236px; }
     }
-    .sidebar h3 { font-size:.8rem; font-weight:800; color:var(--sub); text-transform:uppercase; letter-spacing:.08em; margin:18px 0 8px; }
+    .sidebar h3 { font-size:.75rem; font-weight:800; color:var(--lite); text-transform:uppercase; letter-spacing:.1em; margin:18px 0 10px; }
     .sidebar h3:first-child { margin-top:0; }
-    .sidebar p, .sidebar li { font-size:.82rem; color:var(--sub); line-height:1.5; }
-    .sidebar ul { padding-left:16px; }
-    .sidebar .pu-card { display:flex; gap:10px; align-items:flex-start; background:var(--bg); border-radius:10px; padding:10px; margin-bottom:8px; }
-    .sidebar .pu-card-ico { font-size:1.5rem; flex-shrink:0; }
-    .sidebar .pu-card strong { font-size:.85rem; color:var(--text); }
-    .sidebar .pu-card span  { font-size:.78rem; color:var(--sub); }
+    .sidebar p { font-size:.83rem; color:#cbd5e1; line-height:1.55; }
+    .sidebar .pu-card { display:flex; gap:12px; align-items:center; background:var(--bg); border-radius:12px; padding:12px 14px; margin-bottom:8px; }
+    .sidebar .pu-card-ico { font-size:2rem; flex-shrink:0; }
+    .sidebar .pu-card strong { font-size:.88rem; font-weight:800; display:block; margin-bottom:2px; }
+    .sidebar .pu-card span  { font-size:.78rem; color:#94a3b8; line-height:1.4; }
+    .freeze-name { color:#60a5fa; }
+    .blast-name  { color:#f87171; }
+    .steal-name  { color:#fbbf24; }
     .sidebar-title { font-size:1rem; font-weight:800; color:var(--lite); margin-bottom:4px; }
   </style>
 </head>
@@ -234,9 +236,9 @@
   <hr style="border:none;border-top:1px solid rgba(255,255,255,.08);margin:16px 0">
 
   <h3>⚡ Power-Ups</h3>
-  <div class="pu-card"><span class="pu-card-ico">❄️</span><div><strong>Freeze</strong><br><span>Freezes your opponent for 3 seconds — they can't answer!</span></div></div>
-  <div class="pu-card"><span class="pu-card-ico">💥</span><div><strong>Blast</strong><br><span>Blasts 10 points off your opponent's score!</span></div></div>
-  <div class="pu-card"><span class="pu-card-ico">💰</span><div><strong>Steal</strong><br><span>Steals 5 points from your opponent and adds them to yours!</span></div></div>
+  <div class="pu-card"><span class="pu-card-ico">❄️</span><div><strong class="freeze-name">Freeze</strong><span>Freezes your opponent for 3 seconds — they can't answer!</span></div></div>
+  <div class="pu-card"><span class="pu-card-ico">💥</span><div><strong class="blast-name">Blast</strong><span>Blasts 10 points off your opponent's score!</span></div></div>
+  <div class="pu-card"><span class="pu-card-ico">💰</span><div><strong class="steal-name">Steal</strong><span>Steals 5 points from your opponent and adds them to yours!</span></div></div>
 
   <hr style="border:none;border-top:1px solid rgba(255,255,255,.08);margin:16px 0">
 
