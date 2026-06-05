@@ -225,6 +225,34 @@
     @keyframes popIn { 0%{transform:scale(1.6);opacity:0} 100%{transform:scale(1);opacity:1} }
 
     @media (max-width:400px) { #question-text { font-size:2rem; } .pill { padding:6px 12px; font-size:.82rem; } }
+
+    /* ── Stats Screen ── */
+    #stats-screen { padding-top:16px; }
+    .rating-hero { background:var(--card); border-radius:20px; padding:28px 20px 20px; text-align:center; margin-bottom:16px; border:2px solid rgba(124,58,237,.3); position:relative; overflow:hidden; }
+    .rating-hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 50% 0%, rgba(124,58,237,.18) 0%, transparent 70%); pointer-events:none; }
+    .rating-tier-icon { font-size:3rem; margin-bottom:4px; }
+    .rating-number { font-size:3.2rem; font-weight:900; color:var(--lite); line-height:1; }
+    .rating-tier-label { font-size:1rem; font-weight:700; margin:6px 0 14px; }
+    .rating-progress-wrap { background:rgba(255,255,255,.08); border-radius:999px; height:8px; margin:0 0 8px; overflow:hidden; }
+    .rating-progress-bar { height:100%; border-radius:999px; transition:width .6s ease; }
+    .rating-next { font-size:.8rem; color:var(--sub); }
+    .rating-delta { display:inline-flex; align-items:center; gap:6px; background:var(--card); border-radius:10px; padding:8px 16px; font-size:.95rem; font-weight:700; margin-top:10px; }
+    .delta-up { color:var(--green); } .delta-down { color:var(--red); } .delta-zero { color:var(--sub); }
+
+    .stats-section { margin-bottom:16px; }
+    .stats-section h2 { font-size:.85rem; color:var(--sub); font-weight:700; text-transform:uppercase; letter-spacing:.8px; margin-bottom:10px; }
+    .graph-wrap { background:var(--card); border-radius:14px; padding:16px 12px 8px; }
+    .graph-labels { display:flex; justify-content:space-between; font-size:.72rem; color:var(--sub); margin-top:4px; padding:0 2px; }
+    .stats-row { background:var(--card); border-radius:12px; padding:12px 14px; margin-bottom:6px; display:flex; align-items:center; gap:12px; }
+    .stats-row .sr-icon { font-size:1.2rem; flex-shrink:0; }
+    .stats-row .sr-body { flex:1; }
+    .stats-row .sr-title { font-size:.88rem; font-weight:700; color:var(--text); }
+    .stats-row .sr-sub   { font-size:.76rem; color:var(--sub); margin-top:2px; }
+    .stats-row .sr-delta { font-size:.85rem; font-weight:800; flex-shrink:0; }
+    .no-stats { text-align:center; color:var(--sub); font-size:.9rem; padding:24px 0; }
+
+    /* Rating delta on result screen */
+    #solo-rating-delta { text-align:center; margin:10px 0 4px; }
   </style>
 </head>
 <body>
@@ -331,6 +359,7 @@
     <div class="mode-card" onclick="goToMenu('solo')"><div class="icon">🎯</div><h3>Solo Practice</h3><p>Practice on your own at your own pace</p></div>
     <div class="mode-card" onclick="goToMenu('multi')"><div class="icon">⚔️</div><h3>Challenge a Friend</h3><p>Create a room and compete in real-time</p></div>
     <div class="mode-card" onclick="showScreen('join-screen')"><div class="icon">🔗</div><h3>Join a Game</h3><p>Enter a room code to join a friend's game</p></div>
+    <div class="mode-card" onclick="showStatsScreen()" style="border-color:rgba(124,58,237,.3)"><div class="icon">📊</div><h3>My Stats</h3><p id="home-rating-preview">Track your Mental Math Rating</p></div>
   </div>
 
   <!-- MENU -->
@@ -431,12 +460,36 @@
     <button class="btn" onclick="submitAnswer()">Submit  ↵</button>
   </div>
 
+  <!-- STATS -->
+  <div id="stats-screen" class="screen">
+    <span class="back" onclick="showScreen('home-screen')">← Back</span>
+    <div class="rating-hero">
+      <div class="rating-tier-icon" id="st-tier-icon">🌱</div>
+      <div class="rating-number" id="st-rating">1,000</div>
+      <div class="rating-tier-label" id="st-tier-label">Beginner</div>
+      <div class="rating-progress-wrap"><div class="rating-progress-bar" id="st-progress"></div></div>
+      <div class="rating-next" id="st-next"></div>
+    </div>
+    <div class="stats-section">
+      <h2>📈 Rating History</h2>
+      <div class="graph-wrap">
+        <div id="st-graph"></div>
+        <div class="graph-labels"><span id="st-graph-oldest"></span><span id="st-graph-newest">Now</span></div>
+      </div>
+    </div>
+    <div class="stats-section">
+      <h2>🕹️ Recent Games</h2>
+      <div id="st-recent"></div>
+    </div>
+  </div>
+
   <!-- RESULT -->
   <div id="result-screen" class="screen">
     <div id="solo-result">
       <h1 style="padding-top:24px">Game Over 🎉</h1>
       <div style="font-size:3rem;font-weight:900;color:var(--lite);margin:8px 0" id="final-score">0 pts</div>
-      <div style="color:var(--sub);margin-bottom:20px" id="final-acc"></div>
+      <div style="color:var(--sub);margin-bottom:6px" id="final-acc"></div>
+      <div id="solo-rating-delta"></div>
     </div>
     <div id="multi-result" style="display:none">
       <div class="winner-banner">
@@ -647,6 +700,7 @@ window.showScreen = function(id){
   const mini = document.getElementById('sidebar-mini');
   if(id==='home-screen'){
     full.style.display='block'; mini.style.display='none';
+    updateHomeRatingPreview();
   } else if(id==='game-screen'){
     full.style.display='none'; mini.style.display='block';
   } else {
@@ -1316,6 +1370,159 @@ function startRematchGame(questions){
 }
 
 window.playAgain=function(){ showScreen('home-screen'); };
+
+// ── Rating System ─────────────────────────────────────────────────────────
+const TIERS = [
+  { min:1800, label:'Legend',     icon:'👑', color:'#f59e0b' },
+  { min:1500, label:'Master',     icon:'💎', color:'#3b82f6' },
+  { min:1200, label:'Expert',     icon:'🔥', color:'#ef4444' },
+  { min:1000, label:'Skilled',    icon:'🎯', color:'#22c55e' },
+  { min:800,  label:'Apprentice', icon:'⚡', color:'#a78bfa' },
+  { min:0,    label:'Beginner',   icon:'🌱', color:'#94a3b8' },
+];
+
+function getTier(rating){
+  return TIERS.find(t => rating >= t.min) || TIERS[TIERS.length-1];
+}
+
+function getNextTier(rating){
+  const idx = TIERS.findIndex(t => rating >= t.min);
+  return idx > 0 ? TIERS[idx-1] : null;
+}
+
+function loadRatingData(){
+  const r = parseInt(localStorage.getItem('mmg_rating') || '1000');
+  const h = JSON.parse(localStorage.getItem('mmg_history') || '[]');
+  return { rating: r, history: h };
+}
+
+function saveRatingData(rating, history){
+  localStorage.setItem('mmg_rating', rating);
+  localStorage.setItem('mmg_history', JSON.stringify(history.slice(-30)));
+}
+
+function calcRatingDelta(correct, total, avgTimeSec, timeLimit, diff){
+  const accuracy = correct / total;
+  const diffMult = { Easy:0.8, Medium:1.0, Hard:1.3 }[diff] || 1.0;
+  // Accuracy component: centred at 60%
+  const accDelta = (accuracy - 0.6) * 60;
+  // Speed component: reward answering in under half the time limit
+  let speedDelta = 0;
+  if(timeLimit > 0 && avgTimeSec > 0){
+    speedDelta = Math.max(-5, Math.min(10, (0.5 - avgTimeSec/timeLimit) * 20));
+  }
+  return Math.round((accDelta + speedDelta) * diffMult);
+}
+
+function updateRating(correct, total, avgTimeSec, timeLimit, diff, date){
+  const { rating, history } = loadRatingData();
+  const delta = calcRatingDelta(correct, total, avgTimeSec, timeLimit, diff);
+  const newRating = Math.max(100, rating + delta);
+  history.push({ date, rating: newRating, delta, correct, total, avgTimeSec, diff });
+  saveRatingData(newRating, history);
+  return { oldRating: rating, newRating, delta };
+}
+
+function renderRatingGraph(history){
+  if(history.length < 2){
+    return '<p class="no-stats">Play more games to see your graph!</p>';
+  }
+  const W=300, H=110, PL=8, PR=8, PT=10, PB=10;
+  const ratings = history.map(h=>h.rating);
+  const minR = Math.min(...ratings);
+  const maxR = Math.max(...ratings);
+  const range = maxR - minR || 1;
+  const pts = ratings.map((r,i)=>{
+    const x = PL + (i/(ratings.length-1))*(W-PL-PR);
+    const y = PT + (1-(r-minR)/range)*(H-PT-PB);
+    return [x,y];
+  });
+  const line = pts.map(p=>p.join(',')).join(' ');
+  const area = `${PL},${H-PB} ${line} ${W-PR},${H-PB}`;
+  const dots = pts.map(([x,y],i)=>
+    `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${i===pts.length-1?4:2.5}" fill="${i===pts.length-1?'#a78bfa':'#7c3aed'}" />`
+  ).join('');
+  return `
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:110px;display:block">
+      <defs>
+        <linearGradient id="rgrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.45"/>
+          <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.02"/>
+        </linearGradient>
+      </defs>
+      <polygon points="${area}" fill="url(#rgrad)"/>
+      <polyline points="${line}" fill="none" stroke="#a78bfa" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+      ${dots}
+      <text x="${PL}" y="${PT+6}" font-size="9" fill="#64748b">${minR}</text>
+      <text x="${PL}" y="${PT}" font-size="9" fill="#64748b">${maxR}</text>
+    </svg>`;
+}
+
+window.showStatsScreen = function(){
+  const { rating, history } = loadRatingData();
+  const tier = getTier(rating);
+  const next = getNextTier(rating);
+
+  // Hero card
+  document.getElementById('st-tier-icon').textContent  = tier.icon;
+  document.getElementById('st-rating').textContent     = rating.toLocaleString();
+  document.getElementById('st-tier-label').textContent = tier.label;
+  document.getElementById('st-tier-label').style.color = tier.color;
+
+  // Progress bar to next tier
+  const bar = document.getElementById('st-progress');
+  bar.style.background = tier.color;
+  if(next){
+    const prev = TIERS[TIERS.indexOf(tier)+1];
+    const from = prev ? prev.min : 0;
+    const pct  = Math.min(100, Math.round((rating - from) / (next.min - from) * 100));
+    bar.style.width = pct + '%';
+    document.getElementById('st-next').textContent = `${next.min - rating} pts to ${next.label} ${next.icon}`;
+  } else {
+    bar.style.width = '100%';
+    document.getElementById('st-next').textContent = '🏆 You reached the highest tier!';
+  }
+
+  // Graph
+  document.getElementById('st-graph').innerHTML = renderRatingGraph(history);
+  if(history.length >= 2){
+    document.getElementById('st-graph-oldest').textContent = history[0].date || '';
+    document.getElementById('st-graph-newest').textContent = 'Now';
+  }
+
+  // Recent games list
+  const recentEl = document.getElementById('st-recent');
+  if(history.length === 0){
+    recentEl.innerHTML = '<p class="no-stats">No games yet — start with Solo Practice!</p>';
+  } else {
+    recentEl.innerHTML = [...history].reverse().slice(0,10).map(h=>{
+      const acc  = Math.round(h.correct/h.total*100);
+      const sign = h.delta >= 0 ? '+' : '';
+      const col  = h.delta > 0 ? 'var(--green)' : h.delta < 0 ? 'var(--red)' : 'var(--sub)';
+      const icon = acc===100?'🌟':acc>=70?'✅':acc>=50?'😐':'❌';
+      return `
+        <div class="stats-row">
+          <div class="sr-icon">${icon}</div>
+          <div class="sr-body">
+            <div class="sr-title">${h.correct}/${h.total} correct &nbsp;·&nbsp; ${h.diff}</div>
+            <div class="sr-sub">${h.avgTimeSec ? 'avg '+h.avgTimeSec+'s/question' : ''} &nbsp; ${h.date||''}</div>
+          </div>
+          <div class="sr-delta" style="color:${col}">${sign}${h.delta}</div>
+        </div>`;
+    }).join('');
+  }
+
+  // Home screen preview
+  updateHomeRatingPreview();
+  showScreen('stats-screen');
+};
+
+function updateHomeRatingPreview(){
+  const { rating } = loadRatingData();
+  const tier = getTier(rating);
+  const el = document.getElementById('home-rating-preview');
+  if(el) el.textContent = `${tier.icon} ${tier.label} · ${rating.toLocaleString()} pts`;
+}
 
 // ── Sound Engine ──────────────────────────────────────────────────────────
 let isMuted = localStorage.getItem('mmg_muted') === 'true';
