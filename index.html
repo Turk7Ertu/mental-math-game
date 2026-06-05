@@ -195,9 +195,74 @@
     @keyframes popIn { 0%{transform:scale(1.6);opacity:0} 100%{transform:scale(1);opacity:1} }
 
     @media (max-width:400px) { #question-text { font-size:2rem; } .pill { padding:6px 12px; font-size:.82rem; } }
+
+    /* Sidebar */
+    .sidebar {
+      display:none;
+      position:fixed;
+      left:0; top:0; bottom:0;
+      width:220px;
+      padding:28px 16px;
+      overflow-y:auto;
+      background:var(--card);
+      border-right:1px solid rgba(255,255,255,.06);
+    }
+    @media (min-width:900px) {
+      .sidebar { display:block; }
+      body { padding-left:236px; }
+    }
+    .sidebar h3 { font-size:.8rem; font-weight:800; color:var(--sub); text-transform:uppercase; letter-spacing:.08em; margin:18px 0 8px; }
+    .sidebar h3:first-child { margin-top:0; }
+    .sidebar p, .sidebar li { font-size:.82rem; color:var(--sub); line-height:1.5; }
+    .sidebar ul { padding-left:16px; }
+    .sidebar .pu-card { display:flex; gap:10px; align-items:flex-start; background:var(--bg); border-radius:10px; padding:10px; margin-bottom:8px; }
+    .sidebar .pu-card-ico { font-size:1.5rem; flex-shrink:0; }
+    .sidebar .pu-card strong { font-size:.85rem; color:var(--text); }
+    .sidebar .pu-card span  { font-size:.78rem; color:var(--sub); }
+    .sidebar-title { font-size:1rem; font-weight:800; color:var(--lite); margin-bottom:4px; }
   </style>
 </head>
 <body>
+
+<!-- HOME sidebar -->
+<div class="sidebar" id="sidebar-home">
+
+  <h3>How to Play</h3>
+  <p>Answer math questions as <strong>fast as you can</strong> — the quicker you answer, the more points you earn!</p>
+  <p style="margin-top:8px">In multiplayer, answer <strong>3 questions faster</strong> than your opponent in a row to unlock a power-up!</p>
+
+  <hr style="border:none;border-top:1px solid rgba(255,255,255,.08);margin:16px 0">
+
+  <h3>⚡ Power-Ups</h3>
+  <div class="pu-card"><span class="pu-card-ico">❄️</span><div><strong>Freeze</strong><br><span>Freezes your opponent for 3 seconds — they can't answer!</span></div></div>
+  <div class="pu-card"><span class="pu-card-ico">💥</span><div><strong>Blast</strong><br><span>Blasts 10 points off your opponent's score!</span></div></div>
+  <div class="pu-card"><span class="pu-card-ico">💰</span><div><strong>Steal</strong><br><span>Steals 5 points from your opponent and adds them to yours!</span></div></div>
+
+  <hr style="border:none;border-top:1px solid rgba(255,255,255,.08);margin:16px 0">
+
+  <h3>📊 Your Stats</h3>
+  <p>Play solo to build your <strong>rating</strong> and climb the tiers — from 🎯 Beginner all the way to 👑 Legend!</p>
+</div>
+
+<!-- GAME sidebar -->
+<div class="sidebar" id="sidebar-game" style="display:none">
+  <div class="sidebar-title">⚡ Power-Ups</div>
+  <p style="font-size:.78rem;margin-bottom:12px">Answer 3 in a row faster than your opponent to unlock one!</p>
+  <div class="pu-row">
+    <div class="ico">❄️</div>
+    <div class="pu-text"><strong>Freeze</strong><span>Freeze opponent 3s</span></div>
+  </div>
+  <div class="pu-row">
+    <div class="ico">💥</div>
+    <div class="pu-text"><strong>Blast</strong><span>−10 pts from opponent</span></div>
+  </div>
+  <div class="pu-row">
+    <div class="ico">💰</div>
+    <div class="pu-text"><strong>Steal</strong><span>−5 them / +5 you</span></div>
+  </div>
+  <p style="margin-top:16px;font-size:.78rem;color:var(--sub)">Max 2 power-ups per game. Streak resets when used.</p>
+</div>
+
 <div class="app">
 
   <!-- PROFILE SETUP (first time only) -->
@@ -581,6 +646,13 @@ window.showScreen = function(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
+  // Sidebar visibility
+  const sHome = document.getElementById('sidebar-home');
+  const sGame = document.getElementById('sidebar-game');
+  if(window.innerWidth >= 900){
+    sHome.style.display = (id==='home-screen'||id==='menu-screen'||id==='stats-screen') ? 'block' : 'none';
+    sGame.style.display = id==='game-screen' ? 'block' : 'none';
+  }
 };
 window.goToMenu = function(mode){
   state.mode=mode;
