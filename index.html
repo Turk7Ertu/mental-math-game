@@ -984,7 +984,7 @@ function applyFreeze(){
   const tl=state.timeLimit||30;
   let elapsed=Math.floor((Date.now()-state.startTime)/1000);
   let remaining=Math.max(0,tl-elapsed);
-  let count=5;
+  let count=3;
   countEl.textContent=count;
   freezeTickTimer=setInterval(()=>{
     remaining=Math.max(0,remaining-1);
