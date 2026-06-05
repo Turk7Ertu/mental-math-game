@@ -21,6 +21,34 @@
     }
     body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; min-height:100vh; display:flex; justify-content:center; align-items:flex-start; padding:20px 16px 60px; }
     .app { width:100%; max-width:480px; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      display:none;
+      position:fixed; left:0; top:0; bottom:0;
+      width:220px; padding:28px 18px;
+      background:var(--card);
+      border-right:2px solid rgba(124,58,237,.25);
+      overflow-y:auto;
+    }
+    .sidebar-title { font-size:.8rem; font-weight:800; color:var(--lite); text-transform:uppercase; letter-spacing:1px; margin-bottom:14px; }
+    .sidebar-desc { font-size:.82rem; color:var(--sub); line-height:1.55; margin-bottom:18px; }
+    .sidebar-desc strong { color:var(--text); }
+    .pu-list { display:flex; flex-direction:column; gap:10px; }
+    .pu-row { display:flex; align-items:flex-start; gap:10px; background:var(--bg); border-radius:12px; padding:10px 12px; }
+    .pu-row .pu-emoji { font-size:1.6rem; flex-shrink:0; }
+    .pu-row .pu-info .pu-title { font-size:.85rem; font-weight:800; color:var(--text); }
+    .pu-row .pu-info .pu-detail { font-size:.76rem; color:var(--sub); margin-top:2px; line-height:1.4; }
+    .sidebar-mini { display:none; flex-direction:column; gap:8px; }
+    .mini-pu { display:flex; align-items:center; gap:8px; background:var(--bg); border-radius:10px; padding:8px 10px; }
+    .mini-pu .mini-emoji { font-size:1.3rem; }
+    .mini-pu .mini-label { font-size:.78rem; font-weight:700; color:var(--sub); }
+    .sidebar-divider { border:none; border-top:1px solid rgba(255,255,255,.07); margin:16px 0; }
+
+    @media (min-width:900px) {
+      body { justify-content:flex-start; padding-left:240px; }
+      .sidebar { display:block; }
+    }
     .screen { display:none; } .screen.active { display:block; }
     h1 { font-size:2rem; font-weight:800; text-align:center; }
     h2 { font-size:1rem; font-weight:600; color:var(--sub); margin-bottom:8px; }
@@ -199,6 +227,73 @@
   </style>
 </head>
 <body>
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+
+  <!-- Full info shown on home screen -->
+  <div id="sidebar-full">
+    <div class="sidebar-title">🧠 How to Play</div>
+    <p class="sidebar-desc">
+      Answer math questions as <strong>fast as you can</strong> — the quicker you answer, the more points you earn!<br><br>
+      In multiplayer, answer <strong>3 questions faster</strong> than your opponent in a row to unlock a power-up!
+    </p>
+    <hr class="sidebar-divider">
+    <div class="sidebar-title">⚡ Power-Ups</div>
+    <div class="pu-list">
+      <div class="pu-row">
+        <div class="pu-emoji">❄️</div>
+        <div class="pu-info">
+          <div class="pu-title">Freeze</div>
+          <div class="pu-detail">Freezes your opponent for 3 seconds — they can't answer!</div>
+        </div>
+      </div>
+      <div class="pu-row">
+        <div class="pu-emoji">💥</div>
+        <div class="pu-info">
+          <div class="pu-title">Blast</div>
+          <div class="pu-detail">Blasts 10 points off your opponent's score!</div>
+        </div>
+      </div>
+      <div class="pu-row">
+        <div class="pu-emoji">💰</div>
+        <div class="pu-info">
+          <div class="pu-title">Steal</div>
+          <div class="pu-detail">Steals 5 points from your opponent and adds them to yours!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mini icons shown during game -->
+  <div id="sidebar-mini" style="display:none">
+    <div class="sidebar-title">⚡ Power-Ups</div>
+    <div class="pu-list">
+      <div class="pu-row">
+        <div class="pu-emoji">❄️</div>
+        <div class="pu-info">
+          <div class="pu-title">Freeze</div>
+          <div class="pu-detail">3 sec freeze</div>
+        </div>
+      </div>
+      <div class="pu-row">
+        <div class="pu-emoji">💥</div>
+        <div class="pu-info">
+          <div class="pu-title">Blast</div>
+          <div class="pu-detail">-10 pts</div>
+        </div>
+      </div>
+      <div class="pu-row">
+        <div class="pu-emoji">💰</div>
+        <div class="pu-info">
+          <div class="pu-title">Steal</div>
+          <div class="pu-detail">steal 5 pts</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
 <div class="app">
 
   <!-- PROFILE SETUP (first time only) -->
@@ -381,12 +476,17 @@
       <div class="powerup-btn" onclick="usePowerUp('freeze')">
         <div class="pu-icon">❄️</div>
         <div class="pu-name">Freeze</div>
-        <div class="pu-desc">Freeze opponent for 5 seconds</div>
+        <div class="pu-desc">Freeze opponent for 3 seconds</div>
       </div>
       <div class="powerup-btn" onclick="usePowerUp('blast')">
         <div class="pu-icon">💥</div>
         <div class="pu-name">Blast</div>
         <div class="pu-desc">Remove 10 points from opponent</div>
+      </div>
+      <div class="powerup-btn" onclick="usePowerUp('steal')">
+        <div class="pu-icon">💰</div>
+        <div class="pu-name">Steal</div>
+        <div class="pu-desc">Steal 5 points from opponent</div>
       </div>
     </div>
   </div>
@@ -541,6 +641,16 @@ window.showScreen = function(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
+  // Sidebar: full info on home, mini power-ups on game, hidden elsewhere
+  const full = document.getElementById('sidebar-full');
+  const mini = document.getElementById('sidebar-mini');
+  if(id==='home-screen'){
+    full.style.display='block'; mini.style.display='none';
+  } else if(id==='game-screen'){
+    full.style.display='none'; mini.style.display='block';
+  } else {
+    full.style.display='none'; mini.style.display='none';
+  }
 };
 window.goToMenu = function(mode){
   state.mode=mode;
@@ -701,6 +811,7 @@ function listenToRoom(code){
         if(onGameScreen && !state.gameFinished){
           if(oppAction==='freeze') applyFreeze();
           else if(oppAction==='blast') applyBlast();
+          else if(oppAction==='steal') applySteal();
         }
         setTimeout(()=>{ lastSeenPowerupAction=''; },1500);
       }
@@ -954,8 +1065,18 @@ async function showPowerupPopup(){
 window.usePowerUp=async function(type){
   document.getElementById('powerup-popup').classList.add('hidden');
   state.powerupsUsed++;
+
+  // Steal adds 5 pts to MY score immediately
+  if(type==='steal'){
+    state.score+=5;
+    document.getElementById('score-display').textContent=`Score: ${state.score}`;
+    document.getElementById('sc-me-pts').textContent=state.score;
+    const fb=document.getElementById('feedback');
+    fb.textContent='💰 You stole 5 pts!'; fb.className='fb-correct';
+  }
+
   await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`),{
-    powerupAction: type, powerupChoosing: false, powerupsUsed: state.powerupsUsed,
+    powerupAction: type, powerupChoosing: false, powerupsUsed: state.powerupsUsed, score: state.score,
   });
   await update(ref(db,`rooms/${state.roomCode}`),{ streakResetAt: Date.now() });
   state.streak=0;
@@ -1017,6 +1138,18 @@ function applyBlast(){
   card.style.borderColor='var(--red)';
   const fb=document.getElementById('feedback');
   fb.textContent='💥 Opponent used Blast! -10 pts'; fb.className='fb-wrong';
+  setTimeout(()=>{card.style.borderColor='var(--accent)';},1500);
+}
+
+function applySteal(){
+  SFX.blast();
+  state.score=Math.max(0,state.score-5);
+  document.getElementById('score-display').textContent=`Score: ${state.score}`;
+  document.getElementById('sc-me-pts').textContent=state.score;
+  const card=document.getElementById('sc-me');
+  card.style.borderColor='var(--yellow)';
+  const fb=document.getElementById('feedback');
+  fb.textContent='💰 Opponent stole 5 pts from you!'; fb.className='fb-wrong';
   setTimeout(()=>{card.style.borderColor='var(--accent)';},1500);
 }
 
