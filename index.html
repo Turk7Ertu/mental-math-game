@@ -21,35 +21,6 @@
     }
     body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; min-height:100vh; display:flex; justify-content:center; align-items:flex-start; padding:20px 16px 60px; }
     .app { width:100%; max-width:480px; }
-
-    /* ── Sidebar ── */
-    .sidebar {
-      display:none;
-      position:fixed; left:0; top:0; bottom:0;
-      width:220px; padding:28px 18px;
-      background:var(--card);
-      border-right:2px solid rgba(124,58,237,.25);
-      overflow-y:auto;
-    }
-    .sidebar-title { font-size:.8rem; font-weight:800; color:var(--lite); text-transform:uppercase; letter-spacing:1px; margin-bottom:14px; }
-    .sidebar-desc { font-size:.82rem; color:var(--sub); line-height:1.55; margin-bottom:18px; }
-    .sidebar-desc strong { color:var(--text); }
-    .pu-list { display:flex; flex-direction:column; gap:10px; }
-    .pu-row { display:flex; align-items:flex-start; gap:10px; background:var(--bg); border-radius:12px; padding:10px 12px; }
-    .pu-row .pu-emoji { font-size:1.6rem; flex-shrink:0; }
-    .pu-row .pu-info .pu-title { font-size:.85rem; font-weight:800; color:var(--text); }
-    .pu-row .pu-info .pu-detail { font-size:.76rem; color:var(--sub); margin-top:2px; line-height:1.4; }
-    .sidebar-mini { display:none; flex-direction:column; gap:8px; }
-    .mini-pu { display:flex; align-items:center; gap:8px; background:var(--bg); border-radius:10px; padding:8px 10px; }
-    .mini-pu .mini-emoji { font-size:1.3rem; }
-    .mini-pu .mini-label { font-size:.78rem; font-weight:700; color:var(--sub); }
-    .sidebar-divider { border:none; border-top:1px solid rgba(255,255,255,.07); margin:16px 0; }
-
-    @media (min-width:900px) {
-      body { display:block; padding-left:240px; padding-right:0; }
-      .app { margin:20px auto; }
-      .sidebar { display:block; }
-    }
     .screen { display:none; } .screen.active { display:block; }
     h1 { font-size:2rem; font-weight:800; text-align:center; }
     h2 { font-size:1rem; font-weight:600; color:var(--sub); margin-bottom:8px; }
@@ -90,9 +61,8 @@
     /* Game */
     #progress-bar-wrap { width:100%; height:6px; background:var(--card); border-radius:3px; margin-bottom:16px; overflow:hidden; }
     #progress-bar { height:100%; background:var(--accent); border-radius:3px; transition:width .3s; width:0%; }
-    .game-top { display:flex; justify-content:space-between; align-items:center; font-size:.9rem; color:var(--sub); margin-bottom:12px; }
+    .game-top { display:flex; justify-content:space-between; font-size:.9rem; color:var(--sub); margin-bottom:12px; }
     #score-display { color:var(--lite); font-weight:700; }
-    #game-mute-btn { background:var(--card); border:2px solid var(--accent); border-radius:999px; color:var(--text); font-size:.85rem; padding:4px 10px; cursor:pointer; line-height:1; flex-shrink:0; }
 
     /* Scoreboard */
     .scoreboard { display:flex; gap:8px; margin-bottom:10px; }
@@ -225,104 +195,9 @@
     @keyframes popIn { 0%{transform:scale(1.6);opacity:0} 100%{transform:scale(1);opacity:1} }
 
     @media (max-width:400px) { #question-text { font-size:2rem; } .pill { padding:6px 12px; font-size:.82rem; } }
-
-    /* ── Stats Screen ── */
-    #stats-screen { padding-top:16px; }
-    .rating-hero { background:var(--card); border-radius:20px; padding:28px 20px 20px; text-align:center; margin-bottom:16px; border:2px solid rgba(124,58,237,.3); position:relative; overflow:hidden; }
-    .rating-hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 50% 0%, rgba(124,58,237,.18) 0%, transparent 70%); pointer-events:none; }
-    .rating-tier-icon { font-size:3rem; margin-bottom:4px; }
-    .rating-number { font-size:3.2rem; font-weight:900; color:var(--lite); line-height:1; }
-    .rating-tier-label { font-size:1rem; font-weight:700; margin:6px 0 14px; }
-    .rating-progress-wrap { background:rgba(255,255,255,.08); border-radius:999px; height:8px; margin:0 0 8px; overflow:hidden; }
-    .rating-progress-bar { height:100%; border-radius:999px; transition:width .6s ease; }
-    .rating-next { font-size:.8rem; color:var(--sub); }
-    .rating-delta { display:inline-flex; align-items:center; gap:6px; background:var(--card); border-radius:10px; padding:8px 16px; font-size:.95rem; font-weight:700; margin-top:10px; }
-    .delta-up { color:var(--green); } .delta-down { color:var(--red); } .delta-zero { color:var(--sub); }
-
-    .stats-section { margin-bottom:16px; }
-    .stats-section h2 { font-size:.85rem; color:var(--sub); font-weight:700; text-transform:uppercase; letter-spacing:.8px; margin-bottom:10px; }
-    .graph-wrap { background:var(--card); border-radius:14px; padding:16px 12px 8px; }
-    .graph-labels { display:flex; justify-content:space-between; font-size:.72rem; color:var(--sub); margin-top:4px; padding:0 2px; }
-    .stats-row { background:var(--card); border-radius:12px; padding:12px 14px; margin-bottom:6px; display:flex; align-items:center; gap:12px; }
-    .stats-row .sr-icon { font-size:1.2rem; flex-shrink:0; }
-    .stats-row .sr-body { flex:1; }
-    .stats-row .sr-title { font-size:.88rem; font-weight:700; color:var(--text); }
-    .stats-row .sr-sub   { font-size:.76rem; color:var(--sub); margin-top:2px; }
-    .stats-row .sr-delta { font-size:.85rem; font-weight:800; flex-shrink:0; }
-    .no-stats { text-align:center; color:var(--sub); font-size:.9rem; padding:24px 0; }
-
-    /* Rating delta on result screen */
-    #solo-rating-delta { text-align:center; margin:10px 0 4px; }
   </style>
 </head>
 <body>
-<!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
-
-  <!-- Full info shown on home screen -->
-  <div id="sidebar-full">
-    <div class="sidebar-title">🧠 How to Play</div>
-    <p class="sidebar-desc">
-      Answer math questions as <strong>fast as you can</strong> — the quicker you answer, the more points you earn!<br><br>
-      In multiplayer, answer <strong>3 questions faster</strong> than your opponent in a row to unlock a power-up!
-    </p>
-    <hr class="sidebar-divider">
-    <div class="sidebar-title">⚡ Power-Ups</div>
-    <div class="pu-list">
-      <div class="pu-row">
-        <div class="pu-emoji">❄️</div>
-        <div class="pu-info">
-          <div class="pu-title">Freeze</div>
-          <div class="pu-detail">Freezes your opponent for 3 seconds — they can't answer!</div>
-        </div>
-      </div>
-      <div class="pu-row">
-        <div class="pu-emoji">💥</div>
-        <div class="pu-info">
-          <div class="pu-title">Blast</div>
-          <div class="pu-detail">Blasts 10 points off your opponent's score!</div>
-        </div>
-      </div>
-      <div class="pu-row">
-        <div class="pu-emoji">💰</div>
-        <div class="pu-info">
-          <div class="pu-title">Steal</div>
-          <div class="pu-detail">Steals 5 points from your opponent and adds them to yours!</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Mini icons shown during game -->
-  <div id="sidebar-mini" style="display:none">
-    <div class="sidebar-title">⚡ Power-Ups</div>
-    <div class="pu-list">
-      <div class="pu-row">
-        <div class="pu-emoji">❄️</div>
-        <div class="pu-info">
-          <div class="pu-title">Freeze</div>
-          <div class="pu-detail">3 sec freeze</div>
-        </div>
-      </div>
-      <div class="pu-row">
-        <div class="pu-emoji">💥</div>
-        <div class="pu-info">
-          <div class="pu-title">Blast</div>
-          <div class="pu-detail">-10 pts</div>
-        </div>
-      </div>
-      <div class="pu-row">
-        <div class="pu-emoji">💰</div>
-        <div class="pu-info">
-          <div class="pu-title">Steal</div>
-          <div class="pu-detail">steal 5 pts</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
-
 <div class="app">
 
   <!-- PROFILE SETUP (first time only) -->
@@ -359,7 +234,7 @@
     <div class="mode-card" onclick="goToMenu('solo')"><div class="icon">🎯</div><h3>Solo Practice</h3><p>Practice on your own at your own pace</p></div>
     <div class="mode-card" onclick="goToMenu('multi')"><div class="icon">⚔️</div><h3>Challenge a Friend</h3><p>Create a room and compete in real-time</p></div>
     <div class="mode-card" onclick="showScreen('join-screen')"><div class="icon">🔗</div><h3>Join a Game</h3><p>Enter a room code to join a friend's game</p></div>
-    <div class="mode-card" onclick="showStatsScreen()" style="border-color:rgba(124,58,237,.3)"><div class="icon">📊</div><h3>My Stats</h3><p id="home-rating-preview">Track your Mental Math Rating</p></div>
+    <div class="mode-card" id="stats-home-card" onclick="openStatsScreen()"><div class="icon">📊</div><h3>My Stats</h3><p id="stats-home-preview">Play solo games to build your rating!</p></div>
   </div>
 
   <!-- MENU -->
@@ -428,7 +303,6 @@
     <div class="game-top">
       <span id="q-counter">Question 1 / 10</span>
       <span id="score-display">Score: 0</span>
-      <button id="game-mute-btn" onclick="toggleMute()">🔊</button>
     </div>
     <div class="scoreboard" id="scoreboard" style="display:none">
       <div class="score-card me" id="sc-me">
@@ -460,36 +334,17 @@
     <button class="btn" onclick="submitAnswer()">Submit  ↵</button>
   </div>
 
-  <!-- STATS -->
-  <div id="stats-screen" class="screen">
-    <span class="back" onclick="showScreen('home-screen')">← Back</span>
-    <div class="rating-hero">
-      <div class="rating-tier-icon" id="st-tier-icon">🌱</div>
-      <div class="rating-number" id="st-rating">1,000</div>
-      <div class="rating-tier-label" id="st-tier-label">Beginner</div>
-      <div class="rating-progress-wrap"><div class="rating-progress-bar" id="st-progress"></div></div>
-      <div class="rating-next" id="st-next"></div>
-    </div>
-    <div class="stats-section">
-      <h2>📈 Rating History</h2>
-      <div class="graph-wrap">
-        <div id="st-graph"></div>
-        <div class="graph-labels"><span id="st-graph-oldest"></span><span id="st-graph-newest">Now</span></div>
-      </div>
-    </div>
-    <div class="stats-section">
-      <h2>🕹️ Recent Games</h2>
-      <div id="st-recent"></div>
-    </div>
-  </div>
-
   <!-- RESULT -->
   <div id="result-screen" class="screen">
     <div id="solo-result">
       <h1 style="padding-top:24px">Game Over 🎉</h1>
       <div style="font-size:3rem;font-weight:900;color:var(--lite);margin:8px 0" id="final-score">0 pts</div>
-      <div style="color:var(--sub);margin-bottom:6px" id="final-acc"></div>
-      <div id="solo-rating-delta"></div>
+      <div style="color:var(--sub);margin-bottom:10px" id="final-acc"></div>
+      <div id="rating-change-banner" style="display:none;background:var(--card);border-radius:12px;padding:12px 16px;margin-bottom:16px;text-align:center">
+        <div style="font-size:.8rem;color:var(--sub);margin-bottom:2px">Rating</div>
+        <div id="rating-change-text" style="font-size:1.4rem;font-weight:800"></div>
+        <div id="rating-tier-text" style="font-size:.85rem;color:var(--sub);margin-top:2px"></div>
+      </div>
     </div>
     <div id="multi-result" style="display:none">
       <div class="winner-banner">
@@ -511,6 +366,37 @@
       <button class="btn grey" onclick="showScreen('home-screen')">Home</button>
     </div>
   </div>
+
+  <!-- STATS -->
+  <div id="stats-screen" class="screen">
+    <span class="back" onclick="showScreen('home-screen')">← Back</span>
+    <h1 style="margin-bottom:16px">📊 My Stats</h1>
+
+    <!-- Tier / rating card -->
+    <div style="background:var(--card);border-radius:16px;padding:20px;text-align:center;margin-bottom:14px;border:2px solid var(--accent)">
+      <div id="stats-tier-icon" style="font-size:2.5rem;margin-bottom:4px">🎯</div>
+      <div id="stats-tier-name" style="font-size:1.3rem;font-weight:800;margin-bottom:2px">Beginner</div>
+      <div id="stats-rating-num" style="font-size:2.8rem;font-weight:900;color:var(--lite);line-height:1.1">1000</div>
+      <div style="color:var(--sub);font-size:.85rem;margin-top:4px" id="stats-games-count">0 games played</div>
+    </div>
+
+    <!-- Rating graph -->
+    <div style="background:var(--card);border-radius:16px;padding:16px;margin-bottom:14px">
+      <h2 style="margin-bottom:10px">Rating History</h2>
+      <svg id="rating-graph" viewBox="0 0 400 150" width="100%" height="150" style="display:none;overflow:visible"></svg>
+      <div id="rating-graph-empty" style="text-align:center;color:var(--sub);padding:24px 0;font-size:.9rem">Play solo games to see your rating chart!</div>
+    </div>
+
+    <!-- Recent games -->
+    <div style="margin-bottom:20px">
+      <h2 style="margin-bottom:10px">Recent Games</h2>
+      <div id="recent-games-list"></div>
+      <div id="recent-games-empty" style="text-align:center;color:var(--sub);padding:24px 0;font-size:.9rem;display:none">No games yet — start practicing!</div>
+    </div>
+
+    <button class="btn grey" onclick="clearStatsConfirm()" style="font-size:.85rem;padding:8px 0">🗑 Reset All Stats</button>
+  </div>
+
 </div>
 
 <!-- Countdown overlay -->
@@ -537,11 +423,6 @@
         <div class="pu-name">Blast</div>
         <div class="pu-desc">Remove 10 points from opponent</div>
       </div>
-      <div class="powerup-btn" onclick="usePowerUp('steal')">
-        <div class="pu-icon">💰</div>
-        <div class="pu-name">Steal</div>
-        <div class="pu-desc">Steal 5 points from opponent</div>
-      </div>
     </div>
   </div>
 </div>
@@ -561,7 +442,7 @@
     <div class="freeze-icon">❄️</div>
     <h2>You are Frozen!</h2>
     <p style="color:var(--sub);font-size:.9rem;margin-bottom:8px">Opponent used Freeze on you!</p>
-    <div class="freeze-count" id="freeze-count">5</div>
+    <div class="freeze-count" id="freeze-count">3</div>
   </div>
 </div>
 
@@ -610,6 +491,7 @@ function loadProfile(){
 function applyProfile(){
   document.getElementById('home-avatar').textContent = profile.avatar;
   document.getElementById('home-name').textContent   = profile.name;
+  updateStatsHomeCard();
 }
 
 function buildAvatarGrid(){
@@ -625,6 +507,7 @@ function buildAvatarGrid(){
     };
     grid.appendChild(div);
   });
+  // Select first by default
   grid.firstChild.classList.add('picked');
 }
 
@@ -642,6 +525,7 @@ window.saveProfile = function(){
 window.editProfile = function(){
   buildAvatarGrid();
   document.getElementById('profile-name-input').value = profile.name;
+  // Pre-select current avatar
   document.querySelectorAll('.avatar-opt').forEach(el=>{
     if(el.textContent===profile.avatar) el.classList.add('picked');
   });
@@ -663,7 +547,7 @@ let state = {
   results:[], question:'', answer:0, startTime:0,
   streak:0, powerupsUsed:0, allCorrect:true,
   isLastQuestion:false, isFrozen:false,
-  gameFinished:false,
+  gameFinished:false,   // true when I submitted my last answer
 };
 let timerInterval   = null;
 let roomListener    = null;
@@ -671,6 +555,8 @@ let freezeTickTimer = null;
 let lastSeenPowerupChoosingBy = '';
 let lastSeenPowerupAction     = '';
 let lastSeenStreakReset        = 0;
+// Store opponent answer times keyed by question number
+// e.g. oppAnswerTimes[3] = timestamp when opp answered Q3
 const oppAnswerTimes = {};
 
 // ── Helpers ───────────────────────────────────────────────────────────────
@@ -695,17 +581,6 @@ window.showScreen = function(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
-  // Sidebar: full info on home, mini power-ups on game, hidden elsewhere
-  const full = document.getElementById('sidebar-full');
-  const mini = document.getElementById('sidebar-mini');
-  if(id==='home-screen'){
-    full.style.display='block'; mini.style.display='none';
-    updateHomeRatingPreview();
-  } else if(id==='game-screen'){
-    full.style.display='none'; mini.style.display='block';
-  } else {
-    full.style.display='none'; mini.style.display='none';
-  }
 };
 window.goToMenu = function(mode){
   state.mode=mode;
@@ -737,6 +612,7 @@ function showCountdown(callback){
   const numEl   = document.getElementById('countdown-number');
   overlay.classList.remove('hidden');
   let count = 3;
+
   function tick(){
     if(count > 0){
       numEl.className = 'countdown-number';
@@ -750,7 +626,10 @@ function showCountdown(callback){
       numEl.className = 'countdown-go';
       numEl.textContent = 'GO!';
       SFX.countdown(0);
-      setTimeout(()=>{ overlay.classList.add('hidden'); callback(); }, 700);
+      setTimeout(()=>{
+        overlay.classList.add('hidden');
+        callback();
+      }, 700);
     }
   }
   tick();
@@ -778,7 +657,7 @@ async function createRoom(){
     settings:{op:state.op,diff:state.diff,total:state.total,timeLimit:state.timeLimit},
     questions,
     p1:{name:state.playerName,avatar:profile.avatar,score:0,done:false,answerStatus:'',answerTime:0,powerupChoosing:false,powerupAction:'',powerupsUsed:0},
-    p2:{name:'',avatar:'',score:0,done:false,answerStatus:'',answerTime:0,powerupChoosing:false,powerupAction:'',powerupsUsed:0},
+    p2:{name:'',avatar:'',              score:0,done:false,answerStatus:'',answerTime:0,powerupChoosing:false,powerupAction:'',powerupsUsed:0},
   });
   document.getElementById('lobby-code').textContent=code;
   showScreen('lobby-screen');
@@ -826,6 +705,7 @@ function listenToRoom(code){
 
     if(document.getElementById('lobby-screen').classList.contains('active')) updateLobbyUI(room);
 
+    // Start game
     if(room.status==='playing'&&document.getElementById('lobby-screen').classList.contains('active')){
       state.questions=room.questions; state.current=0; state.score=0; state.oppScore=0;
       state.results=[]; state.streak=0; state.powerupsUsed=0; state.allCorrect=true;
@@ -851,26 +731,32 @@ function listenToRoom(code){
 
       const onGameScreen=document.getElementById('game-screen').classList.contains('active');
 
+      // ── Opponent choosing power-up → pause my game ──
       if(oppData?.powerupChoosing && oppData.powerupChoosing!==lastSeenPowerupChoosingBy){
         lastSeenPowerupChoosingBy=oppData.powerupChoosing;
-        if(onGameScreen && !state.gameFinished) pauseForOpponentChoosing();
+        if(onGameScreen && !state.gameFinished){
+          pauseForOpponentChoosing();
+        }
       }
+      // Opponent finished choosing → resume my game
       if(!oppData?.powerupChoosing && lastSeenPowerupChoosingBy){
         lastSeenPowerupChoosingBy='';
         resumeAfterOpponentChose();
       }
 
+      // ── Opponent used a power-up on me ──
       const oppAction=oppData?.powerupAction||'';
       if(oppAction && oppAction!==lastSeenPowerupAction){
         lastSeenPowerupAction=oppAction;
         if(onGameScreen && !state.gameFinished){
           if(oppAction==='freeze') applyFreeze();
           else if(oppAction==='blast') applyBlast();
-          else if(oppAction==='steal') applySteal();
         }
+        // Clear after 1.5s
         setTimeout(()=>{ lastSeenPowerupAction=''; },1500);
       }
 
+      // ── Streak reset (when a power-up was used by either player) ──
       const roomStreakReset = room.streakResetAt || 0;
       if(roomStreakReset && roomStreakReset !== lastSeenStreakReset){
         lastSeenStreakReset = roomStreakReset;
@@ -878,15 +764,18 @@ function listenToRoom(code){
         updatePowerupBadge();
       }
 
+      // ── Live scores & answer status ──
       if(oppData && onGameScreen){
         state.oppScore=oppData.score||0;
         updateScoreboardUI(oppData.answerStatus||'');
+        // Store opp answer time keyed by question number
         if(oppData.answeredQuestion && oppData.answerTime){
           oppAnswerTimes[oppData.answeredQuestion] = oppData.answerTime;
         }
       }
 
-      if(meData?.done && oppData?.done && state.current > 0 && !document.getElementById('result-screen').classList.contains('active')){
+      // ── Both done ──
+      if(meData?.done && oppData?.done && !document.getElementById('result-screen').classList.contains('active')){
         state.oppScore=oppData.score||0;
         state.opponentName=oppData.name||state.opponentName||'Opponent';
         showMultiResults(room);
@@ -915,12 +804,14 @@ async function nextQuestion(){
   state.current++;
   state.isLastQuestion=(state.current===state.total);
 
+  // Double points notification
   if(state.isLastQuestion&&state.allCorrect&&state.mode!=='solo'&&state.current>1){
     await showDoubleNotification();
   }
 
   const{q,ans}=state.questions[state.current-1];
   state.question=q; state.answer=ans; state.startTime=Date.now();
+  // Don't reset lastOppAnswerTime here — instead we compare against startTime
 
   document.getElementById('q-counter').textContent=`Question ${state.current} / ${state.total}`;
   document.getElementById('score-display').textContent=`Score: ${state.score}`;
@@ -1001,6 +892,7 @@ function renderTimer(remaining,total,fg,txt){
 let pausedRemainingTime = 0;
 function pauseForOpponentChoosing(){
   clearInterval(timerInterval);
+  // Calculate how much time is left
   const elapsed=Math.floor((Date.now()-state.startTime)/1000);
   pausedRemainingTime=Math.max(0,(state.timeLimit||30)-elapsed);
   document.getElementById('answer-input').disabled=true;
@@ -1011,6 +903,7 @@ function resumeAfterOpponentChose(){
   if(state.isFrozen||state.gameFinished)return;
   const input=document.getElementById('answer-input');
   input.disabled=false; input.focus();
+  // Resume timer from where it paused
   if(state.timeLimit&&pausedRemainingTime>0){
     const fg=document.getElementById('timer-fg'),txt=document.getElementById('timer-text');
     let remaining=pausedRemainingTime;
@@ -1027,10 +920,10 @@ function resumeAfterOpponentChose(){
 window.submitAnswer=function(){
   const input=document.getElementById('answer-input');
   if(input.disabled)return;
-  const raw=input.value.trim();
-  if(!raw)return;
   clearInterval(timerInterval);
   const elapsed=((Date.now()-state.startTime)/1000).toFixed(1);
+  const raw=input.value.trim();
+  if(!raw)return;
   const userAns=parseInt(raw);
   if(isNaN(userAns))return;
   input.disabled=true;
@@ -1039,6 +932,7 @@ window.submitAnswer=function(){
   const fb=document.getElementById('feedback');
   const isCorrect=(userAns===state.answer);
 
+  // Double pts on last question if all correct
   let multiplier=1;
   if(state.isLastQuestion&&state.allCorrect&&isCorrect&&state.current>1) multiplier=2;
 
@@ -1062,7 +956,10 @@ window.submitAnswer=function(){
 
   if(state.mode!=='solo'){
     syncScore(isCorrect?'correct':'wrong', myAnswerTime);
-    if(!state.gameFinished && state.powerupsUsed<2) checkPowerupStreak(isCorrect, myAnswerTime);
+    // Check streak ONLY if game not finished and under powerup limit
+    if(!state.gameFinished && state.powerupsUsed<2){
+      checkPowerupStreak(isCorrect, myAnswerTime);
+    }
   }
 
   setTimeout(advance,900);
@@ -1093,9 +990,17 @@ async function syncScore(answerStatus, answerTime){
 
 // ── Streak logic ──────────────────────────────────────────────────────────
 function checkPowerupStreak(isCorrect, myAnswerTime){
-  if(!isCorrect){ state.streak=0; updatePowerupBadge(); return; }
+  if(!isCorrect){
+    state.streak=0;
+    updatePowerupBadge();
+    return;
+  }
+  // Use question-number keyed opp answer times — no timing ambiguity
   const oppTimeForThisQ = oppAnswerTimes[state.current];
+  // If opponent hasn't answered this question yet → I was first → faster
+  // If opponent answered → compare actual timestamps
   const iFaster = !oppTimeForThisQ || (myAnswerTime < oppTimeForThisQ);
+
   if(iFaster){
     state.streak++;
     if(state.streak>=3){
@@ -1113,7 +1018,10 @@ async function showPowerupPopup(){
   if(state.gameFinished||state.powerupsUsed>=2)return;
   clearInterval(timerInterval);
   document.getElementById('answer-input').disabled=true;
-  await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`),{ powerupChoosing: state.playerId });
+  // Tell Firebase I'm choosing (pauses opponent)
+  await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`),{
+    powerupChoosing: state.playerId
+  });
   document.getElementById('powerup-popup').classList.remove('hidden');
 }
 
@@ -1121,24 +1029,26 @@ window.usePowerUp=async function(type){
   document.getElementById('powerup-popup').classList.add('hidden');
   state.powerupsUsed++;
 
-  // Steal adds 5 pts to MY score immediately
-  if(type==='steal'){
-    state.score+=5;
-    document.getElementById('score-display').textContent=`Score: ${state.score}`;
-    document.getElementById('sc-me-pts').textContent=state.score;
-    const fb=document.getElementById('feedback');
-    fb.textContent='💰 You stole 5 pts!'; fb.className='fb-correct';
-  }
-
+  // Write chosen power-up action to Firebase (opponent sees it)
+  // Also write streakResetAt to reset BOTH players' streaks
   await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`),{
-    powerupAction: type, powerupChoosing: false, powerupsUsed: state.powerupsUsed, score: state.score,
+    powerupAction: type,
+    powerupChoosing: false,
+    powerupsUsed: state.powerupsUsed,
   });
-  await update(ref(db,`rooms/${state.roomCode}`),{ streakResetAt: Date.now() });
+  await update(ref(db,`rooms/${state.roomCode}`),{
+    streakResetAt: Date.now(),
+  });
+  // Reset my own streak too
   state.streak=0;
   updatePowerupBadge();
+
+  // Clear action after 2s so it doesn't retrigger
   setTimeout(async()=>{
     await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`),{powerupAction:''});
   },2000);
+
+  // Resume my game
   document.getElementById('answer-input').disabled=false;
   document.getElementById('answer-input').focus();
   startTimer();
@@ -1153,15 +1063,18 @@ function applyFreeze(){
   clearInterval(timerInterval);
   clearInterval(freezeTickTimer);
   document.getElementById('answer-input').disabled=true;
+
   const overlay=document.getElementById('freeze-overlay');
   const countEl=document.getElementById('freeze-count');
   overlay.classList.remove('hidden');
+
   const fg=document.getElementById('timer-fg'),txt=document.getElementById('timer-text');
   const tl=state.timeLimit||30;
   let elapsed=Math.floor((Date.now()-state.startTime)/1000);
   let remaining=Math.max(0,tl-elapsed);
   let count=3;
   countEl.textContent=count;
+
   freezeTickTimer=setInterval(()=>{
     remaining=Math.max(0,remaining-1);
     if(tl) renderTimer(remaining,tl,fg,txt);
@@ -1179,7 +1092,9 @@ function applyFreeze(){
           renderTimer(remaining,tl,fg,txt);
           if(remaining<=0){clearInterval(timerInterval);timeout();}
         },1000);
-      } else { timeout(); }
+      } else {
+        timeout();
+      }
     }
   },1000);
 }
@@ -1196,23 +1111,11 @@ function applyBlast(){
   setTimeout(()=>{card.style.borderColor='var(--accent)';},1500);
 }
 
-function applySteal(){
-  SFX.blast();
-  state.score=Math.max(0,state.score-5);
-  document.getElementById('score-display').textContent=`Score: ${state.score}`;
-  document.getElementById('sc-me-pts').textContent=state.score;
-  const card=document.getElementById('sc-me');
-  card.style.borderColor='var(--yellow)';
-  const fb=document.getElementById('feedback');
-  fb.textContent='💰 Opponent stole 5 pts from you!'; fb.className='fb-wrong';
-  setTimeout(()=>{card.style.borderColor='var(--accent)';},1500);
-}
-
 // ── Advance ───────────────────────────────────────────────────────────────
 function advance(){
   updateProgress(state.current);
   if(state.current>=state.total){
-    state.gameFinished=true;
+    state.gameFinished=true; // I'm done — no more power-ups
     state.mode==='solo'?showSoloResults():markDone();
   } else {
     nextQuestion();
@@ -1232,16 +1135,23 @@ async function markDone(){
 async function logActivity(mode, extraData={}){
   try {
     const now  = new Date();
-    const date = now.toLocaleDateString('en-GB');
-    const time = now.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
+    const date = now.toLocaleDateString('en-GB');  // e.g. 02/06/2026
+    const time = now.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'}); // e.g. 14:35
+    const logRef = ref(db, 'activity_log');
     const entry = {
-      date, time, name: profile.name, avatar: profile.avatar, mode,
-      score: state.score, correct: state.results.filter(r=>r.ok).length,
-      total: state.total, operation: state.op, difficulty: state.diff,
+      date, time,
+      name:   profile.name,
+      avatar: profile.avatar,
+      mode,
+      score:     state.score,
+      correct:   state.results.filter(r=>r.ok).length,
+      total:     state.total,
+      operation: state.op,
+      difficulty:state.diff,
       ...extraData,
     };
     await set(ref(db, `activity_log/${Date.now()}_${Math.random().toString(36).slice(2,7)}`), entry);
-  } catch(e){}
+  } catch(e){ /* silent fail — don't break the game */ }
 }
 
 // ── Results ───────────────────────────────────────────────────────────────
@@ -1252,6 +1162,21 @@ function showSoloResults(){
   const correct=state.results.filter(r=>r.ok).length;
   document.getElementById('final-score').textContent=`${state.score} pts`;
   document.getElementById('final-acc').textContent=`${correct} / ${state.total} correct  (${Math.round(correct/state.total*100)}%)`;
+
+  // Rating update
+  const delta = calcRatingDelta(correct, state.total, state.diff, state.timeLimit);
+  const {oldRating, newRating} = addRatingEntry(delta, correct, state.total, state.op, state.diff, state.timeLimit);
+  const tier = getTier(newRating);
+  const banner = document.getElementById('rating-change-banner');
+  const changeText = document.getElementById('rating-change-text');
+  const tierText   = document.getElementById('rating-tier-text');
+  banner.style.display='block';
+  const sign = delta>=0?'+':'';
+  changeText.textContent=`${oldRating} → ${newRating}  (${sign}${delta})`;
+  changeText.style.color = delta>=0?'var(--green)':'var(--red)';
+  tierText.textContent=`${tier.icon} ${tier.name}`;
+  updateStatsHomeCard();
+
   buildReviewList();
   logActivity('Solo');
   if(correct===state.total) SFX.win(); else SFX.lose();
@@ -1284,10 +1209,12 @@ function showMultiResults(room){
   if(myScore>oppScore) SFX.win();
   else if(oppScore>myScore) SFX.lose();
   else SFX.tie();
+  // Show rematch button for multiplayer
   document.getElementById('rematch-section').style.display='block';
   document.getElementById('rematch-btn').disabled=false;
   document.getElementById('rematch-btn').textContent='🔄  Rematch';
   document.getElementById('rematch-status').textContent='';
+  // Keep listener alive for rematch
   listenForRematch(state.roomCode);
 }
 
@@ -1307,6 +1234,7 @@ window.requestRematch = async function(){
   btn.disabled = true;
   btn.textContent = '⏳  Waiting for opponent...';
   document.getElementById('rematch-status').textContent = 'Waiting for opponent to accept rematch...';
+
   await update(ref(db,`rooms/${state.roomCode}/${state.playerId}`),{ rematch: true });
 };
 
@@ -1316,46 +1244,47 @@ function listenForRematch(code){
     if(!snap.exists()) return;
     const room = snap.val();
     const p1 = room.p1, p2 = room.p2;
+
+    // Update rematch status label
     const oppData = room[state.opponentId];
     if(oppData?.rematch && !room[state.playerId]?.rematch){
       document.getElementById('rematch-status').textContent = 'Opponent wants a rematch!';
     }
+
+    // Both accepted → host resets the room and starts new game
     if(p1?.rematch && p2?.rematch){
       if(roomListener){ roomListener(); roomListener=null; }
+
       if(state.playerId==='p1'){
+        // Host: generate new questions and reset room
         const{a,b}=DIFFICULTIES[state.diff];
         const questions=generateQuestions(state.op,a,b,state.total);
         await update(ref(db,`rooms/${code}`),{
-          status:'playing', questions, streakResetAt:0,
+          status:'playing',
+          questions,
+          streakResetAt:0,
           'p1/score':0,'p1/done':false,'p1/answerStatus':'','p1/answerTime':0,
-          'p1/powerupChoosing':false,'p1/powerupAction':'','p1/powerupsUsed':0,'p1/answeredQuestion':0,'p1/rematch':false,
+          'p1/powerupChoosing':false,'p1/powerupAction':'','p1/powerupsUsed':0,
+          'p1/answeredQuestion':0,'p1/rematch':false,
           'p2/score':0,'p2/done':false,'p2/answerStatus':'','p2/answerTime':0,
-          'p2/powerupChoosing':false,'p2/powerupAction':'','p2/powerupsUsed':0,'p2/answeredQuestion':0,'p2/rematch':false,
-        });
-        // p1 already has questions — start immediately
-        startRematchGame(questions);
-      } else {
-        // p2 waits for p1 to finish writing the reset to Firebase
-        const unsub = onValue(ref(db,`rooms/${code}`), snap2=>{
-          if(!snap2.exists()) return;
-          const r = snap2.val();
-          // Wait until p1 has cleared rematch flags and written new questions
-          if(!r.p1?.rematch && !r.p2?.rematch && r.questions){
-            unsub();
-            startRematchGame(r.questions);
-          }
+          'p2/powerupChoosing':false,'p2/powerupAction':'','p2/powerupsUsed':0,
+          'p2/answeredQuestion':0,'p2/rematch':false,
         });
       }
+      // Both players: reset local state and start
+      startRematchGame(room);
     }
   });
 }
 
-function startRematchGame(questions){
+function startRematchGame(room){
+  // Reset all local state for new game
   state.current=0; state.score=0; state.oppScore=0;
   state.results=[]; state.streak=0; state.powerupsUsed=0;
   state.allCorrect=true; state.gameFinished=false;
   Object.keys(oppAnswerTimes).forEach(k=>delete oppAnswerTimes[k]);
   lastSeenPowerupChoosingBy=''; lastSeenPowerupAction=''; lastSeenStreakReset=0;
+
   document.getElementById('rematch-section').style.display='none';
   document.getElementById('sc-me-pts').textContent='0';
   document.getElementById('sc-them-pts').textContent='0';
@@ -1363,234 +1292,317 @@ function startRematchGame(questions){
   document.getElementById('sc-them-status').textContent='';
   document.getElementById('scoreboard').style.display='flex';
   document.getElementById('powerup-badge').textContent='';
+
   showScreen('game-screen');
+
+  // Re-attach live listener
   listenToRoom(state.roomCode);
-  state.questions = questions;
-  showCountdown(()=>nextQuestion());
+
+  // Load questions from Firebase (host already wrote them)
+  get(ref(db,`rooms/${state.roomCode}/questions`)).then(snap=>{
+    state.questions = snap.val();
+    showCountdown(()=>nextQuestion());
+  });
 }
 
 window.playAgain=function(){ showScreen('home-screen'); };
 
-// ── Rating System ─────────────────────────────────────────────────────────
-const TIERS = [
-  { min:1800, label:'Legend',     icon:'👑', color:'#f59e0b' },
-  { min:1500, label:'Master',     icon:'💎', color:'#3b82f6' },
-  { min:1200, label:'Expert',     icon:'🔥', color:'#ef4444' },
-  { min:1000, label:'Skilled',    icon:'🎯', color:'#22c55e' },
-  { min:800,  label:'Apprentice', icon:'⚡', color:'#a78bfa' },
-  { min:0,    label:'Beginner',   icon:'🌱', color:'#94a3b8' },
-];
-
-function getTier(rating){
-  return TIERS.find(t => rating >= t.min) || TIERS[TIERS.length-1];
-}
-
-function getNextTier(rating){
-  const idx = TIERS.findIndex(t => rating >= t.min);
-  return idx > 0 ? TIERS[idx-1] : null;
-}
-
-function loadRatingData(){
-  const r = parseInt(localStorage.getItem('mmg_rating') || '1000');
-  const h = JSON.parse(localStorage.getItem('mmg_history') || '[]');
-  return { rating: r, history: h };
-}
-
-function saveRatingData(rating, history){
-  localStorage.setItem('mmg_rating', rating);
-  localStorage.setItem('mmg_history', JSON.stringify(history.slice(-30)));
-}
-
-function calcRatingDelta(correct, total, avgTimeSec, timeLimit, diff){
-  const accuracy = correct / total;
-  const diffMult = { Easy:0.8, Medium:1.0, Hard:1.3 }[diff] || 1.0;
-  // Accuracy component: centred at 60%
-  const accDelta = (accuracy - 0.6) * 60;
-  // Speed component: reward answering in under half the time limit
-  let speedDelta = 0;
-  if(timeLimit > 0 && avgTimeSec > 0){
-    speedDelta = Math.max(-5, Math.min(10, (0.5 - avgTimeSec/timeLimit) * 20));
-  }
-  return Math.round((accDelta + speedDelta) * diffMult);
-}
-
-function updateRating(correct, total, avgTimeSec, timeLimit, diff, date){
-  const { rating, history } = loadRatingData();
-  const delta = calcRatingDelta(correct, total, avgTimeSec, timeLimit, diff);
-  const newRating = Math.max(100, rating + delta);
-  history.push({ date, rating: newRating, delta, correct, total, avgTimeSec, diff });
-  saveRatingData(newRating, history);
-  return { oldRating: rating, newRating, delta };
-}
-
-function renderRatingGraph(history){
-  if(history.length < 2){
-    return '<p class="no-stats">Play more games to see your graph!</p>';
-  }
-  const W=300, H=110, PL=8, PR=8, PT=10, PB=10;
-  const ratings = history.map(h=>h.rating);
-  const minR = Math.min(...ratings);
-  const maxR = Math.max(...ratings);
-  const range = maxR - minR || 1;
-  const pts = ratings.map((r,i)=>{
-    const x = PL + (i/(ratings.length-1))*(W-PL-PR);
-    const y = PT + (1-(r-minR)/range)*(H-PT-PB);
-    return [x,y];
-  });
-  const line = pts.map(p=>p.join(',')).join(' ');
-  const area = `${PL},${H-PB} ${line} ${W-PR},${H-PB}`;
-  const dots = pts.map(([x,y],i)=>
-    `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${i===pts.length-1?4:2.5}" fill="${i===pts.length-1?'#a78bfa':'#7c3aed'}" />`
-  ).join('');
-  return `
-    <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:110px;display:block">
-      <defs>
-        <linearGradient id="rgrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.45"/>
-          <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.02"/>
-        </linearGradient>
-      </defs>
-      <polygon points="${area}" fill="url(#rgrad)"/>
-      <polyline points="${line}" fill="none" stroke="#a78bfa" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
-      ${dots}
-      <text x="${PL}" y="${PT+6}" font-size="9" fill="#64748b">${minR}</text>
-      <text x="${PL}" y="${PT}" font-size="9" fill="#64748b">${maxR}</text>
-    </svg>`;
-}
-
-window.showStatsScreen = function(){
-  const { rating, history } = loadRatingData();
-  const tier = getTier(rating);
-  const next = getNextTier(rating);
-
-  // Hero card
-  document.getElementById('st-tier-icon').textContent  = tier.icon;
-  document.getElementById('st-rating').textContent     = rating.toLocaleString();
-  document.getElementById('st-tier-label').textContent = tier.label;
-  document.getElementById('st-tier-label').style.color = tier.color;
-
-  // Progress bar to next tier
-  const bar = document.getElementById('st-progress');
-  bar.style.background = tier.color;
-  if(next){
-    const prev = TIERS[TIERS.indexOf(tier)+1];
-    const from = prev ? prev.min : 0;
-    const pct  = Math.min(100, Math.round((rating - from) / (next.min - from) * 100));
-    bar.style.width = pct + '%';
-    document.getElementById('st-next').textContent = `${next.min - rating} pts to ${next.label} ${next.icon}`;
-  } else {
-    bar.style.width = '100%';
-    document.getElementById('st-next').textContent = '🏆 You reached the highest tier!';
-  }
-
-  // Graph
-  document.getElementById('st-graph').innerHTML = renderRatingGraph(history);
-  if(history.length >= 2){
-    document.getElementById('st-graph-oldest').textContent = history[0].date || '';
-    document.getElementById('st-graph-newest').textContent = 'Now';
-  }
-
-  // Recent games list
-  const recentEl = document.getElementById('st-recent');
-  if(history.length === 0){
-    recentEl.innerHTML = '<p class="no-stats">No games yet — start with Solo Practice!</p>';
-  } else {
-    recentEl.innerHTML = [...history].reverse().slice(0,10).map(h=>{
-      const acc  = Math.round(h.correct/h.total*100);
-      const sign = h.delta >= 0 ? '+' : '';
-      const col  = h.delta > 0 ? 'var(--green)' : h.delta < 0 ? 'var(--red)' : 'var(--sub)';
-      const icon = acc===100?'🌟':acc>=70?'✅':acc>=50?'😐':'❌';
-      return `
-        <div class="stats-row">
-          <div class="sr-icon">${icon}</div>
-          <div class="sr-body">
-            <div class="sr-title">${h.correct}/${h.total} correct &nbsp;·&nbsp; ${h.diff}</div>
-            <div class="sr-sub">${h.avgTimeSec ? 'avg '+h.avgTimeSec+'s/question' : ''} &nbsp; ${h.date||''}</div>
-          </div>
-          <div class="sr-delta" style="color:${col}">${sign}${h.delta}</div>
-        </div>`;
-    }).join('');
-  }
-
-  // Home screen preview
-  updateHomeRatingPreview();
-  showScreen('stats-screen');
-};
-
-function updateHomeRatingPreview(){
-  const { rating } = loadRatingData();
-  const tier = getTier(rating);
-  const el = document.getElementById('home-rating-preview');
-  if(el) el.textContent = `${tier.icon} ${tier.label} · ${rating.toLocaleString()} pts`;
-}
-
 // ── Sound Engine ──────────────────────────────────────────────────────────
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
 let isMuted = localStorage.getItem('mmg_muted') === 'true';
-
-const SOUNDS = {
-  correct:     new Audio('sounds/correct.wav'),
-  wrong:       new Audio('sounds/wrong.wav'),
-  timeout:     new Audio('sounds/lose.wav'),
-  tick:        new Audio('sounds/tick.wav'),
-  tick_urgent: new Audio('sounds/tick.wav'),
-  freeze:      new Audio('sounds/freeze.wav'),
-  blast:       new Audio('sounds/blast.mp3'),
-  powerup:     new Audio('sounds/powerup.wav'),
-  countdown:   new Audio('sounds/countdown.wav'),
-  go:          new Audio('sounds/countdown.wav'),
-  win:         new Audio('sounds/win.wav'),
-  lose:        new Audio('sounds/lose.wav'),
-  tie:         new Audio('sounds/win.wav'),
-};
-
-function playSound(name){
-  if(isMuted) return;
-  const audio = SOUNDS[name];
-  if(!audio) return;
-  audio.currentTime = 0;
-  audio.play().catch(()=>{});
-}
-
-const SFX = {
-  correct()      { playSound('correct'); },
-  wrong()        { playSound('wrong'); },
-  timeout()      { playSound('timeout'); },
-  tick(remaining){ playSound(remaining <= 5 ? 'tick_urgent' : 'tick'); },
-  freeze()       { playSound('freeze'); },
-  blast()        { playSound('blast'); },
-  powerupReady() { playSound('powerup'); },
-  countdown(n)   {
-    // Stop any still-playing countdown sound before each beep
-    SOUNDS.countdown.pause();
-    SOUNDS.countdown.currentTime = 0;
-    playSound(n > 0 ? 'countdown' : 'go');
-  },
-  win()          { playSound('win'); },
-  lose()         { playSound('lose'); },
-  tie()          { playSound('tie'); },
-};
-
-function applyMuteUI(){
-  const homeBtn = document.getElementById('mute-btn');
-  const gameBtn = document.getElementById('game-mute-btn');
-  if(isMuted){
-    if(homeBtn){ homeBtn.textContent='🔇 Muted'; homeBtn.style.borderColor='var(--sub)'; homeBtn.style.opacity='0.5'; }
-    if(gameBtn){ gameBtn.textContent='🔇'; gameBtn.style.borderColor='var(--sub)'; gameBtn.style.opacity='0.5'; }
-  } else {
-    if(homeBtn){ homeBtn.textContent='🔊 Sound'; homeBtn.style.borderColor='var(--accent)'; homeBtn.style.opacity='1'; }
-    if(gameBtn){ gameBtn.textContent='🔊'; gameBtn.style.borderColor='var(--accent)'; gameBtn.style.opacity='1'; }
-  }
-}
 
 window.toggleMute = function(){
   isMuted = !isMuted;
   localStorage.setItem('mmg_muted', isMuted);
-  applyMuteUI();
+  const btn = document.getElementById('mute-btn');
+  btn.textContent = isMuted ? '🔇 Muted' : '🔊 Sound';
+  btn.style.borderColor = isMuted ? 'var(--sub)' : 'var(--accent)';
+  btn.style.opacity = isMuted ? '0.5' : '1';
 };
 
-// ── Start ─────────────────────────────────────────────────────────────────
+function getAudioCtx(){
+  if(!audioCtx) audioCtx = new AudioCtx();
+  if(audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+function playTone(freq, type='sine', duration=0.15, volume=0.3, startDelay=0){
+  if(isMuted) return;
+  try {
+    const ctx  = getAudioCtx();
+    const osc  = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime + startDelay);
+    gain.gain.setValueAtTime(volume, ctx.currentTime + startDelay);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startDelay + duration);
+    osc.start(ctx.currentTime + startDelay);
+    osc.stop(ctx.currentTime + startDelay + duration + 0.05);
+  } catch(e){}
+}
+
+function playNoise(duration=0.1, volume=0.2, startDelay=0){
+  if(isMuted) return;
+  try {
+    const ctx        = getAudioCtx();
+    const bufferSize = ctx.sampleRate * duration;
+    const buffer     = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data       = buffer.getChannelData(0);
+    for(let i=0;i<bufferSize;i++) data[i] = Math.random()*2-1;
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(volume, ctx.currentTime + startDelay);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startDelay + duration);
+    source.connect(gain);
+    gain.connect(ctx.destination);
+    source.start(ctx.currentTime + startDelay);
+  } catch(e){}
+}
+
+// Individual sounds
+const SFX = {
+  correct() {
+    playTone(523, 'sine', 0.1, 0.3);
+    playTone(659, 'sine', 0.1, 0.3, 0.1);
+    playTone(784, 'sine', 0.2, 0.3, 0.2);
+  },
+  wrong() {
+    playTone(220, 'sawtooth', 0.15, 0.3);
+    playTone(180, 'sawtooth', 0.15, 0.3, 0.15);
+  },
+  timeout() {
+    playTone(300, 'square', 0.1, 0.25);
+    playTone(250, 'square', 0.1, 0.25, 0.1);
+    playTone(200, 'square', 0.15, 0.25, 0.2);
+  },
+  tick(remaining) {
+    // Normal tick
+    if(remaining > 5){
+      playTone(880, 'sine', 0.05, 0.15);
+    } else {
+      // Last 5 seconds — faster, higher pitch, louder
+      const freq = 880 + (5 - remaining) * 80;
+      playTone(freq, 'square', 0.08, 0.25 + (5-remaining)*0.04);
+    }
+  },
+  freeze() {
+    // Icy descending shimmer
+    for(let i=0;i<6;i++){
+      playTone(1200 - i*120, 'sine', 0.12, 0.2, i*0.07);
+    }
+  },
+  blast() {
+    playNoise(0.08, 0.4);
+    playTone(120, 'sawtooth', 0.2, 0.35, 0.05);
+    playNoise(0.06, 0.3, 0.15);
+  },
+  powerupReady() {
+    // Ascending fanfare
+    [523,659,784,1047].forEach((f,i)=>playTone(f,'sine',0.1,0.3,i*0.08));
+  },
+  countdown(n) {
+    if(n > 0) playTone(440, 'sine', 0.12, 0.4);
+    else      { // GO!
+      playTone(523,'sine',0.08,0.4);
+      playTone(659,'sine',0.08,0.4,0.08);
+      playTone(784,'sine',0.08,0.4,0.16);
+      playTone(1047,'sine',0.2,0.5,0.24);
+    }
+  },
+  win() {
+    const melody = [523,659,784,659,784,1047];
+    melody.forEach((f,i)=>playTone(f,'sine',0.15,0.35,i*0.12));
+  },
+  lose() {
+    [440,415,392,349].forEach((f,i)=>playTone(f,'sine',0.18,0.3,i*0.13));
+  },
+  tie() {
+    [523,523,659].forEach((f,i)=>playTone(f,'sine',0.15,0.3,i*0.12));
+  },
+};
+
+// ── Rating / Stats System ─────────────────────────────────────────────────
+const TIERS = [
+  { name:'Legend',     min:1500, icon:'👑', color:'#f59e0b' },
+  { name:'Master',     min:1400, icon:'⭐', color:'#a78bfa' },
+  { name:'Expert',     min:1300, icon:'💎', color:'#3b82f6' },
+  { name:'Skilled',    min:1200, icon:'🔥', color:'#22c55e' },
+  { name:'Apprentice', min:1100, icon:'📈', color:'#94a3b8' },
+  { name:'Beginner',   min:0,    icon:'🎯', color:'#64748b' },
+];
+function getTier(rating){ return TIERS.find(t=>rating>=t.min)||TIERS[TIERS.length-1]; }
+
+function getRatingHistory(){
+  try{ return JSON.parse(localStorage.getItem('mmg_rating_history')||'[]'); }catch{ return []; }
+}
+function saveRatingHistory(hist){
+  localStorage.setItem('mmg_rating_history', JSON.stringify(hist.slice(-30)));
+}
+function getCurrentRating(){
+  const h=getRatingHistory(); return h.length>0?h[h.length-1].rating:1000;
+}
+
+function calcRatingDelta(correct, total, diff, timeLimit){
+  const accuracy = correct/total;
+  const base = (accuracy - 0.5)*60;            // -30 to +30
+  const diffMult  = {Easy:0.8,Medium:1.0,Hard:1.2}[diff]||1.0;
+  const timeMult  = timeLimit===0?0.7:timeLimit===30?0.9:timeLimit===10?1.1:1.0;
+  const qMult     = total===5?0.8:total===20?1.1:1.0;
+  return Math.round(base*diffMult*timeMult*qMult);
+}
+
+function addRatingEntry(delta, correct, total, op, diff, timeLimit){
+  const hist = getRatingHistory();
+  const oldRating = hist.length>0?hist[hist.length-1].rating:1000;
+  const newRating  = Math.max(0, oldRating+delta);
+  hist.push({
+    rating: newRating, delta,
+    accuracy: Math.round(correct/total*100),
+    op, diff, timeLimit: timeLimit||0,
+    date: new Date().toLocaleDateString('en-GB'),
+  });
+  saveRatingHistory(hist);
+  return { oldRating, newRating, delta };
+}
+
+function updateStatsHomeCard(){
+  const hist = getRatingHistory();
+  const preview = document.getElementById('stats-home-preview');
+  if(!preview) return;
+  if(hist.length===0){ preview.textContent='Play solo games to build your rating!'; return; }
+  const rating = hist[hist.length-1].rating;
+  const tier   = getTier(rating);
+  preview.textContent=`${tier.icon} ${tier.name}  ·  ${rating} rating  ·  ${hist.length} game${hist.length!==1?'s':''}`;
+}
+
+window.openStatsScreen = function(){
+  buildStatsScreen();
+  showScreen('stats-screen');
+};
+
+function buildStatsScreen(){
+  const hist   = getRatingHistory();
+  const rating = hist.length>0?hist[hist.length-1].rating:1000;
+  const tier   = getTier(rating);
+
+  document.getElementById('stats-tier-icon').textContent  = tier.icon;
+  document.getElementById('stats-tier-name').textContent  = tier.name;
+  document.getElementById('stats-tier-name').style.color  = tier.color;
+  document.getElementById('stats-rating-num').textContent = rating;
+  document.getElementById('stats-games-count').textContent= `${hist.length} game${hist.length!==1?'s':''} played`;
+
+  buildRatingGraph(hist);
+  buildRecentGames(hist);
+}
+
+function buildRatingGraph(hist){
+  const svg    = document.getElementById('rating-graph');
+  const empty  = document.getElementById('rating-graph-empty');
+  svg.innerHTML='';
+  if(hist.length<2){ svg.style.display='none'; empty.style.display='block'; return; }
+  svg.style.display=''; empty.style.display='none';
+
+  const W=400, H=150, PL=36, PR=10, PT=10, PB=24;
+  const IW=W-PL-PR, IH=H-PT-PB;
+
+  const ratings=hist.map(h=>h.rating);
+  const minR=Math.min(...ratings), maxR=Math.max(...ratings);
+  const span=Math.max(maxR-minR, 50);
+  const lo=minR-span*0.1, hi=maxR+span*0.1;
+
+  const toX=i=>PL+i/(hist.length-1)*IW;
+  const toY=r=>PT+IH-(r-lo)/(hi-lo)*IH;
+
+  function mkEl(tag,attrs,text){
+    const e=document.createElementNS('http://www.w3.org/2000/svg',tag);
+    Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));
+    if(text!==undefined) e.textContent=text;
+    return e;
+  }
+
+  // Horizontal grid lines
+  [0,0.5,1].forEach(f=>{
+    const r=lo+f*(hi-lo), y=toY(r);
+    svg.appendChild(mkEl('line',{x1:PL,y1:y,x2:W-PR,y2:y,stroke:'#2a2a3e','stroke-width':'1'}));
+    svg.appendChild(mkEl('text',{x:PL-4,y:y+4,'font-size':'10',fill:'#94a3b8','text-anchor':'end'},String(Math.round(r))));
+  });
+
+  // Filled area under the line
+  const pts=hist.map((h,i)=>`${toX(i)},${toY(h.rating)}`).join(' ');
+  svg.appendChild(mkEl('polygon',{
+    points:`${toX(0)},${toY(lo)} ${pts} ${toX(hist.length-1)},${toY(lo)}`,
+    fill:'rgba(124,58,237,0.18)',stroke:'none'
+  }));
+
+  // Line
+  svg.appendChild(mkEl('polyline',{
+    points:pts,fill:'none',stroke:'#7c3aed','stroke-width':'2.5',
+    'stroke-linejoin':'round','stroke-linecap':'round'
+  }));
+
+  // Dots — green if went up, red if went down
+  hist.forEach((h,i)=>{
+    svg.appendChild(mkEl('circle',{
+      cx:toX(i),cy:toY(h.rating),r:'4.5',
+      fill:h.delta>=0?'#22c55e':'#ef4444',
+      stroke:'#1e1e2e','stroke-width':'1.5'
+    }));
+  });
+
+  // X labels: first and last date
+  if(hist[0].date) svg.appendChild(mkEl('text',{x:toX(0),y:H-4,'font-size':'10',fill:'#94a3b8','text-anchor':'middle'},hist[0].date));
+  if(hist.length>1&&hist[hist.length-1].date)
+    svg.appendChild(mkEl('text',{x:toX(hist.length-1),y:H-4,'font-size':'10',fill:'#94a3b8','text-anchor':'middle'},hist[hist.length-1].date));
+}
+
+function buildRecentGames(hist){
+  const list  = document.getElementById('recent-games-list');
+  const empty = document.getElementById('recent-games-empty');
+  list.innerHTML='';
+  if(hist.length===0){ empty.style.display='block'; return; }
+  empty.style.display='none';
+  [...hist].reverse().slice(0,10).forEach(h=>{
+    const deltaColor = h.delta>=0?'var(--green)':'var(--red)';
+    const deltaText  = h.delta>=0?`+${h.delta}`:String(h.delta);
+    const tlLabel    = h.timeLimit===0?'No limit':h.timeLimit+'s';
+    const div=document.createElement('div');
+    div.style.cssText='background:var(--card);border-radius:10px;padding:10px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;';
+    div.innerHTML=`
+      <div>
+        <div style="font-weight:700;font-size:.9rem">${h.op||'Mixed'} · ${h.diff||'Easy'} · ${tlLabel}</div>
+        <div style="color:var(--sub);font-size:.78rem">${h.accuracy}% correct · ${h.date||''}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;margin-left:12px">
+        <div style="font-weight:800;color:${deltaColor};font-size:1.1rem">${deltaText}</div>
+        <div style="color:var(--sub);font-size:.78rem">${h.rating} rating</div>
+      </div>`;
+    list.appendChild(div);
+  });
+}
+
+window.clearStatsConfirm = function(){
+  if(confirm('Reset all rating history? This cannot be undone.')){
+    localStorage.removeItem('mmg_rating_history');
+    buildStatsScreen();
+    updateStatsHomeCard();
+  }
+};
+
+// ── Start (must be last — needs showScreen to be defined) ─────────────────
 loadProfile();
-applyMuteUI();
+// Apply saved mute state to button
+(function(){
+  const btn = document.getElementById('mute-btn');
+  if(isMuted){
+    btn.textContent='🔇 Muted';
+    btn.style.borderColor='var(--sub)';
+    btn.style.opacity='0.5';
+  }
+})();
 </script>
 </body>
 </html>
