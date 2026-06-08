@@ -1491,17 +1491,24 @@ function checkMatchPair(){
     matchState.flipped=[]; matchState.locked=false;
     updateMatchHeader();
     SFX.correct();
-    // Fly-off animation: direction based on card position on screen
+    // Step 1: green glow + shake
     [c1, c2].forEach(c => {
-      const rect = c.el.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const goRight = centerX > window.innerWidth / 2;
-      const flyX = goRight ? '280px' : '-280px';
-      const flyRot = goRight ? '35deg' : '-35deg';
-      c.el.style.setProperty('--fly-x', flyX);
-      c.el.style.setProperty('--fly-rot', flyRot);
-      c.el.classList.add('fly-off');
+      c.el.classList.add('match-shake');
     });
+    // Step 2: after shake, speed fly off in correct direction
+    setTimeout(()=>{
+      [c1, c2].forEach(c => {
+        const rect = c.el.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const goRight = centerX > window.innerWidth / 2;
+        const flyX = goRight ? '220px' : '-220px';
+        const flyRot = goRight ? '25deg' : '-25deg';
+        c.el.style.setProperty('--fly-x', flyX);
+        c.el.style.setProperty('--fly-rot', flyRot);
+        c.el.classList.remove('match-shake');
+        c.el.classList.add('fly-off');
+      });
+    }, 380);
     if(matchState.matched===matchState.total){
       clearInterval(matchState.timerInterval);
       setTimeout(showMatchResult, 900);
