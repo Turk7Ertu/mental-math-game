@@ -211,6 +211,21 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 .steal-name  { color:#fbbf24; }
 .sidebar-title { font-size:1rem; font-weight:800; color:var(--lite); margin-bottom:4px; }
 
+/* ── Math background symbols ─────────────────────────────── */
+.math-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  display: none;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-weight: 900;
+  color: var(--text);
+  user-select: none;
+}
+.math-bg.visible { display: block; }
+.math-bg span { position: absolute; line-height: 1; }
+
 /* ── Tab Bar ─────────────────────────────────────────────── */
 .tab-bar {
   position: fixed;
