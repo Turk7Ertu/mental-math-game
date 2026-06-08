@@ -223,7 +223,7 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
   color: var(--text);
   user-select: none;
 }
-.math-bg.visible { display: block; }
+.math-bg.visible { display: block; opacity: 1; }
 .math-bg span { position: absolute; line-height: 1; }
 
 /* ── Tab Bar ─────────────────────────────────────────────── */
