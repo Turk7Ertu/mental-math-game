@@ -140,6 +140,14 @@ window.showScreen = function(id){
     sHome.style.display = (id==='home-screen'||id==='menu-screen'||id==='stats-screen'||id==='match-menu-screen') ? 'block' : 'none';
     sGame.style.display = id==='game-screen' ? 'block' : 'none';
   }
+  // Stop all sounds when leaving game screens
+  const gameScreens = ['game-screen','match-game-screen'];
+  if(!gameScreens.includes(id) && audioCtx && audioCtx.state === 'running'){
+    audioCtx.suspend();
+  }
+  if(gameScreens.includes(id) && audioCtx && audioCtx.state === 'suspended'){
+    audioCtx.resume();
+  }
 };
 
 window.switchTab = function(tab){
@@ -989,6 +997,9 @@ function getAudioCtx(){
   if(!audioCtx) audioCtx = new AudioCtx();
   if(audioCtx.state === 'suspended') audioCtx.resume();
   return audioCtx;
+}
+function stopAllSounds(){
+  if(audioCtx && audioCtx.state === 'running') audioCtx.suspend();
 }
 
 function playTone(freq, type='sine', duration=0.15, volume=0.3, startDelay=0){
