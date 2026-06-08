@@ -1214,7 +1214,11 @@ window.startMatchGame = function(){
   matchState.flipped=[]; matchState.locked=false;
   clearInterval(matchState.timerInterval);
 
-  const pairs = generateMatchPairs(op, diff, 12);
+  // Grid size: Easy 2×3=3 pairs, Medium 3×4=6 pairs, Hard 4×4=8 pairs
+  const pairCount = diff==='Easy'?3 : diff==='Medium'?6 : 8;
+  matchState.total = pairCount;
+
+  const pairs = generateMatchPairs(op, diff, pairCount);
 
   // Build cards: one question + one answer per pair
   const cards=[];
@@ -1243,6 +1247,9 @@ window.startMatchGame = function(){
 function buildMatchGrid(){
   const grid=document.getElementById('match-grid');
   grid.innerHTML='';
+  // Set columns based on difficulty: Easy=2, Medium=3, Hard=4
+  const cols = matchState.diff==='Easy'?2 : matchState.diff==='Medium'?3 : 4;
+  grid.style.gridTemplateColumns=`repeat(${cols}, 1fr)`;
   matchState.cards.forEach((card,idx)=>{
     const div=document.createElement('div');
     div.className='match-card'+(card.type==='a'?' is-answer':'');
@@ -1278,7 +1285,7 @@ function checkMatchPair(){
     matchState.flipped=[]; matchState.locked=false;
     updateMatchHeader();
     SFX.correct();
-    if(matchState.matched===12){
+    if(matchState.matched===matchState.total){
       clearInterval(matchState.timerInterval);
       setTimeout(showMatchResult, 600);
     }
@@ -1298,7 +1305,7 @@ function checkMatchPair(){
 
 function updateMatchHeader(){
   const m=Math.floor(matchState.timer/60), s=matchState.timer%60;
-  document.getElementById('match-pairs-label').textContent=`${matchState.matched} / 12 ✅`;
+  document.getElementById('match-pairs-label').textContent=`${matchState.matched} / ${matchState.total} ✅`;
   document.getElementById('match-timer-label').textContent=`${m}:${String(s).padStart(2,'0')}`;
   document.getElementById('match-mistakes-label').textContent=`${matchState.mistakes} ❌`;
 }
