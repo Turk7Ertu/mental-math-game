@@ -125,6 +125,8 @@ window.showScreen = function(id){
   window.scrollTo(0,0);
   // Always hide match result overlay when navigating
   document.getElementById('match-result-overlay').classList.add('hidden');
+  // Home screen gradient
+  document.body.classList.toggle('home-bg', id==='home-screen');
   // Update active tab
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   if(id==='stats-screen')     document.getElementById('tab-stats').classList.add('active');
