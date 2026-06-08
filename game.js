@@ -123,6 +123,8 @@ window.showScreen = function(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
+  // Always hide match result overlay when navigating
+  document.getElementById('match-result-overlay').classList.add('hidden');
   // Update active tab
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   if(id==='stats-screen') document.getElementById('tab-stats').classList.add('active');
