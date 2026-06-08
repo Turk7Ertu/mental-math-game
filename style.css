@@ -5,7 +5,7 @@
   --text:   #f1f5f9; --sub:    #94a3b8;
 }
 body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; min-height:100vh; display:flex; justify-content:center; align-items:flex-start; padding:20px 16px 60px; transition:background 0.6s ease; }
-body.home-bg { background: linear-gradient(to top, #7f1d1d 0%, #1e1e2e 60%); }
+body.home-bg { background: linear-gradient(to top, #3b0a0a 0%, #1e1e2e 60%); }
 .app { width:100%; max-width:480px; }
 .screen { display:none; } .screen.active { display:block; }
 h1 { font-size:2rem; font-weight:800; text-align:center; }
