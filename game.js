@@ -528,21 +528,21 @@ window.resumeGame = function(){
     matchPaused = false;
     document.getElementById('match-pause-btn').textContent = '⏸';
     matchState.locked = false;
-    if(matchState.timeLimit > 0){
-      matchState.timerInterval = setInterval(()=>{
+    clearInterval(matchState.timerInterval);
+    matchState.timerInterval = setInterval(()=>{
+      if(matchPaused) return;
+      if(matchState.timeLimit > 0){
         matchState.timer--;
         updateMatchHeader();
         if(matchState.timer <= 0){
           clearInterval(matchState.timerInterval);
           setTimeout(showMatchTimeUp, 300);
         }
-      }, 1000);
-    } else {
-      matchState.timerInterval = setInterval(()=>{
+      } else {
         matchState.timer++;
         updateMatchHeader();
-      }, 1000);
-    }
+      }
+    }, 1000);
   }
 };
 
@@ -551,7 +551,10 @@ let matchPaused = false;
 
 window.toggleMatchPause = function(){
   if(!matchPaused){
+    // Cancel startup timeout if still pending
+    clearTimeout(matchState._startTimeout);
     clearInterval(matchState.timerInterval);
+    matchState.timerInterval = null;
     matchPaused = true;
     matchState.locked = true;
     document.getElementById('match-pause-btn').textContent = '▶';
@@ -566,10 +569,10 @@ window.toggleMatchPause = function(){
 window.submitAnswer=function(){
   const input=document.getElementById('answer-input');
   if(input.disabled)return;
+  const raw=input.value.trim();
+  if(!raw)return; // don't touch the timer if input is empty
   clearInterval(timerInterval);
   const elapsed=((Date.now()-state.startTime)/1000).toFixed(1);
-  const raw=input.value.trim();
-  if(!raw)return;
   const userAns=parseInt(raw);
   if(isNaN(userAns))return;
   input.disabled=true;
@@ -1372,13 +1375,16 @@ window.beginMatchGame = function(){
     card.el.classList.remove('flipped','pop-reveal');
   });
   matchState.locked = false;
-  // Start timer after a brief pause so cards finish flipping
-  setTimeout(()=>{
-    matchState.timerInterval=setInterval(()=>{
-      if(matchState.timeLimit>0){
+  matchPaused = false;
+
+  function startMatchTimer(){
+    clearInterval(matchState.timerInterval);
+    matchState.timerInterval = setInterval(()=>{
+      if(matchPaused) return; // safety guard
+      if(matchState.timeLimit > 0){
         matchState.timer--;
         updateMatchHeader();
-        if(matchState.timer<=0){
+        if(matchState.timer <= 0){
           clearInterval(matchState.timerInterval);
           setTimeout(showMatchTimeUp, 300);
         }
@@ -1386,9 +1392,12 @@ window.beginMatchGame = function(){
         matchState.timer++;
         updateMatchHeader();
       }
-    },1000);
+    }, 1000);
     updateMatchHeader();
-  }, 600);
+  }
+
+  // Short delay so flip-back animation plays, then start timer
+  matchState._startTimeout = setTimeout(startMatchTimer, 600);
 };
 
 function buildMatchGrid(){
