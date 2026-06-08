@@ -94,6 +94,7 @@ let state = {
 let timerInterval   = null;
 let roomListener    = null;
 let freezeTickTimer = null;
+let advanceTimeout  = null;
 let lastSeenPowerupChoosingBy = '';
 let lastSeenPowerupAction     = '';
 let lastSeenStreakReset        = 0;
@@ -118,8 +119,32 @@ function generateQuestions(op,rangeA,rangeB,total){
 }
 function makeRoomCode(){ return String(randInt(1000,9999)); }
 
+// ── Stop solo game cleanly ────────────────────────────────────────────────
+function stopSoloGame(){
+  clearInterval(timerInterval);
+  clearInterval(freezeTickTimer);
+  clearTimeout(advanceTimeout);
+  timerInterval = null;
+  freezeTickTimer = null;
+  advanceTimeout = null;
+  state.gameFinished = true;
+  soloPaused = false;
+  soloPausedRemaining = 0;
+  const spb = document.getElementById('solo-pause-btn');
+  if(spb) spb.textContent = '⏸';
+  const input = document.getElementById('answer-input');
+  if(input) input.disabled = false;
+  document.getElementById('pause-overlay').classList.add('hidden');
+  document.getElementById('empty-answer-warning').classList.add('hidden');
+}
+
 // ── Screens ───────────────────────────────────────────────────────────────
 window.showScreen = function(id){
+  // If leaving the solo game screen, kill all background activity
+  const currentScreen = document.querySelector('.screen.active');
+  if(currentScreen && currentScreen.id === 'game-screen' && id !== 'game-screen'){
+    stopSoloGame();
+  }
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
@@ -631,7 +656,7 @@ window.submitAnswer=function(){
     }
   }
 
-  setTimeout(advance,900);
+  advanceTimeout = setTimeout(advance, 900);
 };
 
 function timeout(){
