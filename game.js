@@ -205,6 +205,8 @@ function startSoloGame(){
   const{a,b}=DIFFICULTIES[state.diff];
   state.questions=generateQuestions(state.op,a,b,state.total);
   state.current=0; state.score=0; state.results=[]; state.allCorrect=true; state.gameFinished=false;
+  soloPaused=false; soloPausedRemaining=0;
+  const spb=document.getElementById('solo-pause-btn'); if(spb) spb.textContent='⏸';
   document.getElementById('scoreboard').style.display='none';
   document.getElementById('powerup-badge').textContent='';
   showScreen('game-screen');
@@ -480,6 +482,85 @@ function resumeAfterOpponentChose(){
     },1000);
   }
 }
+
+// ── Solo Pause ────────────────────────────────────────────────────────────
+let soloPaused = false;
+let soloPausedRemaining = 0;
+
+window.toggleSoloPause = function(){
+  if(state.gameFinished) return;
+  if(!soloPaused){
+    // Pause
+    clearInterval(timerInterval);
+    const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+    soloPausedRemaining = Math.max(0, (state.timeLimit || 0) - elapsed);
+    soloPaused = true;
+    document.getElementById('solo-pause-btn').textContent = '▶';
+    document.getElementById('answer-input').disabled = true;
+    document.getElementById('pause-overlay').classList.remove('hidden');
+    document.getElementById('pause-resume-btn').onclick = resumeGame;
+  } else {
+    resumeGame();
+  }
+};
+
+window.resumeGame = function(){
+  document.getElementById('pause-overlay').classList.add('hidden');
+  // Solo resume
+  if(soloPaused){
+    soloPaused = false;
+    document.getElementById('solo-pause-btn').textContent = '⏸';
+    document.getElementById('answer-input').disabled = false;
+    document.getElementById('answer-input').focus();
+    if(state.timeLimit && soloPausedRemaining > 0){
+      const fg = document.getElementById('timer-fg'), txt = document.getElementById('timer-text');
+      let remaining = soloPausedRemaining;
+      renderTimer(remaining, state.timeLimit, fg, txt);
+      timerInterval = setInterval(()=>{
+        remaining--;
+        renderTimer(remaining, state.timeLimit, fg, txt);
+        if(remaining <= 0){ clearInterval(timerInterval); timeout(); }
+      }, 1000);
+    }
+  }
+  // Match resume
+  if(matchPaused){
+    matchPaused = false;
+    document.getElementById('match-pause-btn').textContent = '⏸';
+    matchState.locked = false;
+    if(matchState.timeLimit > 0){
+      matchState.timerInterval = setInterval(()=>{
+        matchState.timer--;
+        updateMatchHeader();
+        if(matchState.timer <= 0){
+          clearInterval(matchState.timerInterval);
+          setTimeout(showMatchTimeUp, 300);
+        }
+      }, 1000);
+    } else {
+      matchState.timerInterval = setInterval(()=>{
+        matchState.timer++;
+        updateMatchHeader();
+      }, 1000);
+    }
+  }
+};
+
+// ── Match Pause ───────────────────────────────────────────────────────────
+let matchPaused = false;
+
+window.toggleMatchPause = function(){
+  if(!matchPaused){
+    clearInterval(matchState.timerInterval);
+    matchPaused = true;
+    matchState.locked = true;
+    document.getElementById('match-pause-btn').textContent = '▶';
+    document.getElementById('pause-overlay').classList.remove('hidden');
+    document.getElementById('pause-resume-btn').onclick = resumeGame;
+  } else {
+    resumeGame();
+  }
+};
 
 // ── Submit ────────────────────────────────────────────────────────────────
 window.submitAnswer=function(){
@@ -1221,6 +1302,8 @@ window.startMatchGame = function(){
   matchState.op=op; matchState.diff=diff; matchState.timeLimit=timeLimit;
   matchState.matched=0; matchState.mistakes=0;
   matchState.flipped=[]; matchState.locked=false;
+  matchPaused=false;
+  const mpb=document.getElementById('match-pause-btn'); if(mpb) mpb.textContent='⏸';
   clearInterval(matchState.timerInterval);
 
   // Grid size: Easy 2×3=3 pairs, Medium 3×4=6 pairs, Hard 4×4=8 pairs
@@ -1349,9 +1432,20 @@ function checkMatchPair(){
     matchState.flipped=[]; matchState.locked=false;
     updateMatchHeader();
     SFX.correct();
+    // Fly-off animation: direction based on card position on screen
+    [c1, c2].forEach(c => {
+      const rect = c.el.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const goRight = centerX > window.innerWidth / 2;
+      const flyX = goRight ? '280px' : '-280px';
+      const flyRot = goRight ? '35deg' : '-35deg';
+      c.el.style.setProperty('--fly-x', flyX);
+      c.el.style.setProperty('--fly-rot', flyRot);
+      c.el.classList.add('fly-off');
+    });
     if(matchState.matched===matchState.total){
       clearInterval(matchState.timerInterval);
-      setTimeout(showMatchResult, 600);
+      setTimeout(showMatchResult, 900);
     }
   } else {
     // Wrong

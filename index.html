@@ -12,7 +12,7 @@
     gtag('js', new Date());
     gtag('config', 'G-LJPP72DDRC');
   </script>
-  <link rel="stylesheet" href="style.css?v=17" />
+  <link rel="stylesheet" href="style.css?v=19" />
 </head>
 <body>
 
@@ -187,6 +187,7 @@
     <div class="game-top">
       <span id="q-counter">Question 1 / 10</span>
       <span id="score-display">Score: 0</span>
+      <button class="pause-btn" id="solo-pause-btn" onclick="toggleSoloPause()" title="Pause">⏸</button>
     </div>
     <div class="scoreboard" id="scoreboard" style="display:none">
       <div class="score-card me" id="sc-me">
@@ -344,10 +345,21 @@
       <span id="match-pairs-label" class="match-stat">0 / 12 ✅</span>
       <span id="match-timer-label" class="match-stat">0:00</span>
       <span id="match-mistakes-label" class="match-stat">0 ❌</span>
+      <button class="pause-btn" id="match-pause-btn" onclick="toggleMatchPause()" title="Pause">⏸</button>
     </div>
     <div class="match-grid" id="match-grid"></div>
   </div>
 
+</div>
+
+<!-- Pause overlay -->
+<div class="pause-overlay hidden" id="pause-overlay">
+  <div class="pause-box">
+    <div style="font-size:3rem;margin-bottom:8px">⏸</div>
+    <h2>Game Paused</h2>
+    <p>Take a breather!</p>
+    <button class="match-ready-btn" id="pause-resume-btn" onclick="resumeGame()">▶ Resume</button>
+  </div>
 </div>
 
 <!-- Countdown overlay -->
@@ -432,6 +444,6 @@
   </div>
 </div>
 
-<script type="module" src="game.js?v=18"></script>
+<script type="module" src="game.js?v=20"></script>
 </body>
 </html>
