@@ -1249,31 +1249,37 @@ window.startMatchGame = function(){
   document.getElementById('match-ready-overlay').classList.add('hidden');
   updateMatchHeader();
 
-  // Preview phase: reveal cards one by one with bounce, then show Ready overlay
+  // Preview phase: show each card one at a time (open → bounce → close), then show Ready overlay
   matchState.locked = true;
   const indices = matchState.cards.map((_,i)=>i);
-  // Shuffle reveal order so they don't go left-to-right
+  // Shuffle reveal order
   for(let i=indices.length-1;i>0;i--){
     const j=randInt(0,i);[indices[i],indices[j]]=[indices[j],indices[i]];
   }
+  const SHOW_MS  = 900;  // how long card stays open
+  const STEP_MS  = 1200; // total time per card (open + close gap)
   indices.forEach((cardIdx, step) => {
+    const openAt  = step * STEP_MS;
+    const closeAt = openAt + SHOW_MS;
+    // Open with bounce
     setTimeout(() => {
-      const card = matchState.cards[cardIdx];
-      const el = card.el;
-      // Flip open
+      const el = matchState.cards[cardIdx].el;
       el.classList.add('flipped');
-      // Bounce animation
       el.classList.remove('pop-reveal');
-      void el.offsetWidth; // reflow to restart animation
+      void el.offsetWidth;
       el.classList.add('pop-reveal');
-      // After all cards revealed, show Ready overlay
-      if(step === indices.length - 1){
-        setTimeout(()=>{
-          document.getElementById('match-ready-overlay').classList.remove('hidden');
-        }, 700);
-      }
-    }, step * 350);
+    }, openAt);
+    // Close again
+    setTimeout(() => {
+      const el = matchState.cards[cardIdx].el;
+      el.classList.remove('flipped','pop-reveal');
+    }, closeAt);
   });
+  // After all cards done, show Ready overlay
+  const totalTime = indices.length * STEP_MS + 400;
+  setTimeout(()=>{
+    document.getElementById('match-ready-overlay').classList.remove('hidden');
+  }, totalTime);
 };
 
 window.beginMatchGame = function(){
