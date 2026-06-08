@@ -386,3 +386,41 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 }
 .mstat-val   { font-size: 1.5rem; font-weight: 900; color: var(--lite); }
 .mstat-label { font-size: .75rem; color: var(--sub); margin-top: 2px; }
+
+/* ── Settings Screen ─────────────────────────────────────── */
+.settings-card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+}
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.settings-label {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.settings-desc {
+  font-size: .82rem;
+  color: var(--sub);
+}
+.toggle-btn {
+  background: var(--accent);
+  border: none;
+  border-radius: 999px;
+  color: var(--text);
+  font-size: .9rem;
+  font-weight: 700;
+  padding: 8px 18px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s;
+  flex-shrink: 0;
+}
+.toggle-btn:hover { background: var(--lite); }
+.toggle-btn.muted { background: #374151; }

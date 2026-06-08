@@ -12,7 +12,7 @@
     gtag('js', new Date());
     gtag('config', 'G-LJPP72DDRC');
   </script>
-  <link rel="stylesheet" href="style.css?v=4" />
+  <link rel="stylesheet" href="style.css?v=5" />
 </head>
 <body>
 
@@ -20,6 +20,7 @@
 <div class="tab-bar">
   <button class="tab-btn active" id="tab-home" onclick="switchTab('home')" title="Home">🏠</button>
   <button class="tab-btn" id="tab-stats" onclick="switchTab('stats')" title="My Stats">📊</button>
+  <button class="tab-btn" id="tab-settings" onclick="switchTab('settings')" title="Settings">⚙️</button>
 </div>
 
 <!-- HOME sidebar -->
@@ -81,10 +82,6 @@
   <!-- HOME -->
   <div id="home-screen" class="screen">
     <div class="logo"><span>🧠</span><h1>Mental Math</h1><p class="sub">Train your brain!</p></div>
-    <div style="display:flex;justify-content:flex-end;margin-bottom:-10px">
-      <button id="mute-btn" onclick="toggleMute()" style="background:var(--card);border:2px solid var(--accent);border-radius:999px;color:var(--text);font-size:1.1rem;padding:6px 14px;cursor:pointer;">🔊 Sound</button>
-    </div>
-
     <!-- Profile corner badge -->
     <div class="profile-corner" onclick="editProfile()" title="Tap to edit profile">
       <span class="p-avatar" id="home-avatar">😀</span>
@@ -262,6 +259,33 @@
     <button class="btn grey" onclick="clearStatsConfirm()" style="font-size:.85rem;padding:8px 0">🗑 Reset All Stats</button>
   </div>
 
+  <!-- SETTINGS -->
+  <div id="settings-screen" class="screen">
+    <h1 style="margin-bottom:6px">⚙️ Settings</h1>
+    <p class="sub" style="margin-bottom:24px">Customize your experience</p>
+
+    <!-- Sound -->
+    <div class="settings-card">
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">🔊 Sound</div>
+          <div class="settings-desc">Toggle game sounds on or off</div>
+        </div>
+        <button id="mute-btn" onclick="toggleMute()" class="toggle-btn">🔊 On</button>
+      </div>
+    </div>
+
+    <!-- More settings coming soon -->
+    <div class="settings-card" style="opacity:.5">
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">🎨 More coming soon...</div>
+          <div class="settings-desc">Theme, default difficulty, font size and more</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- MATCH MENU -->
   <div id="match-menu-screen" class="screen">
     <span class="back" onclick="showScreen('home-screen')">← Back</span>
@@ -377,6 +401,6 @@
   </div>
 </div>
 
-<script type="module" src="game.js?v=4"></script>
+<script type="module" src="game.js?v=5"></script>
 </body>
 </html>

@@ -127,7 +127,8 @@ window.showScreen = function(id){
   document.getElementById('match-result-overlay').classList.add('hidden');
   // Update active tab
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  if(id==='stats-screen') document.getElementById('tab-stats').classList.add('active');
+  if(id==='stats-screen')     document.getElementById('tab-stats').classList.add('active');
+  else if(id==='settings-screen') document.getElementById('tab-settings').classList.add('active');
   else document.getElementById('tab-home').classList.add('active');
   // Sidebar visibility
   const sHome = document.getElementById('sidebar-home');
@@ -139,8 +140,9 @@ window.showScreen = function(id){
 };
 
 window.switchTab = function(tab){
-  if(tab==='home') showScreen('home-screen');
-  if(tab==='stats'){ buildStatsScreen(); showScreen('stats-screen'); }
+  if(tab==='home')     showScreen('home-screen');
+  if(tab==='stats')  { buildStatsScreen(); showScreen('stats-screen'); }
+  if(tab==='settings') showScreen('settings-screen');
 };
 window.goToMenu = function(mode){
   state.mode=mode;
@@ -875,11 +877,14 @@ let isMuted = localStorage.getItem('mmg_muted') === 'true';
 window.toggleMute = function(){
   isMuted = !isMuted;
   localStorage.setItem('mmg_muted', isMuted);
-  const btn = document.getElementById('mute-btn');
-  btn.textContent = isMuted ? '🔇 Muted' : '🔊 Sound';
-  btn.style.borderColor = isMuted ? 'var(--sub)' : 'var(--accent)';
-  btn.style.opacity = isMuted ? '0.5' : '1';
+  applyMuteBtn();
 };
+function applyMuteBtn(){
+  const btn = document.getElementById('mute-btn');
+  if(!btn) return;
+  btn.textContent  = isMuted ? '🔇 Off' : '🔊 On';
+  btn.classList.toggle('muted', isMuted);
+}
 
 function getAudioCtx(){
   if(!audioCtx) audioCtx = new AudioCtx();
@@ -1368,11 +1373,4 @@ window.quitMatchGame=function(){
 // ── Start (must be last — needs showScreen to be defined) ─────────────────
 loadProfile();
 // Apply saved mute state to button
-(function(){
-  const btn = document.getElementById('mute-btn');
-  if(isMuted){
-    btn.textContent='🔇 Muted';
-    btn.style.borderColor='var(--sub)';
-    btn.style.opacity='0.5';
-  }
-})();
+applyMuteBtn();
