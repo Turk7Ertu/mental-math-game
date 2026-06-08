@@ -267,6 +267,10 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 .mode-grid .mode-card p  { font-size: .80rem; }
 
 /* ── Match & Find ────────────────────────────────────────── */
+#match-game-screen {
+  padding-top: 64px;
+}
+
 .match-header {
   display: flex;
   align-items: center;
