@@ -1156,11 +1156,11 @@ window.clearStatsConfirm = function(){
 let matchState = {
   cards: [], flipped: [], matched: 0, mistakes: 0,
   timer: 0, timerInterval: null, locked: false,
-  op: 'Mixed', diff: 'Easy', total: 12,
+  op: 'Mixed', diff: 'Easy', total: 12, timeLimit: 120,
 };
 
 // Wire pill groups for match menu
-document.querySelectorAll('#match-op-group .pill, #match-diff-group .pill').forEach(pill=>{
+document.querySelectorAll('#match-op-group .pill, #match-diff-group .pill, #match-time-group .pill').forEach(pill=>{
   pill.addEventListener('click',()=>{
     pill.closest('.pill-group').querySelectorAll('.pill').forEach(p=>p.classList.remove('selected'));
     pill.classList.add('selected');
@@ -1207,16 +1207,19 @@ function generateMatchPairs(op, diff, count=12){
 }
 
 window.startMatchGame = function(){
-  const op   = document.querySelector('#match-op-group .pill.selected')?.dataset.val   || 'Mixed';
-  const diff = document.querySelector('#match-diff-group .pill.selected')?.dataset.val || 'Easy';
-  matchState.op=op; matchState.diff=diff;
-  matchState.matched=0; matchState.mistakes=0; matchState.timer=0;
+  const op        = document.querySelector('#match-op-group .pill.selected')?.dataset.val   || 'Mixed';
+  const diff      = document.querySelector('#match-diff-group .pill.selected')?.dataset.val || 'Easy';
+  const timeLimit = parseInt(document.querySelector('#match-time-group .pill.selected')?.dataset.val ?? '120');
+  matchState.op=op; matchState.diff=diff; matchState.timeLimit=timeLimit;
+  matchState.matched=0; matchState.mistakes=0;
   matchState.flipped=[]; matchState.locked=false;
   clearInterval(matchState.timerInterval);
 
   // Grid size: Easy 2×3=3 pairs, Medium 3×4=6 pairs, Hard 4×4=8 pairs
   const pairCount = diff==='Easy'?3 : diff==='Medium'?6 : 8;
   matchState.total = pairCount;
+  // Timer counts down from timeLimit (0 = no limit, counts up)
+  matchState.timer = timeLimit > 0 ? timeLimit : 0;
 
   const pairs = generateMatchPairs(op, diff, pairCount);
 
@@ -1238,8 +1241,19 @@ window.startMatchGame = function(){
 
   // Start timer
   matchState.timerInterval=setInterval(()=>{
-    matchState.timer++;
-    updateMatchHeader();
+    if(matchState.timeLimit>0){
+      // Countdown
+      matchState.timer--;
+      updateMatchHeader();
+      if(matchState.timer<=0){
+        clearInterval(matchState.timerInterval);
+        setTimeout(showMatchTimeUp, 300);
+      }
+    } else {
+      // Count up (no limit)
+      matchState.timer++;
+      updateMatchHeader();
+    }
   },1000);
   updateMatchHeader();
 };
@@ -1304,19 +1318,41 @@ function checkMatchPair(){
 }
 
 function updateMatchHeader(){
-  const m=Math.floor(matchState.timer/60), s=matchState.timer%60;
+  const t = matchState.timer;
+  const m = Math.floor(Math.abs(t)/60), s = Math.abs(t)%60;
+  const timeStr = `${m}:${String(s).padStart(2,'0')}`;
   document.getElementById('match-pairs-label').textContent=`${matchState.matched} / ${matchState.total} ✅`;
-  document.getElementById('match-timer-label').textContent=`${m}:${String(s).padStart(2,'0')}`;
+  const timerEl = document.getElementById('match-timer-label');
+  timerEl.textContent = matchState.timeLimit>0 ? `⏱ ${timeStr}` : timeStr;
+  timerEl.style.color = (matchState.timeLimit>0 && t<=30) ? 'var(--red)' : '';
+  timerEl.style.fontWeight = (matchState.timeLimit>0 && t<=30) ? '900' : '';
   document.getElementById('match-mistakes-label').textContent=`${matchState.mistakes} ❌`;
 }
 
 function showMatchResult(){
-  const m=Math.floor(matchState.timer/60), s=matchState.timer%60;
-  document.getElementById('mr-time').textContent=`${m}:${String(s).padStart(2,'0')}`;
+  // Win — board cleared
+  document.getElementById('mr-emoji').textContent='🎉';
+  document.getElementById('mr-title').textContent='Board Cleared!';
+  document.getElementById('mr-subtitle').textContent='Awesome work!';
+  document.getElementById('mr-pairs').textContent=`${matchState.matched}/${matchState.total}`;
   document.getElementById('mr-mistakes').textContent=matchState.mistakes;
   document.getElementById('mr-diff').textContent=matchState.diff;
   document.getElementById('match-result-overlay').classList.remove('hidden');
   SFX.win();
+}
+
+function showMatchTimeUp(){
+  // Time's up — didn't finish
+  clearInterval(matchState.timerInterval);
+  matchState.locked=true;
+  document.getElementById('mr-emoji').textContent='⏰';
+  document.getElementById('mr-title').textContent="Time's Up!";
+  document.getElementById('mr-subtitle').textContent=`You matched ${matchState.matched} out of ${matchState.total} pairs!`;
+  document.getElementById('mr-pairs').textContent=`${matchState.matched}/${matchState.total}`;
+  document.getElementById('mr-mistakes').textContent=matchState.mistakes;
+  document.getElementById('mr-diff').textContent=matchState.diff;
+  document.getElementById('match-result-overlay').classList.remove('hidden');
+  SFX.lose();
 }
 
 window.hideMatchResult=function(){

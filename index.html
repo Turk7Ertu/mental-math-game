@@ -12,7 +12,7 @@
     gtag('js', new Date());
     gtag('config', 'G-LJPP72DDRC');
   </script>
-  <link rel="stylesheet" href="style.css?v=3" />
+  <link rel="stylesheet" href="style.css?v=4" />
 </head>
 <body>
 
@@ -281,6 +281,13 @@
       <button class="pill" data-val="Medium">Medium</button>
       <button class="pill" data-val="Hard">Hard</button>
     </div>
+    <h2>Time Limit</h2>
+    <div class="pill-group" id="match-time-group">
+      <button class="pill" data-val="60">1 min</button>
+      <button class="pill selected" data-val="120">2 min</button>
+      <button class="pill" data-val="180">3 min</button>
+      <button class="pill" data-val="0">No limit</button>
+    </div>
     <button class="btn" onclick="startMatchGame()">▶  Start Match & Find</button>
   </div>
 
@@ -356,11 +363,11 @@
 <!-- Match Result overlay -->
 <div class="match-result-overlay hidden" id="match-result-overlay">
   <div class="match-result-box">
-    <div style="font-size:3.5rem;margin-bottom:8px">🎉</div>
-    <h1 style="margin-bottom:4px">Board Cleared!</h1>
-    <p class="sub" style="margin-bottom:20px">Awesome work!</p>
+    <div id="mr-emoji" style="font-size:3.5rem;margin-bottom:8px">🎉</div>
+    <h1 id="mr-title" style="margin-bottom:4px">Board Cleared!</h1>
+    <p id="mr-subtitle" class="sub" style="margin-bottom:20px">Awesome work!</p>
     <div class="match-result-stats">
-      <div class="mstat"><div class="mstat-val" id="mr-time">0:00</div><div class="mstat-label">Time</div></div>
+      <div class="mstat"><div class="mstat-val" id="mr-pairs">0</div><div class="mstat-label">Matched</div></div>
       <div class="mstat"><div class="mstat-val" id="mr-mistakes">0</div><div class="mstat-label">Mistakes</div></div>
       <div class="mstat"><div class="mstat-val" id="mr-diff">Easy</div><div class="mstat-label">Level</div></div>
     </div>
@@ -370,6 +377,6 @@
   </div>
 </div>
 
-<script type="module" src="game.js?v=3"></script>
+<script type="module" src="game.js?v=4"></script>
 </body>
 </html>
