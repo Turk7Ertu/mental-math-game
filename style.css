@@ -76,6 +76,29 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 #feedback { text-align:center; font-size:1rem; font-weight:600; min-height:24px; margin-bottom:10px; }
 .fb-correct { color:var(--green); } .fb-wrong { color:var(--red); } .fb-timeout { color:var(--yellow); }
 
+.empty-answer-warning {
+  border: 2px solid #7f1d1d;
+  background: rgba(127,29,29,.18);
+  color: #fca5a5;
+  border-radius: 10px;
+  padding: 10px 16px;
+  text-align: center;
+  font-size: .95rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  animation: warnShake .35s ease;
+}
+.empty-answer-warning.hidden { display: none; }
+
+@keyframes warnShake {
+  0%   { transform: translateX(0); }
+  20%  { transform: translateX(-7px); }
+  40%  { transform: translateX(7px); }
+  60%  { transform: translateX(-5px); }
+  80%  { transform: translateX(5px); }
+  100% { transform: translateX(0); }
+}
+
 /* Power-up popup */
 .popup-overlay { position:fixed; inset:0; background:rgba(0,0,0,.75); display:flex; align-items:center; justify-content:center; z-index:100; padding:20px; }
 .popup-overlay.hidden { display:none; }

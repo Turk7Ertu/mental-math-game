@@ -388,6 +388,7 @@ async function nextQuestion(){
   document.getElementById('answer-input').focus();
   document.getElementById('feedback').textContent='';
   document.getElementById('feedback').className='';
+  document.getElementById('empty-answer-warning').classList.add('hidden');
   updateProgress(state.current-1);
   updatePowerupBadge();
   startTimer();
@@ -570,7 +571,18 @@ window.submitAnswer=function(){
   const input=document.getElementById('answer-input');
   if(input.disabled)return;
   const raw=input.value.trim();
-  if(!raw)return; // don't touch the timer if input is empty
+  if(!raw){
+    // Show shake warning, timer keeps running
+    const w=document.getElementById('empty-answer-warning');
+    w.classList.remove('hidden');
+    // Restart shake animation
+    w.style.animation='none';
+    void w.offsetWidth;
+    w.style.animation='';
+    clearTimeout(input._warnTimeout);
+    input._warnTimeout=setTimeout(()=>w.classList.add('hidden'), 1800);
+    return;
+  }
   clearInterval(timerInterval);
   const elapsed=((Date.now()-state.startTime)/1000).toFixed(1);
   const userAns=parseInt(raw);
