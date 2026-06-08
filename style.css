@@ -330,7 +330,7 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 /* Back face (revealed) */
 .match-back {
   display: none;
-  font-size: .82rem;
+  font-size: 1.25rem;
   font-weight: 800;
   text-align: center;
   padding: 8px 6px;
