@@ -123,8 +123,9 @@ window.showScreen = function(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
-  // Always hide match result overlay when navigating
+  // Always hide match overlays when navigating
   document.getElementById('match-result-overlay').classList.add('hidden');
+  document.getElementById('match-ready-overlay').classList.add('hidden');
   // Math background symbols — home screen only
   document.getElementById('math-bg').classList.toggle('visible', id==='home-screen');
   // Update active tab
@@ -1245,24 +1246,60 @@ window.startMatchGame = function(){
   buildMatchGrid();
   showScreen('match-game-screen');
   document.getElementById('match-result-overlay').classList.add('hidden');
-
-  // Start timer
-  matchState.timerInterval=setInterval(()=>{
-    if(matchState.timeLimit>0){
-      // Countdown
-      matchState.timer--;
-      updateMatchHeader();
-      if(matchState.timer<=0){
-        clearInterval(matchState.timerInterval);
-        setTimeout(showMatchTimeUp, 300);
-      }
-    } else {
-      // Count up (no limit)
-      matchState.timer++;
-      updateMatchHeader();
-    }
-  },1000);
+  document.getElementById('match-ready-overlay').classList.add('hidden');
   updateMatchHeader();
+
+  // Preview phase: reveal cards one by one with bounce, then show Ready overlay
+  matchState.locked = true;
+  const indices = matchState.cards.map((_,i)=>i);
+  // Shuffle reveal order so they don't go left-to-right
+  for(let i=indices.length-1;i>0;i--){
+    const j=randInt(0,i);[indices[i],indices[j]]=[indices[j],indices[i]];
+  }
+  indices.forEach((cardIdx, step) => {
+    setTimeout(() => {
+      const card = matchState.cards[cardIdx];
+      const el = card.el;
+      // Flip open
+      el.classList.add('flipped');
+      // Bounce animation
+      el.classList.remove('pop-reveal');
+      void el.offsetWidth; // reflow to restart animation
+      el.classList.add('pop-reveal');
+      // After all cards revealed, show Ready overlay
+      if(step === indices.length - 1){
+        setTimeout(()=>{
+          document.getElementById('match-ready-overlay').classList.remove('hidden');
+        }, 700);
+      }
+    }, step * 350);
+  });
+};
+
+window.beginMatchGame = function(){
+  document.getElementById('match-ready-overlay').classList.add('hidden');
+  // Flip all cards back face-down
+  matchState.cards.forEach(card => {
+    card.el.classList.remove('flipped','pop-reveal');
+  });
+  matchState.locked = false;
+  // Start timer after a brief pause so cards finish flipping
+  setTimeout(()=>{
+    matchState.timerInterval=setInterval(()=>{
+      if(matchState.timeLimit>0){
+        matchState.timer--;
+        updateMatchHeader();
+        if(matchState.timer<=0){
+          clearInterval(matchState.timerInterval);
+          setTimeout(showMatchTimeUp, 300);
+        }
+      } else {
+        matchState.timer++;
+        updateMatchHeader();
+      }
+    },1000);
+    updateMatchHeader();
+  }, 600);
 };
 
 function buildMatchGrid(){
