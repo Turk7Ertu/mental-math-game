@@ -16,6 +16,12 @@
 </head>
 <body>
 
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <button class="tab-btn active" id="tab-home" onclick="switchTab('home')" title="Home">🏠</button>
+  <button class="tab-btn" id="tab-stats" onclick="switchTab('stats')" title="My Stats">📊</button>
+</div>
+
 <!-- HOME sidebar -->
 <div class="sidebar" id="sidebar-home">
 
@@ -88,10 +94,12 @@
       </div>
     </div>
 
-    <div class="mode-card" onclick="goToMenu('solo')"><div class="icon">🎯</div><h3>Solo Practice</h3><p>Practice on your own at your own pace</p></div>
-    <div class="mode-card" onclick="goToMenu('multi')"><div class="icon">⚔️</div><h3>Challenge a Friend</h3><p>Create a room and compete in real-time</p></div>
-    <div class="mode-card" onclick="showScreen('join-screen')"><div class="icon">🔗</div><h3>Join a Game</h3><p>Enter a room code to join a friend's game</p></div>
-    <div class="mode-card" id="stats-home-card" onclick="openStatsScreen()"><div class="icon">📊</div><h3>My Stats</h3><p id="stats-home-preview">Play solo games to build your rating!</p></div>
+    <div class="mode-grid">
+      <div class="mode-card" onclick="goToMenu('solo')"><div class="icon">🎯</div><h3>Solo Practice</h3><p>Practice on your own</p></div>
+      <div class="mode-card" onclick="showScreen('match-menu-screen')"><div class="icon">🧩</div><h3>Match & Find</h3><p>Match questions to answers</p></div>
+      <div class="mode-card" onclick="goToMenu('multi')"><div class="icon">⚔️</div><h3>Challenge a Friend</h3><p>Compete in real-time</p></div>
+      <div class="mode-card" onclick="showScreen('join-screen')"><div class="icon">🔗</div><h3>Join a Game</h3><p>Enter a room code</p></div>
+    </div>
   </div>
 
   <!-- MENU -->
@@ -254,6 +262,39 @@
     <button class="btn grey" onclick="clearStatsConfirm()" style="font-size:.85rem;padding:8px 0">🗑 Reset All Stats</button>
   </div>
 
+  <!-- MATCH MENU -->
+  <div id="match-menu-screen" class="screen">
+    <span class="back" onclick="showScreen('home-screen')">← Back</span>
+    <h1 style="margin-bottom:6px">🧩 Match & Find</h1>
+    <p class="sub" style="margin-bottom:24px">Flip cards to match questions with answers!</p>
+    <h2>Operation</h2>
+    <div class="pill-group" id="match-op-group">
+      <button class="pill selected" data-val="Addition">Addition</button>
+      <button class="pill" data-val="Subtraction">Subtraction</button>
+      <button class="pill" data-val="Multiplication">Multiplication</button>
+      <button class="pill" data-val="Division">Division</button>
+      <button class="pill" data-val="Mixed">Mixed ⚡</button>
+    </div>
+    <h2>Difficulty</h2>
+    <div class="pill-group" id="match-diff-group">
+      <button class="pill selected" data-val="Easy">Easy</button>
+      <button class="pill" data-val="Medium">Medium</button>
+      <button class="pill" data-val="Hard">Hard</button>
+    </div>
+    <button class="btn" onclick="startMatchGame()">▶  Start Match & Find</button>
+  </div>
+
+  <!-- MATCH GAME -->
+  <div id="match-game-screen" class="screen">
+    <div class="match-header">
+      <span class="match-quit" onclick="quitMatchGame()">✕ Quit</span>
+      <span id="match-pairs-label" class="match-stat">0 / 12 ✅</span>
+      <span id="match-timer-label" class="match-stat">0:00</span>
+      <span id="match-mistakes-label" class="match-stat">0 ❌</span>
+    </div>
+    <div class="match-grid" id="match-grid"></div>
+  </div>
+
 </div>
 
 <!-- Countdown overlay -->
@@ -309,6 +350,23 @@
     <div class="d-icon">🌟</div>
     <h2>Perfect Score So Far!</h2>
     <p>You answered every question correctly!<br><strong style="color:var(--yellow)">This last question is worth 2× points!</strong></p>
+  </div>
+</div>
+
+<!-- Match Result overlay -->
+<div class="match-result-overlay hidden" id="match-result-overlay">
+  <div class="match-result-box">
+    <div style="font-size:3.5rem;margin-bottom:8px">🎉</div>
+    <h1 style="margin-bottom:4px">Board Cleared!</h1>
+    <p class="sub" style="margin-bottom:20px">Awesome work!</p>
+    <div class="match-result-stats">
+      <div class="mstat"><div class="mstat-val" id="mr-time">0:00</div><div class="mstat-label">Time</div></div>
+      <div class="mstat"><div class="mstat-val" id="mr-mistakes">0</div><div class="mstat-label">Mistakes</div></div>
+      <div class="mstat"><div class="mstat-val" id="mr-diff">Easy</div><div class="mstat-label">Level</div></div>
+    </div>
+    <button class="btn green" onclick="startMatchGame()" style="margin-top:16px">▶  Play Again</button>
+    <button class="btn" onclick="hideMatchResult();showScreen('match-menu-screen')">Change Settings</button>
+    <button class="btn grey" onclick="hideMatchResult();showScreen('home-screen')">🏠 Home</button>
   </div>
 </div>
 

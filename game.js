@@ -123,13 +123,22 @@ window.showScreen = function(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
+  // Update active tab
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  if(id==='stats-screen') document.getElementById('tab-stats').classList.add('active');
+  else document.getElementById('tab-home').classList.add('active');
   // Sidebar visibility
   const sHome = document.getElementById('sidebar-home');
   const sGame = document.getElementById('sidebar-game');
   if(window.innerWidth >= 900){
-    sHome.style.display = (id==='home-screen'||id==='menu-screen'||id==='stats-screen') ? 'block' : 'none';
+    sHome.style.display = (id==='home-screen'||id==='menu-screen'||id==='stats-screen'||id==='match-menu-screen') ? 'block' : 'none';
     sGame.style.display = id==='game-screen' ? 'block' : 'none';
   }
+};
+
+window.switchTab = function(tab){
+  if(tab==='home') showScreen('home-screen');
+  if(tab==='stats'){ buildStatsScreen(); showScreen('stats-screen'); }
 };
 window.goToMenu = function(mode){
   state.mode=mode;
@@ -1139,6 +1148,176 @@ window.clearStatsConfirm = function(){
     buildStatsScreen();
     updateStatsHomeCard();
   }
+};
+
+// ── Match & Find ──────────────────────────────────────────────────────────
+let matchState = {
+  cards: [], flipped: [], matched: 0, mistakes: 0,
+  timer: 0, timerInterval: null, locked: false,
+  op: 'Mixed', diff: 'Easy', total: 12,
+};
+
+// Wire pill groups for match menu
+document.querySelectorAll('#match-op-group .pill, #match-diff-group .pill').forEach(pill=>{
+  pill.addEventListener('click',()=>{
+    pill.closest('.pill-group').querySelectorAll('.pill').forEach(p=>p.classList.remove('selected'));
+    pill.classList.add('selected');
+  });
+});
+
+function generateMatchQuestion(op, diff){
+  let o = op==='Mixed' ? ['Addition','Subtraction','Multiplication','Division'][randInt(0,3)] : op;
+
+  if(diff==='Easy'){
+    if(o==='Addition')       { const a=randInt(1,9),  b=randInt(1,15); return {q:`${a} + ${b}`,  a:a+b}; }
+    if(o==='Subtraction')    { const a=randInt(10,20), b=randInt(1,9); return {q:`${a} − ${b}`,  a:a-b}; }
+    if(o==='Multiplication') { const a=randInt(2,9),  b=randInt(2,9);  return {q:`${a} × ${b}`,  a:a*b}; }
+    if(o==='Division')       { const b=randInt(2,9),  a=b*randInt(2,9); return {q:`${a} ÷ ${b}`, a:a/b}; }
+  }
+  if(diff==='Medium'){
+    if(o==='Addition')       { const a=randInt(10,99),  b=randInt(10,99); return {q:`${a} + ${b}`, a:a+b}; }
+    if(o==='Subtraction')    { const a=randInt(20,99),  b=randInt(10,Math.max(10,a-1)); return {q:`${a} − ${b}`, a:a-b}; }
+    if(o==='Multiplication') { const a=randInt(10,99),  b=randInt(2,9);  return {q:`${a} × ${b}`, a:a*b}; }
+    if(o==='Division')       { const b=randInt(2,9),    a=b*randInt(3,12); return {q:`${a} ÷ ${b}`, a:a/b}; }
+  }
+  if(diff==='Hard'){
+    if(o==='Addition')       { const a=randInt(100,999), b=randInt(10,99);  return {q:`${a} + ${b}`, a:a+b}; }
+    if(o==='Subtraction')    { const a=randInt(100,999), b=randInt(10,99);  return {q:`${a} − ${b}`, a:a-b}; }
+    if(o==='Multiplication') { const a=randInt(10,99),   b=randInt(10,99);  return {q:`${a} × ${b}`, a:a*b}; }
+    if(o==='Division')       { const b=randInt(10,20),   a=b*randInt(2,9);  return {q:`${a} ÷ ${b}`, a:a/b}; }
+  }
+  // fallback
+  const a=randInt(1,9), b=randInt(1,9); return {q:`${a} + ${b}`, a:a+b};
+}
+
+function generateMatchPairs(op, diff, count=12){
+  const pairs=[], usedAnswers=new Set(), usedQ=new Set();
+  let attempts=0;
+  while(pairs.length<count && attempts<500){
+    attempts++;
+    const pair = generateMatchQuestion(op, diff);
+    const key = pair.q;
+    if(usedQ.has(key)||usedAnswers.has(pair.a)) continue;
+    usedQ.add(key); usedAnswers.add(pair.a);
+    pairs.push({...pair, id:pairs.length});
+  }
+  return pairs;
+}
+
+window.startMatchGame = function(){
+  const op   = document.querySelector('#match-op-group .pill.selected')?.dataset.val   || 'Mixed';
+  const diff = document.querySelector('#match-diff-group .pill.selected')?.dataset.val || 'Easy';
+  matchState.op=op; matchState.diff=diff;
+  matchState.matched=0; matchState.mistakes=0; matchState.timer=0;
+  matchState.flipped=[]; matchState.locked=false;
+  clearInterval(matchState.timerInterval);
+
+  const pairs = generateMatchPairs(op, diff, 12);
+
+  // Build cards: one question + one answer per pair
+  const cards=[];
+  pairs.forEach(p=>{
+    cards.push({type:'q', text:p.q, pairId:p.id, matched:false, el:null});
+    cards.push({type:'a', text:String(p.a), pairId:p.id, matched:false, el:null});
+  });
+  // Shuffle
+  for(let i=cards.length-1;i>0;i--){
+    const j=randInt(0,i); [cards[i],cards[j]]=[cards[j],cards[i]];
+  }
+  matchState.cards=cards;
+
+  buildMatchGrid();
+  showScreen('match-game-screen');
+  document.getElementById('match-result-overlay').classList.add('hidden');
+
+  // Start timer
+  matchState.timerInterval=setInterval(()=>{
+    matchState.timer++;
+    updateMatchHeader();
+  },1000);
+  updateMatchHeader();
+};
+
+function buildMatchGrid(){
+  const grid=document.getElementById('match-grid');
+  grid.innerHTML='';
+  matchState.cards.forEach((card,idx)=>{
+    const div=document.createElement('div');
+    div.className='match-card'+(card.type==='a'?' is-answer':'');
+    div.innerHTML=`<div class="match-front">🧩</div><div class="match-back">${card.text}</div>`;
+    div.onclick=()=>flipMatchCard(idx);
+    card.el=div;
+    grid.appendChild(div);
+  });
+}
+
+function flipMatchCard(idx){
+  const card=matchState.cards[idx];
+  if(matchState.locked||card.matched||matchState.flipped.includes(idx)) return;
+
+  card.el.classList.add('flipped');
+  matchState.flipped.push(idx);
+
+  if(matchState.flipped.length===2){
+    matchState.locked=true;
+    checkMatchPair();
+  }
+}
+
+function checkMatchPair(){
+  const [i,j]=matchState.flipped;
+  const c1=matchState.cards[i], c2=matchState.cards[j];
+
+  if(c1.pairId===c2.pairId){
+    // Correct match!
+    c1.matched=true; c2.matched=true;
+    c1.el.classList.add('matched'); c2.el.classList.add('matched');
+    matchState.matched++;
+    matchState.flipped=[]; matchState.locked=false;
+    updateMatchHeader();
+    SFX.correct();
+    if(matchState.matched===12){
+      clearInterval(matchState.timerInterval);
+      setTimeout(showMatchResult, 600);
+    }
+  } else {
+    // Wrong
+    matchState.mistakes++;
+    updateMatchHeader();
+    SFX.wrong();
+    c1.el.classList.add('wrong-flash'); c2.el.classList.add('wrong-flash');
+    setTimeout(()=>{
+      c1.el.classList.remove('flipped','wrong-flash');
+      c2.el.classList.remove('flipped','wrong-flash');
+      matchState.flipped=[]; matchState.locked=false;
+    },900);
+  }
+}
+
+function updateMatchHeader(){
+  const m=Math.floor(matchState.timer/60), s=matchState.timer%60;
+  document.getElementById('match-pairs-label').textContent=`${matchState.matched} / 12 ✅`;
+  document.getElementById('match-timer-label').textContent=`${m}:${String(s).padStart(2,'0')}`;
+  document.getElementById('match-mistakes-label').textContent=`${matchState.mistakes} ❌`;
+}
+
+function showMatchResult(){
+  const m=Math.floor(matchState.timer/60), s=matchState.timer%60;
+  document.getElementById('mr-time').textContent=`${m}:${String(s).padStart(2,'0')}`;
+  document.getElementById('mr-mistakes').textContent=matchState.mistakes;
+  document.getElementById('mr-diff').textContent=matchState.diff;
+  document.getElementById('match-result-overlay').classList.remove('hidden');
+  SFX.win();
+}
+
+window.hideMatchResult=function(){
+  document.getElementById('match-result-overlay').classList.add('hidden');
+};
+
+window.quitMatchGame=function(){
+  clearInterval(matchState.timerInterval);
+  document.getElementById('match-result-overlay').classList.add('hidden');
+  showScreen('home-screen');
 };
 
 // ── Start (must be last — needs showScreen to be defined) ─────────────────
