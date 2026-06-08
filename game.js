@@ -1272,6 +1272,7 @@ let matchState = {
   cards: [], flipped: [], matched: 0, mistakes: 0,
   timer: 0, timerInterval: null, locked: false,
   op: 'Mixed', diff: 'Easy', total: 12, timeLimit: 120,
+  _previewTimeouts: [], _startTimeout: null,
 };
 
 // Wire pill groups for match menu
@@ -1360,6 +1361,7 @@ window.startMatchGame = function(){
 
   // Preview phase: show each card one at a time (open → bounce → close), then show Ready overlay
   matchState.locked = true;
+  matchState._previewTimeouts = []; // track all preview timeouts so we can cancel on quit
   const indices = matchState.cards.map((_,i)=>i);
   // Shuffle reveal order
   for(let i=indices.length-1;i>0;i--){
@@ -1371,24 +1373,24 @@ window.startMatchGame = function(){
     const openAt  = step * STEP_MS;
     const closeAt = openAt + SHOW_MS;
     // Open with bounce
-    setTimeout(() => {
+    matchState._previewTimeouts.push(setTimeout(() => {
       const el = matchState.cards[cardIdx].el;
       el.classList.add('flipped');
       el.classList.remove('pop-reveal');
       void el.offsetWidth;
       el.classList.add('pop-reveal');
-    }, openAt);
+    }, openAt));
     // Close again
-    setTimeout(() => {
+    matchState._previewTimeouts.push(setTimeout(() => {
       const el = matchState.cards[cardIdx].el;
       el.classList.remove('flipped','pop-reveal');
-    }, closeAt);
+    }, closeAt));
   });
   // After all cards done, show Ready overlay
   const totalTime = indices.length * STEP_MS + 400;
-  setTimeout(()=>{
+  matchState._previewTimeouts.push(setTimeout(()=>{
     document.getElementById('match-ready-overlay').classList.remove('hidden');
-  }, totalTime);
+  }, totalTime));
 };
 
 window.beginMatchGame = function(){
@@ -1536,8 +1538,16 @@ window.hideMatchResult=function(){
 };
 
 window.quitMatchGame=function(){
+  // Cancel all preview timeouts so they don't fire after leaving
+  (matchState._previewTimeouts||[]).forEach(t=>clearTimeout(t));
+  matchState._previewTimeouts=[];
+  clearTimeout(matchState._startTimeout);
   clearInterval(matchState.timerInterval);
+  matchState.locked=true;
+  matchPaused=false;
   document.getElementById('match-result-overlay').classList.add('hidden');
+  document.getElementById('match-ready-overlay').classList.add('hidden');
+  document.getElementById('pause-overlay').classList.add('hidden');
   showScreen('home-screen');
 };
 
