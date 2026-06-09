@@ -121,11 +121,12 @@ function makeRoomCode(){ return String(randInt(1000,9999)); }
 
 // ── Quit solo game (with confirm dialog) ─────────────────────────────────
 window.quitSoloGame = function(){
-  // Pause timers while confirming
+  // Only act if game is actually running
   if(!soloPaused){
     clearInterval(timerInterval);
     timerInterval = null;
   }
+  const quitOpenedAt = Date.now(); // track how long dialog is open
   const overlay = document.getElementById('quit-confirm-overlay');
   overlay.classList.remove('hidden');
   document.getElementById('quit-confirm-yes').onclick = function(){
@@ -135,8 +136,10 @@ window.quitSoloGame = function(){
   };
   document.getElementById('quit-confirm-no').onclick = function(){
     overlay.classList.add('hidden');
-    // Resume timer if we weren't already paused
+    // Shift startTime forward by how long the dialog was open
+    // so the timer resumes exactly where it left off
     if(!soloPaused){
+      state.startTime += (Date.now() - quitOpenedAt);
       const fg = document.getElementById('timer-fg'), txt = document.getElementById('timer-text');
       const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
       let remaining = Math.max(0, (state.timeLimit || 60) - elapsed);
@@ -2107,6 +2110,7 @@ window.quitMatchGame=function(){
     clearInterval(matchState.timerInterval);
     matchState.locked=true;
   }
+  const quitOpenedAt = Date.now();
   const overlay = document.getElementById('quit-confirm-overlay');
   overlay.classList.remove('hidden');
   document.getElementById('quit-confirm-yes').onclick = function(){
@@ -2116,8 +2120,10 @@ window.quitMatchGame=function(){
     overlay.classList.add('hidden');
     // Resume if we paused it to show confirm
     if(!matchPaused){
+      // Shift the timer forward by however long the dialog was open
+      const dialogDuration = Math.round((Date.now() - quitOpenedAt) / 1000);
+      matchState.timer += dialogDuration;
       matchState.locked=false;
-      // Restart timer
       clearInterval(matchState.timerInterval);
       matchState.timerInterval = setInterval(()=>{
         if(matchPaused) return;
