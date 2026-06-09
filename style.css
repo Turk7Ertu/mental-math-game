@@ -77,8 +77,8 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 }
 .css-logo-line.left  { background: #f472b6; }
 .css-logo-line.right { background: #38bdf8; }
-.mode-card { background:var(--card); border-radius:16px; padding:20px; margin-bottom:12px; cursor:pointer; border:2px solid transparent; transition:border-color .2s; }
-.mode-card:hover { border-color:var(--accent); }
+.mode-card { background:var(--card); border-radius:16px; padding:20px; margin-bottom:12px; cursor:pointer; border:2px solid var(--accent); transition:border-color .2s, box-shadow .2s; box-shadow: 0 4px 16px rgba(124,58,237,.25); }
+.mode-card:hover { border-color:var(--lite); box-shadow: 0 4px 24px rgba(124,58,237,.45); }
 .mode-card h3 { font-size:1.1rem; margin-bottom:4px; }
 .mode-card p  { color:var(--sub); font-size:.88rem; }
 .mode-card .icon { font-size:1.6rem; margin-bottom:8px; }
