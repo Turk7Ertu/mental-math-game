@@ -542,14 +542,16 @@ function resumeAfterOpponentChose(){
 // ── Solo Pause ────────────────────────────────────────────────────────────
 let soloPaused = false;
 let soloPausedRemaining = 0;
+let soloPauseStartedAt = 0; // track when pause started to fix startTime on resume
 
 window.toggleSoloPause = function(){
   if(state.gameFinished) return;
   if(!soloPaused){
-    // Pause
+    // Pause — snapshot exactly how much time is left on the visual timer
     clearInterval(timerInterval);
     const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
     soloPausedRemaining = Math.max(0, (state.timeLimit || 0) - elapsed);
+    soloPauseStartedAt = Date.now();
     soloPaused = true;
     document.getElementById('solo-pause-btn').textContent = '▶';
     document.getElementById('answer-input').disabled = true;
@@ -565,6 +567,9 @@ window.resumeGame = function(){
   // Solo resume
   if(soloPaused){
     soloPaused = false;
+    // Shift startTime forward by how long we were paused so elapsed calc stays correct
+    const pauseDuration = Date.now() - soloPauseStartedAt;
+    state.startTime += pauseDuration;
     document.getElementById('solo-pause-btn').textContent = '⏸';
     document.getElementById('answer-input').disabled = false;
     document.getElementById('answer-input').focus();
@@ -1878,15 +1883,24 @@ window.startMatchGame = function(){
       el.classList.remove('flipped','pop-reveal');
     }, closeAt));
   });
-  // After all cards done, show Ready overlay
+  // Disable pause button during preview
+  const mpbPreview = document.getElementById('match-pause-btn');
+  if(mpbPreview){ mpbPreview.disabled = true; mpbPreview.style.opacity = '0.35'; mpbPreview.style.cursor = 'not-allowed'; }
+
+  // After all cards done, show Ready overlay and re-enable pause
   const totalTime = indices.length * STEP_MS + 400;
   matchState._previewTimeouts.push(setTimeout(()=>{
     document.getElementById('match-ready-overlay').classList.remove('hidden');
+    const mpb2 = document.getElementById('match-pause-btn');
+    if(mpb2){ mpb2.disabled = false; mpb2.style.opacity = ''; mpb2.style.cursor = ''; }
   }, totalTime));
 };
 
 window.beginMatchGame = function(){
   document.getElementById('match-ready-overlay').classList.add('hidden');
+  // Re-enable pause button (was disabled during preview)
+  const mpbReady = document.getElementById('match-pause-btn');
+  if(mpbReady){ mpbReady.disabled = false; mpbReady.style.opacity = ''; mpbReady.style.cursor = ''; }
   // Flip all cards back face-down
   matchState.cards.forEach(card => {
     card.el.classList.remove('flipped','pop-reveal');
@@ -2036,7 +2050,7 @@ window.hideMatchResult=function(){
   document.getElementById('match-result-overlay').classList.add('hidden');
 };
 
-window.quitMatchGame=function(){
+function doQuitMatchGame(){
   // Cancel all preview timeouts so they don't fire after leaving
   (matchState._previewTimeouts||[]).forEach(t=>clearTimeout(t));
   matchState._previewTimeouts=[];
@@ -2044,10 +2058,51 @@ window.quitMatchGame=function(){
   clearInterval(matchState.timerInterval);
   matchState.locked=true;
   matchPaused=false;
+  // Re-enable pause btn just in case
+  const mpb=document.getElementById('match-pause-btn');
+  if(mpb){ mpb.disabled=false; mpb.style.opacity=''; mpb.style.cursor=''; }
   document.getElementById('match-result-overlay').classList.add('hidden');
   document.getElementById('match-ready-overlay').classList.add('hidden');
   document.getElementById('pause-overlay').classList.add('hidden');
+  document.getElementById('quit-confirm-overlay').classList.add('hidden');
   showScreen('home-screen');
+}
+
+window.quitMatchGame=function(){
+  // Pause the timer while confirming
+  if(!matchPaused){
+    clearTimeout(matchState._startTimeout);
+    clearInterval(matchState.timerInterval);
+    matchState.locked=true;
+  }
+  const overlay = document.getElementById('quit-confirm-overlay');
+  overlay.classList.remove('hidden');
+  document.getElementById('quit-confirm-yes').onclick = function(){
+    doQuitMatchGame();
+  };
+  document.getElementById('quit-confirm-no').onclick = function(){
+    overlay.classList.add('hidden');
+    // Resume if we paused it to show confirm
+    if(!matchPaused){
+      matchState.locked=false;
+      // Restart timer
+      clearInterval(matchState.timerInterval);
+      matchState.timerInterval = setInterval(()=>{
+        if(matchPaused) return;
+        if(matchState.timeLimit > 0){
+          matchState.timer--;
+          updateMatchHeader();
+          if(matchState.timer <= 0){
+            clearInterval(matchState.timerInterval);
+            endMatchGame();
+          }
+        } else {
+          matchState.timer++;
+          updateMatchHeader();
+        }
+      }, 1000);
+    }
+  };
 };
 
 // ── Start (must be last — needs showScreen to be defined) ─────────────────

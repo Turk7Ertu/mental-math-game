@@ -13,7 +13,7 @@
     gtag('js', new Date());
     gtag('config', 'G-LJPP72DDRC');
   </script>
-  <link rel="stylesheet" href="style.css?v=32" />
+  <link rel="stylesheet" href="style.css?v=33" />
 </head>
 <body>
 
@@ -545,6 +545,19 @@
   </div>
 </div>
 
+<!-- Quit Confirmation overlay -->
+<div class="pause-overlay hidden" id="quit-confirm-overlay">
+  <div class="pause-box">
+    <div style="font-size:2.5rem;margin-bottom:8px">⚠️</div>
+    <h2>Quit Game?</h2>
+    <p>Your progress will be lost!</p>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn grey" style="flex:1;margin:0" id="quit-confirm-no">✕ No, Stay</button>
+      <button class="btn" style="flex:1;margin:0;background:var(--red)" id="quit-confirm-yes">✓ Yes, Quit</button>
+    </div>
+  </div>
+</div>
+
 <!-- Pause overlay -->
 <div class="pause-overlay hidden" id="pause-overlay">
   <div class="pause-box">
@@ -669,6 +682,6 @@
   </div>
 </div>
 
-<script type="module" src="game.js?v=31"></script>
+<script type="module" src="game.js?v=32"></script>
 </body>
 </html>
