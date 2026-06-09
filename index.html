@@ -569,10 +569,12 @@
         <div id="mm-res-opp-mistakes" style="font-size:.82rem;color:var(--red)">0 mistakes</div>
       </div>
     </div>
-    <button class="btn grey" onclick="document.getElementById('mm-result-overlay').classList.add('hidden');showScreen('home-screen')" style="margin-top:16px">🏠 Home</button>
+    <div id="mm-rematch-status" class="sub" style="min-height:20px;text-align:center;margin-top:12px;font-size:.88rem"></div>
+    <button class="btn green" onclick="requestMMRematch()" id="mm-rematch-btn" style="margin-top:8px">🔄 Rematch</button>
+    <button class="btn grey" onclick="document.getElementById('mm-result-overlay').classList.add('hidden');showScreen('home-screen')" style="margin-top:8px">🏠 Home</button>
   </div>
 </div>
 
-<script type="module" src="game.js?v=29"></script>
+<script type="module" src="game.js?v=30"></script>
 </body>
 </html>

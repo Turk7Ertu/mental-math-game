@@ -1435,6 +1435,33 @@ function listenToMatchMultiRoom(code){
         mmResultShown = true;
         showMatchMultiResult(room);
       }
+
+      // Both clicked rematch → reset and relaunch
+      if(me?.rematch && opp?.rematch && mmResultShown){
+        mmResultShown = false;
+        mmBothReadyHandled = false;
+        // Only host resets the room data, both relaunch
+        // Host generates new seed and resets room; guest reads seed from Firebase
+        if(mmState.playerId === 'p1'){
+          const newSeed = randInt(100000, 999999);
+          mmState.seed = newSeed;
+          await update(ref(db, `rooms/${mmState.roomCode}`), {
+            'settings/seed': newSeed,
+            'p1/score': 0, 'p1/pairs': 0, 'p1/mistakes': 0, 'p1/finished': false, 'p1/ready': false, 'p1/rematch': false,
+            'p2/score': 0, 'p2/pairs': 0, 'p2/mistakes': 0, 'p2/finished': false, 'p2/ready': false, 'p2/rematch': false,
+          });
+        } else {
+          // Guest reads the seed the host just wrote
+          mmState.seed = room.settings?.seed || mmState.seed;
+        }
+        document.getElementById('mm-result-overlay').classList.add('hidden');
+        launchMatchMultiGame();
+      }
+
+      // Show opponent accepted rematch message
+      if(opp?.rematch && !me?.rematch && mmResultShown){
+        document.getElementById('mm-rematch-status').textContent = `${mmState.opponentName} wants a rematch!`;
+      }
     }
   });
 }
@@ -1680,9 +1707,21 @@ function showMatchMultiResult(room){
   document.getElementById('mm-res-opp-pairs').textContent    = `${opp?.pairs||0} pairs`;
   document.getElementById('mm-res-opp-mistakes').textContent = `${opp?.mistakes||0} mistakes`;
 
+  // Reset rematch UI
+  document.getElementById('mm-rematch-btn').disabled = false;
+  document.getElementById('mm-rematch-btn').textContent = '🔄 Rematch';
+  document.getElementById('mm-rematch-status').textContent = '';
   document.getElementById('mm-result-overlay').classList.remove('hidden');
   if(won) SFX.win(); else if(tie) SFX.tie(); else SFX.lose();
 }
+
+window.requestMMRematch = async function(){
+  const btn = document.getElementById('mm-rematch-btn');
+  btn.disabled = true;
+  btn.textContent = '✅ Waiting for opponent...';
+  document.getElementById('mm-rematch-status').textContent = 'Waiting for opponent to accept rematch...';
+  await update(ref(db, `rooms/${mmState.roomCode}/${mmState.playerId}`), { rematch: true });
+};
 
 window.quitMatchMultiGame = function(){
   (mmState._previewTimeouts||[]).forEach(t => clearTimeout(t));
