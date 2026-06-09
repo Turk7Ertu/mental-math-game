@@ -12,7 +12,7 @@
     gtag('js', new Date());
     gtag('config', 'G-LJPP72DDRC');
   </script>
-  <link rel="stylesheet" href="style.css?v=21" />
+  <link rel="stylesheet" href="style.css?v=22" />
 </head>
 <body>
 
@@ -113,11 +113,48 @@
       </div>
     </div>
 
+    <div class="mode-grid home-grid">
+      <div class="mode-card" onclick="showScreen('solo-select-screen')"><div class="icon">🎯</div><h3>Solo Practice</h3><p>Practice on your own</p></div>
+      <div class="mode-card" onclick="showScreen('multi-select-screen')"><div class="icon">⚔️</div><h3>Challenge a Friend</h3><p>Compete in real-time</p></div>
+      <div class="mode-card wide-card" onclick="showScreen('join-screen')"><div class="icon">🔗</div><h3>Join a Game</h3><p>Enter a room code to join any game</p></div>
+    </div>
+  </div>
+
+  <!-- SOLO SELECT -->
+  <div id="solo-select-screen" class="screen">
+    <span class="back" onclick="showScreen('home-screen')">← Back</span>
+    <h1 style="margin-bottom:6px">🎯 Solo Practice</h1>
+    <p class="sub" style="margin-bottom:28px">Choose a game mode</p>
     <div class="mode-grid">
-      <div class="mode-card" onclick="goToMenu('solo')"><div class="icon">🎯</div><h3>Solo Practice</h3><p>Practice on your own</p></div>
-      <div class="mode-card" onclick="showScreen('match-menu-screen')"><div class="icon">🧩</div><h3>Match & Find</h3><p>Match questions to answers</p></div>
-      <div class="mode-card" onclick="goToMenu('multi')"><div class="icon">⚔️</div><h3>Challenge a Friend</h3><p>Compete in real-time</p></div>
-      <div class="mode-card" onclick="showScreen('join-screen')"><div class="icon">🔗</div><h3>Join a Game</h3><p>Enter a room code</p></div>
+      <div class="mode-card tall-card" onclick="goToMenu('solo')">
+        <div class="icon">🎯</div>
+        <h3>Classic Solo</h3>
+        <p>Answer questions against the clock. Build your rating!</p>
+      </div>
+      <div class="mode-card tall-card" onclick="showScreen('match-menu-screen')">
+        <div class="icon">🧩</div>
+        <h3>Match & Find</h3>
+        <p>Flip cards to match questions with answers</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MULTI SELECT -->
+  <div id="multi-select-screen" class="screen">
+    <span class="back" onclick="showScreen('home-screen')">← Back</span>
+    <h1 style="margin-bottom:6px">⚔️ Challenge a Friend</h1>
+    <p class="sub" style="margin-bottom:28px">Choose a game mode</p>
+    <div class="mode-grid">
+      <div class="mode-card tall-card" onclick="goToMenu('multi')">
+        <div class="icon">⚔️</div>
+        <h3>Classic Challenge</h3>
+        <p>Go head-to-head answering questions in real-time</p>
+      </div>
+      <div class="mode-card tall-card" onclick="showScreen('match-multi-menu-screen')">
+        <div class="icon">🧩</div>
+        <h3>Match & Find</h3>
+        <p>Same board, race to find pairs — lowest penalty wins!</p>
+      </div>
     </div>
   </div>
 
@@ -312,7 +349,7 @@
 
   <!-- MATCH MENU -->
   <div id="match-menu-screen" class="screen">
-    <span class="back" onclick="showScreen('home-screen')">← Back</span>
+    <span class="back" onclick="showScreen('solo-select-screen')">← Back</span>
     <h1 style="margin-bottom:6px">🧩 Match & Find</h1>
     <p class="sub" style="margin-bottom:24px">Flip cards to match questions with answers!</p>
     <h2>Operation</h2>
@@ -337,6 +374,49 @@
       <button class="pill" data-val="0">No limit</button>
     </div>
     <button class="btn" onclick="startMatchGame()">▶  Start Match & Find</button>
+  </div>
+
+  <!-- MATCH MULTI MENU -->
+  <div id="match-multi-menu-screen" class="screen">
+    <span class="back" onclick="showScreen('multi-select-screen')">← Back</span>
+    <h1 style="margin-bottom:6px">🧩 Match & Find Challenge</h1>
+    <p class="sub" style="margin-bottom:20px">Same board, race your friend!</p>
+
+    <!-- Scoring explanation -->
+    <div class="scoring-info-box">
+      <div class="scoring-info-title">🏆 How Scoring Works</div>
+      <div class="scoring-info-rows">
+        <div class="scoring-row"><span>Find match under 5s</span><span class="pts-badge green-badge">+100 pts</span></div>
+        <div class="scoring-row"><span>Find match under 10s</span><span class="pts-badge blue-badge">+70 pts</span></div>
+        <div class="scoring-row"><span>Find match under 15s</span><span class="pts-badge yellow-badge">+40 pts</span></div>
+        <div class="scoring-row"><span>Find match over 15s</span><span class="pts-badge grey-badge">+20 pts</span></div>
+        <div class="scoring-row"><span>Wrong flip</span><span class="pts-badge red-badge">−15 pts</span></div>
+        <div class="scoring-row"><span>Finish board first</span><span class="pts-badge green-badge">+50 bonus!</span></div>
+      </div>
+    </div>
+
+    <h2>Operation</h2>
+    <div class="pill-group" id="match-multi-op-group">
+      <button class="pill selected" data-val="Addition">Addition</button>
+      <button class="pill" data-val="Subtraction">Subtraction</button>
+      <button class="pill" data-val="Multiplication">Multiplication</button>
+      <button class="pill" data-val="Division">Division</button>
+      <button class="pill" data-val="Mixed">Mixed ⚡</button>
+    </div>
+    <h2>Difficulty</h2>
+    <div class="pill-group" id="match-multi-diff-group">
+      <button class="pill selected" data-val="Easy">Easy</button>
+      <button class="pill" data-val="Medium">Medium</button>
+      <button class="pill" data-val="Hard">Hard</button>
+    </div>
+    <h2>Time Limit</h2>
+    <div class="pill-group" id="match-multi-time-group">
+      <button class="pill" data-val="60">1 min</button>
+      <button class="pill selected" data-val="120">2 min</button>
+      <button class="pill" data-val="180">3 min</button>
+      <button class="pill" data-val="0">No limit</button>
+    </div>
+    <button class="btn" onclick="hostMatchMultiGame()">▶  Create Room</button>
   </div>
 
   <!-- MATCH GAME -->
@@ -445,6 +525,6 @@
   </div>
 </div>
 
-<script type="module" src="game.js?v=26"></script>
+<script type="module" src="game.js?v=27"></script>
 </body>
 </html>

@@ -162,7 +162,7 @@ window.showScreen = function(id){
   const sHome = document.getElementById('sidebar-home');
   const sGame = document.getElementById('sidebar-game');
   if(window.innerWidth >= 900){
-    sHome.style.display = (id==='home-screen'||id==='menu-screen'||id==='stats-screen'||id==='match-menu-screen') ? 'block' : 'none';
+    sHome.style.display = (id==='home-screen'||id==='menu-screen'||id==='stats-screen'||id==='match-menu-screen'||id==='solo-select-screen'||id==='multi-select-screen'||id==='match-multi-menu-screen') ? 'block' : 'none';
     sGame.style.display = id==='game-screen' ? 'block' : 'none';
   }
   // Stop all sounds when leaving game screens
@@ -1301,12 +1301,18 @@ let matchState = {
 };
 
 // Wire pill groups for match menu
-document.querySelectorAll('#match-op-group .pill, #match-diff-group .pill, #match-time-group .pill').forEach(pill=>{
+document.querySelectorAll('#match-op-group .pill, #match-diff-group .pill, #match-time-group .pill, #match-multi-op-group .pill, #match-multi-diff-group .pill, #match-multi-time-group .pill').forEach(pill=>{
   pill.addEventListener('click',()=>{
     pill.closest('.pill-group').querySelectorAll('.pill').forEach(p=>p.classList.remove('selected'));
     pill.classList.add('selected');
   });
 });
+
+// ── Match & Find Multiplayer (stub — full logic coming soon) ──────────────
+window.hostMatchMultiGame = function(){
+  // TODO: implement full multiplayer match room creation
+  alert('Match & Find multiplayer coming soon! 🚀');
+};
 
 function generateMatchQuestion(op, diff){
   let o = op==='Mixed' ? ['Addition','Subtraction','Multiplication','Division'][randInt(0,3)] : op;
