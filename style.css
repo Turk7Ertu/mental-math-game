@@ -310,9 +310,12 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 .guide-card-title {
   font-size:.92rem;
   font-weight:800;
-  color:var(--text);
   margin-bottom:10px;
 }
+.guide-card-pink   .guide-card-title { color:#f472b6; }
+.guide-card-purple .guide-card-title { color:#a855f7; }
+.guide-card-blue   .guide-card-title { color:#60a5fa; }
+.guide-card-yellow .guide-card-title { color:#f59e0b; }
 .guide-p { font-size:.82rem; color:var(--sub); line-height:1.6; margin-bottom:7px; }
 .guide-p strong { color:var(--text); }
 .guide-tip-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
