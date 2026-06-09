@@ -13,7 +13,7 @@
     gtag('js', new Date());
     gtag('config', 'G-LJPP72DDRC');
   </script>
-  <link rel="stylesheet" href="style.css?v=29" />
+  <link rel="stylesheet" href="style.css?v=30" />
 </head>
 <body>
 
@@ -104,7 +104,48 @@
 
   <!-- HOME -->
   <div id="home-screen" class="screen">
-    <div class="logo"><img src="logo.png" alt="Mental Math" class="logo-img" /></div>
+    <div class="logo">
+      <div class="css-logo">
+        <div class="css-logo-brain">
+          <svg viewBox="0 0 120 100" class="brain-svg" xmlns="http://www.w3.org/2000/svg">
+            <!-- Outer circle arc -->
+            <circle cx="60" cy="45" r="44" fill="none" stroke="url(#arcGrad)" stroke-width="2.5" stroke-dasharray="240 40" stroke-dashoffset="30"/>
+            <!-- Brain shape -->
+            <path d="M60 80 C40 80 22 68 20 52 C18 38 26 26 36 22 C38 14 46 10 54 12 C56 8 64 8 66 12 C74 10 82 14 84 22 C94 26 102 38 100 52 C98 68 80 80 60 80Z"
+              fill="none" stroke="url(#brainGrad)" stroke-width="2.5" stroke-linejoin="round"/>
+            <!-- Brain crease -->
+            <path d="M60 80 C60 60 60 40 60 20" fill="none" stroke="url(#brainGrad)" stroke-width="1.5" opacity="0.5"/>
+            <!-- + symbol -->
+            <text x="38" y="48" fill="url(#brainGrad)" font-size="16" font-weight="bold" text-anchor="middle">+</text>
+            <!-- - symbol -->
+            <text x="60" y="36" fill="url(#brainGrad)" font-size="16" font-weight="bold" text-anchor="middle">−</text>
+            <!-- × symbol -->
+            <text x="42" y="64" fill="url(#brainGrad)" font-size="14" font-weight="bold" text-anchor="middle">×</text>
+            <!-- ÷ symbol -->
+            <text x="78" y="64" fill="url(#brainGrad)" font-size="14" font-weight="bold" text-anchor="middle">÷</text>
+            <defs>
+              <linearGradient id="brainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#f472b6"/>
+                <stop offset="50%" style="stop-color:#a855f7"/>
+                <stop offset="100%" style="stop-color:#38bdf8"/>
+              </linearGradient>
+              <linearGradient id="arcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#f472b6"/>
+                <stop offset="100%" style="stop-color:#38bdf8"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="css-logo-text">
+          <div class="css-logo-mental">MENTAL</div>
+          <div class="css-logo-math-row">
+            <span class="css-logo-line left"></span>
+            <span class="css-logo-math">MATH</span>
+            <span class="css-logo-line right"></span>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- Profile corner badge -->
     <div class="profile-corner" onclick="editProfile()" title="Tap to edit profile">
       <span class="p-avatar" id="home-avatar">😀</span>
@@ -454,7 +495,37 @@
 
 <!-- Bottom watermark -->
 <div class="bottom-watermark">
-  <img src="logo.png" alt="Mental Math" class="bw-logo" />
+  <div class="css-logo css-logo-sm">
+    <svg viewBox="0 0 120 100" class="brain-svg" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="45" r="44" fill="none" stroke="url(#arcGrad2)" stroke-width="2.5" stroke-dasharray="240 40" stroke-dashoffset="30"/>
+      <path d="M60 80 C40 80 22 68 20 52 C18 38 26 26 36 22 C38 14 46 10 54 12 C56 8 64 8 66 12 C74 10 82 14 84 22 C94 26 102 38 100 52 C98 68 80 80 60 80Z"
+        fill="none" stroke="url(#brainGrad2)" stroke-width="2.5"/>
+      <path d="M60 80 C60 60 60 40 60 20" fill="none" stroke="url(#brainGrad2)" stroke-width="1.5" opacity="0.5"/>
+      <text x="38" y="48" fill="url(#brainGrad2)" font-size="16" font-weight="bold" text-anchor="middle">+</text>
+      <text x="60" y="36" fill="url(#brainGrad2)" font-size="16" font-weight="bold" text-anchor="middle">−</text>
+      <text x="42" y="64" fill="url(#brainGrad2)" font-size="14" font-weight="bold" text-anchor="middle">×</text>
+      <text x="78" y="64" fill="url(#brainGrad2)" font-size="14" font-weight="bold" text-anchor="middle">÷</text>
+      <defs>
+        <linearGradient id="brainGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#f472b6"/>
+          <stop offset="50%" style="stop-color:#a855f7"/>
+          <stop offset="100%" style="stop-color:#38bdf8"/>
+        </linearGradient>
+        <linearGradient id="arcGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#f472b6"/>
+          <stop offset="100%" style="stop-color:#38bdf8"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <div class="css-logo-text">
+      <div class="css-logo-mental">MENTAL</div>
+      <div class="css-logo-math-row">
+        <span class="css-logo-line left"></span>
+        <span class="css-logo-math">MATH</span>
+        <span class="css-logo-line right"></span>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Pause overlay -->
