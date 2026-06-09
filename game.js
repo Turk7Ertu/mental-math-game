@@ -119,6 +119,38 @@ function generateQuestions(op,rangeA,rangeB,total){
 }
 function makeRoomCode(){ return String(randInt(1000,9999)); }
 
+// ── Quit solo game (with confirm dialog) ─────────────────────────────────
+window.quitSoloGame = function(){
+  // Pause timers while confirming
+  if(!soloPaused){
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  const overlay = document.getElementById('quit-confirm-overlay');
+  overlay.classList.remove('hidden');
+  document.getElementById('quit-confirm-yes').onclick = function(){
+    overlay.classList.add('hidden');
+    stopSoloGame();
+    showScreen('home-screen');
+  };
+  document.getElementById('quit-confirm-no').onclick = function(){
+    overlay.classList.add('hidden');
+    // Resume timer if we weren't already paused
+    if(!soloPaused){
+      const fg = document.getElementById('timer-fg'), txt = document.getElementById('timer-text');
+      const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+      let remaining = Math.max(0, (state.timeLimit || 60) - elapsed);
+      renderTimer(remaining, state.timeLimit, fg, txt);
+      timerInterval = setInterval(()=>{
+        if(soloPaused) return;
+        remaining--;
+        renderTimer(remaining, state.timeLimit, fg, txt);
+        if(remaining <= 0){ clearInterval(timerInterval); }
+      }, 1000);
+    }
+  };
+};
+
 // ── Stop solo game cleanly ────────────────────────────────────────────────
 function stopSoloGame(){
   clearInterval(timerInterval);

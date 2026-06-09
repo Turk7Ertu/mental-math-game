@@ -13,7 +13,7 @@
     gtag('js', new Date());
     gtag('config', 'G-LJPP72DDRC');
   </script>
-  <link rel="stylesheet" href="style.css?v=35" />
+  <link rel="stylesheet" href="style.css?v=36" />
 </head>
 <body>
 
@@ -281,6 +281,7 @@
   <div id="game-screen" class="screen">
     <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
     <div class="game-top">
+      <span class="match-quit" onclick="quitSoloGame()">✕ Quit</span>
       <span id="q-counter">Question 1 / 10</span>
       <span id="score-display">Score: 0</span>
       <button class="pause-btn" id="solo-pause-btn" onclick="toggleSoloPause()" title="Pause">⏸</button>
@@ -482,7 +483,7 @@
   <!-- MATCH GAME (solo) -->
   <div id="match-game-screen" class="screen">
     <div class="match-header">
-      <span class="match-quit" onclick="quitMatchGame()">✕ Quit</span>
+      <button class="match-quit" onclick="quitMatchGame()">✕ Quit</button>
       <span id="match-pairs-label" class="match-stat">0 / 12 ✅</span>
       <span id="match-timer-label" class="match-stat">0:00</span>
       <span id="match-mistakes-label" class="match-stat">0 ❌</span>
@@ -494,7 +495,7 @@
   <!-- MATCH MULTI GAME -->
   <div id="match-multi-game-screen" class="screen">
     <div class="match-header">
-      <span class="match-quit" onclick="quitMatchMultiGame()">✕ Quit</span>
+      <button class="match-quit" onclick="quitMatchMultiGame()">✕ Quit</button>
       <span id="mm-pairs-label" class="match-stat">0 / 6 ✅</span>
       <span id="mm-timer-label" class="match-stat">0:00</span>
       <span id="mm-score-label" class="match-stat">0 ⭐</span>
@@ -683,6 +684,6 @@
   </div>
 </div>
 
-<script type="module" src="game.js?v=33"></script>
+<script type="module" src="game.js?v=34"></script>
 </body>
 </html>

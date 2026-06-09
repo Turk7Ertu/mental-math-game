@@ -452,12 +452,25 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
   flex-wrap: wrap;
 }
 .match-quit {
-  color: var(--sub);
-  font-size: .88rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(239,68,68,.13);
+  color: #f87171;
+  border: 1.5px solid rgba(239,68,68,.35);
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: .82rem;
+  font-weight: 700;
   cursor: pointer;
-  font-weight: 600;
+  transition: background .15s, color .15s, border-color .15s;
+  letter-spacing: .01em;
 }
-.match-quit:hover { color: var(--red); }
+.match-quit:hover {
+  background: rgba(239,68,68,.28);
+  color: #fff;
+  border-color: var(--red);
+}
 .match-stat {
   font-size: .82rem;
   font-weight: 700;
