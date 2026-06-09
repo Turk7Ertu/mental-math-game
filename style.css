@@ -6,7 +6,7 @@
 }
 body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; min-height:100vh; display:flex; justify-content:center; align-items:flex-start; padding:20px 16px 60px; }
 .app { width:100%; max-width:480px; }
-.screen { display:none; } .screen.active { display:block; }
+.screen { display:none; } .screen.active { display:block; padding-top:70px; }
 h1 { font-size:2rem; font-weight:800; text-align:center; }
 h2 { font-size:1rem; font-weight:600; color:var(--sub); margin-bottom:8px; }
 .sub { color:var(--sub); text-align:center; font-size:.9rem; margin-top:4px; }
@@ -22,7 +22,7 @@ input[type="text"],input[type="number"] { width:100%; background:var(--card); bo
 input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 
 /* Home */
-#home-screen .logo { text-align:center; padding:30px 0 28px; }
+#home-screen .logo { text-align:center; padding:8px 0 20px; }
 #home-screen .logo span { font-size:3rem; }
 .mode-card { background:var(--card); border-radius:16px; padding:20px; margin-bottom:12px; cursor:pointer; border:2px solid transparent; transition:border-color .2s; }
 .mode-card:hover { border-color:var(--accent); }
@@ -137,7 +137,7 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 .double-box p  { color:var(--sub); font-size:.9rem; }
 
 /* Results */
-#result-screen { text-align:center; padding-top:24px; }
+#result-screen { text-align:center; }
 .winner-banner { background:var(--card); border-radius:16px; padding:24px; margin:16px 0; }
 .winner-banner .trophy { font-size:3rem; }
 .winner-banner .winner-name { font-size:2rem; font-weight:900; color:var(--lite); }
@@ -157,7 +157,7 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 .btn-row .btn { flex:1; margin-top:0; }
 
 /* Profile setup screen */
-#profile-screen { padding-top:30px; text-align:center; }
+#profile-screen { text-align:center; }
 #profile-screen h1 { margin-bottom:6px; }
 #profile-screen .sub { margin-bottom:28px; }
 #profile-name-input { font-size:1.2rem; text-align:center; }
@@ -348,7 +348,7 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 
 /* ── Match & Find ────────────────────────────────────────── */
 #match-game-screen {
-  padding-top: 64px;
+  padding-top: 70px;
 }
 
 .match-header {
@@ -516,6 +516,33 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 .mstat-val   { font-size: 1.5rem; font-weight: 900; color: var(--lite); }
 .mstat-label { font-size: .75rem; color: var(--sub); margin-top: 2px; }
 
+/* ── Bottom Watermark ────────────────────────────────────── */
+.bottom-watermark {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.1;
+  user-select: none;
+}
+.bw-brain {
+  font-size: 2.2rem;
+  filter: grayscale(1);
+}
+.bw-text {
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--lite);
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
 /* ── Pause Button ────────────────────────────────────────── */
 .pause-btn {
   background: var(--card);
@@ -609,7 +636,7 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 .match-ready-btn:hover { opacity: .85; }
 
 /* ── Match Multi Game ────────────────────────────────────── */
-#match-multi-game-screen { padding-top: 64px; }
+#match-multi-game-screen { padding-top: 70px; }
 
 .mm-opp-bar {
   display: flex;
