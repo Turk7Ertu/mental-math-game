@@ -217,7 +217,7 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 }
 @media (min-width:900px) {
   .sidebar { display:block; }
-  body { padding-left:236px; }
+  body { padding-left:236px; padding-right:236px; }
 }
 .sidebar h3 { font-size:.90rem; font-weight:900; text-transform:uppercase; letter-spacing:.12em; margin:20px 0 10px; display:flex; align-items:center; gap:6px; }
 .sidebar h3:first-child { margin-top:0; }
