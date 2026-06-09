@@ -13,7 +13,7 @@
     gtag('js', new Date());
     gtag('config', 'G-LJPP72DDRC');
   </script>
-  <link rel="stylesheet" href="style.css?v=38" />
+  <link rel="stylesheet" href="style.css?v=39" />
 </head>
 <body>
 
@@ -374,48 +374,54 @@
   <!-- GUIDE -->
   <div id="guide-screen" class="screen">
     <h1 style="margin-bottom:4px">📖 Guide</h1>
-    <p class="sub" style="margin-bottom:24px">Everything you need to know to play</p>
+    <p class="sub" style="margin-bottom:20px">Everything you need to know to play</p>
 
-    <!-- Solo Practice -->
-    <div class="settings-card" style="margin-bottom:14px">
-      <div class="settings-label" style="font-size:1rem;margin-bottom:10px">🎯 Solo Practice</div>
-      <p class="guide-p">Answer math questions <strong>as fast as you can</strong> — the faster you answer, the more points you earn! ⚡</p>
-      <p class="guide-p">Pick your <strong>operation</strong> (Add, Subtract, Multiply, Divide or Mixed) and a <strong>difficulty</strong>, then race against the clock.</p>
-      <div class="guide-tip-row">
-        <span class="guide-tip">⏱️ <strong>Under 3s</strong> → Max points</span>
-        <span class="guide-tip">🐢 <strong>Over 10s</strong> → Fewer points</span>
+    <div class="guide-grid">
+
+      <!-- Solo Practice -->
+      <div class="guide-card guide-card-pink">
+        <div class="guide-card-title">🎯 Solo Practice</div>
+        <p class="guide-p">Answer math questions <strong>as fast as you can</strong> — the quicker you answer, the more points you earn! ⚡</p>
+        <p class="guide-p">Play solo to build your <strong>rating</strong> and climb from 🎯 Beginner all the way to 👑 Legend!</p>
+        <div class="guide-tip-row">
+          <span class="guide-tip guide-tip-pink">⏱️ Fast = more pts</span>
+          <span class="guide-tip guide-tip-pink">👑 Climb the tiers</span>
+        </div>
       </div>
-      <p class="guide-p" style="margin-top:8px">Play solo to build your <strong>rating</strong> and climb the tiers — from 🎯 Beginner all the way to 👑 Legend!</p>
-    </div>
 
-    <!-- Match & Find -->
-    <div class="settings-card" style="margin-bottom:14px">
-      <div class="settings-label" style="font-size:1rem;margin-bottom:10px">🧩 Match & Find</div>
-      <p class="guide-p">A memory game with a math twist! 🃏 Cards are placed face-down on a grid — each card is either a <strong>question</strong> or an <strong>answer</strong>.</p>
-      <p class="guide-p">Before the game starts, the cards are revealed <strong>one by one</strong> so you can memorise them. Then they flip back and the fun begins!</p>
-      <p class="guide-p">Flip two cards — if the question matches the answer, they disappear with a <strong>speed-car fly-off!</strong> 🏎️ If not, they flip back. Find all pairs to win!</p>
-      <div class="guide-tip-row">
-        <span class="guide-tip">✅ Correct match → +points</span>
-        <span class="guide-tip">❌ Wrong flip → −25 pts</span>
+      <!-- Match & Find -->
+      <div class="guide-card guide-card-purple">
+        <div class="guide-card-title">🧩 Match & Find</div>
+        <p class="guide-p">A memory game with a math twist! 🃏 Cards are shown one by one first — memorise them, then find all the matching pairs!</p>
+        <p class="guide-p">Cards fly off the screen when matched. 🏎️ Wrong flip costs you <strong>−25 pts!</strong></p>
+        <div class="guide-tip-row">
+          <span class="guide-tip guide-tip-purple">✅ Match = +pts</span>
+          <span class="guide-tip guide-tip-purple">❌ Wrong = −25</span>
+        </div>
       </div>
-    </div>
 
-    <!-- Multiplayer -->
-    <div class="settings-card" style="margin-bottom:14px">
-      <div class="settings-label" style="font-size:1rem;margin-bottom:10px">⚔️ Multiplayer</div>
-      <p class="guide-p">Challenge a friend in real-time! One player <strong>creates a room</strong> and shares the 4-digit code. The other player <strong>joins with the code</strong>. 🔗</p>
-      <p class="guide-p">Both players answer the <strong>same questions</strong> at the same time. Answer faster to earn more points and outscore your opponent!</p>
-      <p class="guide-p">Win <strong>3 questions in a row</strong> faster than your opponent and you unlock a <strong>Power-Up!</strong> ⚡</p>
-      <p class="guide-p" style="margin-top:8px">Match & Find multiplayer works the same way — both players get <strong>identical boards</strong> and race to find all the pairs first! 🧩</p>
-    </div>
+      <!-- Multiplayer -->
+      <div class="guide-card guide-card-blue">
+        <div class="guide-card-title">⚔️ Multiplayer</div>
+        <p class="guide-p">Create a room, share the <strong>4-digit code</strong> with a friend, and compete in real-time! 🔗</p>
+        <p class="guide-p">Answer faster to earn more points. Works for both <strong>Classic</strong> and <strong>Match & Find!</strong> 🧩</p>
+        <div class="guide-tip-row">
+          <span class="guide-tip guide-tip-blue">🏆 Speed wins</span>
+          <span class="guide-tip guide-tip-blue">🔗 Share code</span>
+        </div>
+      </div>
 
-    <!-- Power-Ups -->
-    <div class="settings-card" style="margin-bottom:14px">
-      <div class="settings-label" style="font-size:1rem;margin-bottom:10px">⚡ Power-Ups</div>
-      <p class="guide-p" style="margin-bottom:12px">Earn a power-up by answering <strong>3 questions faster</strong> than your opponent in a row. Use it wisely — streak resets when you do! Max 2 per game.</p>
-      <div class="pu-card"><span class="pu-card-ico">❄️</span><div><strong class="freeze-name">Freeze</strong><span>Freezes your opponent for 3 seconds — they can't answer!</span></div></div>
-      <div class="pu-card"><span class="pu-card-ico">💥</span><div><strong class="blast-name">Blast</strong><span>Blasts 10 points off your opponent's score!</span></div></div>
-      <div class="pu-card"><span class="pu-card-ico">💰</span><div><strong class="steal-name">Steal</strong><span>Steals 5 points from your opponent and adds them to yours!</span></div></div>
+      <!-- Power-Ups -->
+      <div class="guide-card guide-card-yellow">
+        <div class="guide-card-title">⚡ Power-Ups</div>
+        <p class="guide-p">Win <strong>3 questions in a row</strong> faster than your opponent to unlock a power-up! Max 2 per game.</p>
+        <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px">
+          <div class="guide-pu-row"><span>❄️</span><span><strong class="freeze-name">Freeze</strong> — opponent can't answer for 3s!</span></div>
+          <div class="guide-pu-row"><span>💥</span><span><strong class="blast-name">Blast</strong> — knock 10 pts off their score!</span></div>
+          <div class="guide-pu-row"><span>💰</span><span><strong class="steal-name">Steal</strong> — take 5 pts from them!</span></div>
+        </div>
+      </div>
+
     </div>
   </div>
 

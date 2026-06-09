@@ -293,11 +293,37 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 @media (max-width:400px) { #question-text { font-size:2rem; } .pill { padding:6px 12px; font-size:.82rem; } }
 
 /* ── Guide Screen ────────────────────────────────────────── */
-.guide-p { font-size:.9rem; color:var(--sub); line-height:1.65; margin-bottom:8px; }
+.guide-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.guide-card {
+  background:var(--card);
+  border-radius:16px;
+  padding:16px 14px;
+  border:2px solid transparent;
+  display:flex;
+  flex-direction:column;
+  gap:0;
+}
+.guide-card-pink   { border-color:#f472b6; }
+.guide-card-purple { border-color:#a855f7; }
+.guide-card-blue   { border-color:#3b82f6; }
+.guide-card-yellow { border-color:#f59e0b; }
+.guide-card-title {
+  font-size:.92rem;
+  font-weight:800;
+  color:var(--text);
+  margin-bottom:10px;
+}
+.guide-p { font-size:.82rem; color:var(--sub); line-height:1.6; margin-bottom:7px; }
 .guide-p strong { color:var(--text); }
-.guide-tip-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
-.guide-tip { background:var(--bg); border-radius:8px; padding:6px 12px; font-size:.82rem; color:var(--sub); font-weight:600; }
-.guide-tip strong { color:var(--text); }
+.guide-tip-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+.guide-tip { border-radius:7px; padding:4px 9px; font-size:.76rem; font-weight:700; }
+.guide-tip-pink   { background:rgba(244,114,182,.15); color:#f472b6; }
+.guide-tip-purple { background:rgba(168,85,247,.15);  color:#a855f7; }
+.guide-tip-blue   { background:rgba(59,130,246,.15);  color:#60a5fa; }
+.guide-tip-yellow { background:rgba(245,158,11,.15);  color:#f59e0b; }
+.guide-pu-row { display:flex; gap:8px; align-items:flex-start; font-size:.8rem; color:var(--sub); line-height:1.5; }
+.guide-pu-row span:first-child { flex-shrink:0; font-size:1rem; }
+.guide-pu-row strong { color:var(--text); }
 .pu-card { display:flex; gap:14px; align-items:center; background:var(--bg); border-radius:12px; padding:12px 14px; margin-bottom:8px; }
 .pu-card-ico { font-size:2rem; line-height:1; width:36px; text-align:center; flex-shrink:0; }
 .pu-card strong { font-size:.9rem; font-weight:800; display:block; margin-bottom:3px; }
