@@ -23,7 +23,7 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 
 /* Home */
 #home-screen .logo { text-align:center; padding:8px 0 20px; }
-#home-screen .logo span { font-size:3rem; }
+.logo-img { width:200px; max-width:80%; border-radius:16px; }
 .mode-card { background:var(--card); border-radius:16px; padding:20px; margin-bottom:12px; cursor:pointer; border:2px solid transparent; transition:border-color .2s; }
 .mode-card:hover { border-color:var(--accent); }
 .mode-card h3 { font-size:1.1rem; margin-bottom:4px; }
@@ -519,27 +519,18 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 /* ── Bottom Watermark ────────────────────────────────────── */
 .bottom-watermark {
   position: fixed;
-  bottom: 28px;
+  bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.13;
+  opacity: 0.12;
   user-select: none;
 }
-.bw-brain {
-  font-size: 3.2rem;
-}
-.bw-text {
-  font-size: 1.1rem;
-  font-weight: 900;
-  color: var(--lite);
-  letter-spacing: 1px;
-  white-space: nowrap;
+.bw-logo {
+  width: 90px;
+  display: block;
+  border-radius: 12px;
 }
 
 /* ── Pause Button ────────────────────────────────────────── */

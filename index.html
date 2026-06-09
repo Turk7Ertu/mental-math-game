@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mental Math Game</title>
+  <link rel="icon" type="image/png" href="logo.png" />
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-LJPP72DDRC"></script>
   <script>
@@ -12,7 +13,7 @@
     gtag('js', new Date());
     gtag('config', 'G-LJPP72DDRC');
   </script>
-  <link rel="stylesheet" href="style.css?v=28" />
+  <link rel="stylesheet" href="style.css?v=29" />
 </head>
 <body>
 
@@ -103,7 +104,7 @@
 
   <!-- HOME -->
   <div id="home-screen" class="screen">
-    <div class="logo"><span>🧠</span><h1>Mental Math</h1><p class="sub">Train your brain!</p></div>
+    <div class="logo"><img src="logo.png" alt="Mental Math" class="logo-img" /></div>
     <!-- Profile corner badge -->
     <div class="profile-corner" onclick="editProfile()" title="Tap to edit profile">
       <span class="p-avatar" id="home-avatar">😀</span>
@@ -453,8 +454,7 @@
 
 <!-- Bottom watermark -->
 <div class="bottom-watermark">
-  <span class="bw-brain">🧠</span>
-  <span class="bw-text">Mental Math</span>
+  <img src="logo.png" alt="Mental Math" class="bw-logo" />
 </div>
 
 <!-- Pause overlay -->
