@@ -191,9 +191,10 @@ window.showScreen = function(id){
   document.getElementById('math-bg').classList.toggle('visible', id==='home-screen');
   // Update active tab
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  if(id==='stats-screen')     document.getElementById('tab-stats').classList.add('active');
+  if(id==='stats-screen')        document.getElementById('tab-stats').classList.add('active');
   else if(id==='settings-screen') document.getElementById('tab-settings').classList.add('active');
-  else document.getElementById('tab-home').classList.add('active');
+  else if(id==='guide-screen')   document.getElementById('tab-guide').classList.add('active');
+  else                           document.getElementById('tab-home').classList.add('active');
   // Sidebar visibility
   const sHome = document.getElementById('sidebar-home');
   const sGame = document.getElementById('sidebar-game');
@@ -214,6 +215,7 @@ window.showScreen = function(id){
 window.switchTab = function(tab){
   if(tab==='home')     showScreen('home-screen');
   if(tab==='stats')  { buildStatsScreen(); showScreen('stats-screen'); }
+  if(tab==='guide')    showScreen('guide-screen');
   if(tab==='settings') showScreen('settings-screen');
 };
 window.goToMenu = function(mode){

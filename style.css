@@ -22,13 +22,9 @@ body[data-theme="light"] .btn.grey:hover { background:#a8aab8; }
 body[data-theme="light"] .tab-bar { background:#e8e9f0ee; border-top:1px solid #c8c9d8; box-shadow:0 -2px 12px rgba(0,0,0,.10); }
 body[data-theme="light"] .tab { color:#4b5563; }
 body[data-theme="light"] .tab.active { color:var(--accent); }
-body[data-theme="light"] .sidebar { background:#dddeeadd; border-right:1px solid #c8c9d8; }
-body[data-theme="light"] .sidebar p { color:#2d2d44; }
-body[data-theme="light"] .sidebar .pu-card { background:#c8c9d8; }
-body[data-theme="light"] .sidebar .pu-card span { color:#374151; }
-body[data-theme="light"] .sidebar h3.h-pink   { color:#be185d; }
-body[data-theme="light"] .sidebar h3.h-orange { color:#c2410c; }
-body[data-theme="light"] .sidebar h3.h-purple { color:#6d28d9; }
+body[data-theme="light"] .pu-card { background:#c8c9d8; }
+body[data-theme="light"] .pu-card span { color:#374151; }
+body[data-theme="light"] .guide-tip { background:#d0d1e0; }
 body[data-theme="light"] input[type="text"],
 body[data-theme="light"] input[type="number"] { background:#e8e9f0; color:var(--text); }
 body[data-theme="light"] .match-card { background:#d8d9e8; color:var(--text); border-color:#b8b9d0; }
@@ -296,35 +292,19 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 
 @media (max-width:400px) { #question-text { font-size:2rem; } .pill { padding:6px 12px; font-size:.82rem; } }
 
-/* Sidebar */
-.sidebar {
-  display:none;
-  position:fixed;
-  left:0; top:0; bottom:0;
-  width:220px;
-  padding:28px 16px;
-  overflow-y:auto;
-  background:var(--card);
-  border-right:1px solid rgba(255,255,255,.06);
-}
-@media (min-width:900px) {
-  .sidebar { display:block; }
-  body { padding-left:236px; padding-right:236px; }
-}
-.sidebar h3 { font-size:.90rem; font-weight:900; text-transform:uppercase; letter-spacing:.12em; margin:20px 0 10px; display:flex; align-items:center; gap:6px; }
-.sidebar h3:first-child { margin-top:0; }
-.sidebar h3.h-pink   { color:#f472b6; }
-.sidebar h3.h-orange { color:#fb923c; }
-.sidebar h3.h-purple { color:var(--lite); }
-.sidebar p { font-size:.84rem; color:#e2e8f0; line-height:1.6; }
-.sidebar .pu-card { display:flex; gap:14px; align-items:center; background:var(--bg); border-radius:12px; padding:12px 14px; margin-bottom:8px; }
-.sidebar .pu-card-ico { font-size:2.5rem; line-height:1; width:44px; text-align:center; flex-shrink:0; }
-.sidebar .pu-card strong { font-size:.9rem; font-weight:800; display:block; margin-bottom:3px; }
-.sidebar .pu-card span  { font-size:.8rem; color:#94a3b8; line-height:1.45; }
+/* ── Guide Screen ────────────────────────────────────────── */
+.guide-p { font-size:.9rem; color:var(--sub); line-height:1.65; margin-bottom:8px; }
+.guide-p strong { color:var(--text); }
+.guide-tip-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+.guide-tip { background:var(--bg); border-radius:8px; padding:6px 12px; font-size:.82rem; color:var(--sub); font-weight:600; }
+.guide-tip strong { color:var(--text); }
+.pu-card { display:flex; gap:14px; align-items:center; background:var(--bg); border-radius:12px; padding:12px 14px; margin-bottom:8px; }
+.pu-card-ico { font-size:2rem; line-height:1; width:36px; text-align:center; flex-shrink:0; }
+.pu-card strong { font-size:.9rem; font-weight:800; display:block; margin-bottom:3px; }
+.pu-card span  { font-size:.82rem; color:var(--sub); line-height:1.45; }
 .freeze-name { color:#60a5fa; }
 .blast-name  { color:#f87171; }
 .steal-name  { color:#fbbf24; }
-.sidebar-title { font-size:1rem; font-weight:800; color:var(--lite); margin-bottom:4px; }
 
 /* ── Math background symbols ─────────────────────────────── */
 .math-bg {
