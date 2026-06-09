@@ -1398,7 +1398,7 @@ function listenToMatchMultiRoom(code){
   if(mmRoomListener){ mmRoomListener(); mmRoomListener = null; }
   mmBothReadyHandled = false;
   mmResultShown      = false;
-  mmRoomListener = onValue(ref(db, `rooms/${code}`), snap => {
+  mmRoomListener = onValue(ref(db, `rooms/${code}`), async snap => {
     if(!snap.exists()){ showScreen('home-screen'); return; }
     const room = snap.val();
 
