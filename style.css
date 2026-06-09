@@ -36,9 +36,9 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
   transform-origin: center bottom;
 }
 .brain-svg {
-  width: 110px;
+  width: 140px;
   height: auto;
-  filter: drop-shadow(0 0 8px rgba(168,85,247,0.6)) drop-shadow(0 0 16px rgba(244,114,182,0.3));
+  filter: drop-shadow(0 0 10px rgba(168,85,247,0.7)) drop-shadow(0 0 20px rgba(244,114,182,0.35));
 }
 .css-logo-text {
   display: flex;
