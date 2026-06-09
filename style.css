@@ -138,7 +138,7 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 /* Game */
 #progress-bar-wrap { width:100%; height:6px; background:var(--card); border-radius:3px; margin-bottom:16px; overflow:hidden; }
 #progress-bar { height:100%; background:var(--accent); border-radius:3px; transition:width .3s; width:0%; }
-.game-top { display:flex; justify-content:space-between; font-size:.9rem; color:var(--sub); margin-bottom:12px; }
+.game-top { display:flex; align-items:center; gap:12px; justify-content:space-between; font-size:.9rem; color:var(--sub); margin-bottom:12px; }
 #score-display { color:var(--lite); font-weight:700; }
 
 /* Scoreboard */
