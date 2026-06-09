@@ -23,7 +23,60 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 
 /* Home */
 #home-screen .logo { text-align:center; padding:8px 0 20px; }
-.logo-img { width:200px; max-width:80%; border-radius:16px; }
+
+/* ── CSS Logo ─────────────────────────────────────────────── */
+.css-logo {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.css-logo-sm {
+  transform: scale(0.55);
+  transform-origin: center bottom;
+}
+.brain-svg {
+  width: 110px;
+  height: auto;
+  filter: drop-shadow(0 0 8px rgba(168,85,247,0.6)) drop-shadow(0 0 16px rgba(244,114,182,0.3));
+}
+.css-logo-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.css-logo-mental {
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 0.25em;
+  background: linear-gradient(90deg, #f472b6, #e2e8f0, #38bdf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.css-logo-math-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.css-logo-math {
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: 0.3em;
+  background: linear-gradient(90deg, #f472b6, #a855f7, #38bdf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.css-logo-line {
+  display: inline-block;
+  height: 2px;
+  width: 22px;
+  border-radius: 2px;
+}
+.css-logo-line.left  { background: #f472b6; }
+.css-logo-line.right { background: #38bdf8; }
 .mode-card { background:var(--card); border-radius:16px; padding:20px; margin-bottom:12px; cursor:pointer; border:2px solid transparent; transition:border-color .2s; }
 .mode-card:hover { border-color:var(--accent); }
 .mode-card h3 { font-size:1.1rem; margin-bottom:4px; }
@@ -519,18 +572,13 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 /* ── Bottom Watermark ────────────────────────────────────── */
 .bottom-watermark {
   position: fixed;
-  bottom: 16px;
+  bottom: 0px;
   left: 50%;
   transform: translateX(-50%);
   pointer-events: none;
   z-index: 0;
-  opacity: 0.12;
+  opacity: 0.13;
   user-select: none;
-}
-.bw-logo {
-  width: 90px;
-  display: block;
-  border-radius: 12px;
 }
 
 /* ── Pause Button ────────────────────────────────────────── */
