@@ -12,7 +12,7 @@
     gtag('js', new Date());
     gtag('config', 'G-LJPP72DDRC');
   </script>
-  <link rel="stylesheet" href="style.css?v=23" />
+  <link rel="stylesheet" href="style.css?v=24" />
 </head>
 <body>
 
@@ -419,7 +419,7 @@
     <button class="btn" onclick="hostMatchMultiGame()">▶  Create Room</button>
   </div>
 
-  <!-- MATCH GAME -->
+  <!-- MATCH GAME (solo) -->
   <div id="match-game-screen" class="screen">
     <div class="match-header">
       <span class="match-quit" onclick="quitMatchGame()">✕ Quit</span>
@@ -429,6 +429,24 @@
       <button class="pause-btn" id="match-pause-btn" onclick="toggleMatchPause()" title="Pause">⏸</button>
     </div>
     <div class="match-grid" id="match-grid"></div>
+  </div>
+
+  <!-- MATCH MULTI GAME -->
+  <div id="match-multi-game-screen" class="screen">
+    <div class="match-header">
+      <span class="match-quit" onclick="quitMatchMultiGame()">✕ Quit</span>
+      <span id="mm-pairs-label" class="match-stat">0 / 6 ✅</span>
+      <span id="mm-timer-label" class="match-stat">0:00</span>
+      <span id="mm-score-label" class="match-stat">0 ⭐</span>
+    </div>
+    <!-- Opponent status bar -->
+    <div class="mm-opp-bar">
+      <span id="mm-opp-avatar">😀</span>
+      <span id="mm-opp-name">Opponent</span>
+      <span class="mm-opp-stat">Pairs: <strong id="mm-opp-pairs">0</strong></span>
+      <span class="mm-opp-stat">Score: <strong id="mm-opp-score">0</strong></span>
+    </div>
+    <div class="match-grid" id="mm-grid"></div>
   </div>
 
 </div>
@@ -502,9 +520,9 @@
 <!-- Match Ready overlay -->
 <div class="match-ready-overlay hidden" id="match-ready-overlay">
   <div class="match-ready-box">
-    <h2>👀 Got it?</h2>
-    <p>Remember where everything is!<br>Cards will flip back when you start.</p>
-    <button class="match-ready-btn" onclick="beginMatchGame()">I'm Ready!</button>
+    <h2 id="ready-title">👀 Got it?</h2>
+    <p id="ready-subtitle">Remember where everything is!<br>Cards will flip back when you start.</p>
+    <button class="match-ready-btn" id="ready-btn" onclick="beginMatchGame()">I'm Ready!</button>
   </div>
 </div>
 
@@ -525,6 +543,36 @@
   </div>
 </div>
 
-<script type="module" src="game.js?v=27"></script>
+<!-- Match Multi Result overlay -->
+<div class="match-result-overlay hidden" id="mm-result-overlay">
+  <div class="match-result-box">
+    <div id="mm-res-emoji" style="font-size:3.5rem;margin-bottom:8px">🏆</div>
+    <h1 id="mm-res-title" style="margin-bottom:4px">You Win!</h1>
+    <p id="mm-res-subtitle" class="sub" style="margin-bottom:16px"></p>
+    <!-- Me vs Them -->
+    <div class="mm-versus-box">
+      <div class="mm-versus-side">
+        <div id="mm-res-me-avatar" style="font-size:2rem">😀</div>
+        <div id="mm-res-me-name" style="font-weight:800;margin:4px 0">You</div>
+        <div id="mm-res-me-score" style="font-size:1.6rem;font-weight:900;color:var(--accent)">0</div>
+        <div style="font-size:.75rem;color:var(--sub)">pts</div>
+        <div id="mm-res-me-pairs" style="font-size:.82rem;color:var(--sub);margin-top:4px">0 pairs</div>
+        <div id="mm-res-me-mistakes" style="font-size:.82rem;color:var(--red)">0 mistakes</div>
+      </div>
+      <div style="font-size:1.4rem;font-weight:900;color:var(--sub);align-self:center">VS</div>
+      <div class="mm-versus-side">
+        <div id="mm-res-opp-avatar" style="font-size:2rem">😀</div>
+        <div id="mm-res-opp-name" style="font-weight:800;margin:4px 0">Opponent</div>
+        <div id="mm-res-opp-score" style="font-size:1.6rem;font-weight:900;color:var(--accent)">0</div>
+        <div style="font-size:.75rem;color:var(--sub)">pts</div>
+        <div id="mm-res-opp-pairs" style="font-size:.82rem;color:var(--sub);margin-top:4px">0 pairs</div>
+        <div id="mm-res-opp-mistakes" style="font-size:.82rem;color:var(--red)">0 mistakes</div>
+      </div>
+    </div>
+    <button class="btn grey" onclick="document.getElementById('mm-result-overlay').classList.add('hidden');showScreen('home-screen')" style="margin-top:16px">🏠 Home</button>
+  </div>
+</div>
+
+<script type="module" src="game.js?v=29"></script>
 </body>
 </html>

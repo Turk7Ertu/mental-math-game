@@ -608,6 +608,41 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 }
 .match-ready-btn:hover { opacity: .85; }
 
+/* ── Match Multi Game ────────────────────────────────────── */
+#match-multi-game-screen { padding-top: 64px; }
+
+.mm-opp-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--card);
+  border-radius: 12px;
+  padding: 8px 14px;
+  margin-bottom: 14px;
+  font-size: .88rem;
+  border: 1.5px solid var(--border);
+}
+.mm-opp-bar span:first-child { font-size: 1.3rem; }
+#mm-opp-name { font-weight: 700; flex: 1; }
+.mm-opp-stat { color: var(--sub); font-size: .82rem; }
+.mm-opp-stat strong { color: var(--lite); }
+
+/* Versus result box */
+.mm-versus-box {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+  justify-content: center;
+  margin: 12px 0;
+}
+.mm-versus-side {
+  flex: 1;
+  background: var(--bg);
+  border-radius: 14px;
+  padding: 14px 10px;
+  text-align: center;
+}
+
 /* ── Settings Screen ─────────────────────────────────────── */
 .settings-card {
   background: var(--card);

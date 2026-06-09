@@ -151,6 +151,7 @@ window.showScreen = function(id){
   // Always hide match overlays when navigating
   document.getElementById('match-result-overlay').classList.add('hidden');
   document.getElementById('match-ready-overlay').classList.add('hidden');
+  document.getElementById('mm-result-overlay').classList.add('hidden');
   // Math background symbols — home screen only
   document.getElementById('math-bg').classList.toggle('visible', id==='home-screen');
   // Update active tab
@@ -166,7 +167,7 @@ window.showScreen = function(id){
     sGame.style.display = id==='game-screen' ? 'block' : 'none';
   }
   // Stop all sounds when leaving game screens
-  const gameScreens = ['game-screen','match-game-screen'];
+  const gameScreens = ['game-screen','match-game-screen','match-multi-game-screen'];
   if(!gameScreens.includes(id) && audioCtx && audioCtx.state === 'running'){
     audioCtx.suspend();
   }
@@ -267,6 +268,14 @@ window.startMultiGame=async function(){
   await update(ref(db,`rooms/${state.roomCode}`),{status:'playing'});
 };
 window.leaveRoom=async function(){
+  // Match multi room
+  if(mmState.roomCode){
+    if(mmState.playerId==='p1'){ await remove(ref(db,`rooms/${mmState.roomCode}`)); }
+    else{ await update(ref(db,`rooms/${mmState.roomCode}`),{guest:'',status:'waiting','p2/name':'','p2/score':0,'p2/finished':false}); }
+    mmState.roomCode=null;
+  }
+  if(mmRoomListener){mmRoomListener();mmRoomListener=null;}
+  // Classic multi room
   if(state.roomCode){
     if(state.playerId==='p1'){ await remove(ref(db,`rooms/${state.roomCode}`)); }
     else{ await update(ref(db,`rooms/${state.roomCode}`),{guest:'',status:'waiting','p2/name':'','p2/score':0,'p2/done':false}); }
@@ -286,6 +295,14 @@ window.joinRoom=async function(){
   const room=snap.val();
   if(room.status!=='waiting'){errEl.textContent='Game already started';return;}
   if(room.guest){errEl.textContent='Room is full';return;}
+
+  // Route to correct game type
+  if(room.type === 'match-multi'){
+    state.playerName=profile.name; state.playerAvatar=profile.avatar;
+    joinMatchMultiRoom(code, room);
+    return;
+  }
+
   state.roomCode=code; state.playerId='p2'; state.opponentId='p1';
   state.playerName=profile.name; state.playerAvatar=profile.avatar;
   state.opponentName=room.host; state.mode='multi';
@@ -389,13 +406,18 @@ function updateLobbyUI(room){
   [['p1',room.host||''],['p2',room.guest||'']].forEach(([id,name])=>{
     if(!name)return;
     const row=document.createElement('div'); row.className='player-row';
-    const isMe=id===state.playerId;
+    const isMatchMulti = room.type === 'match-multi';
+    const myId = isMatchMulti ? mmState.playerId : state.playerId;
+    const isMe = id === myId;
     row.innerHTML=`<span class="dot"></span><span>${name}${isMe?' <span style="color:var(--sub);font-size:.8rem">(you)</span>':''}</span>`;
     list.appendChild(row);
   });
   const hasGuest=!!room.guest;
   document.getElementById('waiting-msg').style.display=hasGuest?'none':'block';
-  document.getElementById('start-match-btn').style.display=(state.playerId==='p1'&&hasGuest)?'block':'none';
+  const isHost = room.type==='match-multi' ? mmState.playerId==='p1' : state.playerId==='p1';
+  const btn = document.getElementById('start-match-btn');
+  btn.style.display=(isHost&&hasGuest)?'block':'none';
+  btn.onclick = room.type==='match-multi' ? startMatchMultiGame : startMultiGame;
 }
 
 // ── Game logic ────────────────────────────────────────────────────────────
@@ -1309,9 +1331,370 @@ document.querySelectorAll('#match-op-group .pill, #match-diff-group .pill, #matc
 });
 
 // ── Match & Find Multiplayer (stub — full logic coming soon) ──────────────
-window.hostMatchMultiGame = function(){
-  // TODO: implement full multiplayer match room creation
-  alert('Match & Find multiplayer coming soon! 🚀');
+// ── Match & Find Multiplayer ──────────────────────────────────────────────
+
+// Seeded RNG so both players get identical boards from same seed
+function seededRand(seed){
+  let s = seed;
+  return function(){
+    s = (s * 1664525 + 1013904223) & 0xffffffff;
+    return (s >>> 0) / 0xffffffff;
+  };
+}
+
+let mmState = {
+  roomCode: null, playerId: null, opponentId: null,
+  opponentName: 'Opponent', opponentAvatar: '😀',
+  cards: [], matched: 0, mistakes: 0, score: 0,
+  total: 0, timer: 0, timerInterval: null, locked: false,
+  flipped: [], timeLimit: 120, diff: 'Easy', op: 'Mixed',
+  seed: 0, flipStartTime: 0, finished: false,
+  _previewTimeouts: [], _startTimeout: null,
+};
+let mmRoomListener = null;
+
+// Host creates Match Multi room
+window.hostMatchMultiGame = async function(){
+  const op       = document.querySelector('#match-multi-op-group .pill.selected')?.dataset.val   || 'Mixed';
+  const diff     = document.querySelector('#match-multi-diff-group .pill.selected')?.dataset.val || 'Easy';
+  const timeLimit= parseInt(document.querySelector('#match-multi-time-group .pill.selected')?.dataset.val ?? '120');
+  const seed     = randInt(100000, 999999);
+  const code     = makeRoomCode();
+
+  mmState.roomCode = code; mmState.playerId = 'p1'; mmState.opponentId = 'p2';
+  mmState.op = op; mmState.diff = diff; mmState.timeLimit = timeLimit; mmState.seed = seed;
+
+  await set(ref(db, `rooms/${code}`), {
+    type: 'match-multi',
+    host: profile.name, guest: '', status: 'waiting',
+    settings: { op, diff, timeLimit, seed },
+    p1: { name: profile.name, avatar: profile.avatar, score: 0, pairs: 0, mistakes: 0, finished: false },
+    p2: { name: '', avatar: '', score: 0, pairs: 0, mistakes: 0, finished: false },
+  });
+
+  document.getElementById('lobby-code').textContent = code;
+  showScreen('lobby-screen');
+  listenToMatchMultiRoom(code);
+};
+
+// Guest joins — joinRoom() detects type and routes here
+function joinMatchMultiRoom(code, room){
+  mmState.roomCode = code; mmState.playerId = 'p2'; mmState.opponentId = 'p1';
+  mmState.opponentName   = room.host;
+  mmState.opponentAvatar = room.p1?.avatar || '😀';
+  const s = room.settings;
+  mmState.op = s.op; mmState.diff = s.diff; mmState.timeLimit = s.timeLimit; mmState.seed = s.seed;
+
+  update(ref(db, `rooms/${code}`), { guest: profile.name, 'p2/name': profile.name, 'p2/avatar': profile.avatar });
+  document.getElementById('lobby-code').textContent = code;
+  showScreen('lobby-screen');
+  listenToMatchMultiRoom(code);
+}
+
+let mmBothReadyHandled = false;
+let mmResultShown      = false;
+
+function listenToMatchMultiRoom(code){
+  if(mmRoomListener){ mmRoomListener(); mmRoomListener = null; }
+  mmBothReadyHandled = false;
+  mmResultShown      = false;
+  mmRoomListener = onValue(ref(db, `rooms/${code}`), snap => {
+    if(!snap.exists()){ showScreen('home-screen'); return; }
+    const room = snap.val();
+
+    if(document.getElementById('lobby-screen').classList.contains('active')) updateLobbyUI(room);
+
+    // Host clicked Start → both launch preview
+    if(room.status === 'playing' && document.getElementById('lobby-screen').classList.contains('active')){
+      mmState.opponentName   = mmState.playerId==='p1' ? (room.p2?.name||'Opponent') : room.host;
+      mmState.opponentAvatar = mmState.playerId==='p1' ? (room.p2?.avatar||'😀') : (room.p1?.avatar||'😀');
+      mmState.seed = room.settings.seed;
+      launchMatchMultiGame();
+    }
+
+    // Both players clicked "I'm Ready!" → start simultaneously
+    if(room.status === 'playing' && !mmBothReadyHandled){
+      const p1Ready = room.p1?.ready === true;
+      const p2Ready = room.p2?.ready === true;
+      if(p1Ready && p2Ready && document.getElementById('match-ready-overlay').classList.contains('hidden') === false){
+        mmBothReadyHandled = true;
+        showCountdown(() => startMMAfterBothReady());
+      }
+    }
+
+    // Live opponent updates during game
+    if(room.status === 'playing' && document.getElementById('match-multi-game-screen').classList.contains('active')){
+      const opp = room[mmState.opponentId];
+      if(opp){
+        document.getElementById('mm-opp-pairs').textContent = opp.pairs || 0;
+        document.getElementById('mm-opp-score').textContent = opp.score || 0;
+      }
+      // Both finished → show results once
+      const me = room[mmState.playerId];
+      if(me?.finished && opp?.finished && !mmResultShown){
+        mmResultShown = true;
+        showMatchMultiResult(room);
+      }
+    }
+  });
+}
+
+window.startMatchMultiGame = async function(){
+  await update(ref(db, `rooms/${mmState.roomCode}`), { status: 'playing' });
+};
+
+function launchMatchMultiGame(){
+  mmState.matched = 0; mmState.mistakes = 0; mmState.score = 0;
+  mmState.flipped = []; mmState.locked = false; mmState.finished = false;
+  mmState.timer = mmState.timeLimit > 0 ? mmState.timeLimit : 0;
+
+  const pairCount = mmState.diff==='Easy' ? 3 : mmState.diff==='Medium' ? 6 : 8;
+  mmState.total = pairCount;
+
+  // Generate pairs using seeded RNG so both players get identical board
+  const rng = seededRand(mmState.seed);
+  const pairs = generateMatchPairsSeeded(mmState.op, mmState.diff, pairCount, rng);
+  const cards = [];
+  pairs.forEach(p => {
+    cards.push({ type:'q', text:p.q, pairId:p.id, matched:false, el:null });
+    cards.push({ type:'a', text:String(p.a), pairId:p.id, matched:false, el:null });
+  });
+  // Shuffle with seeded RNG
+  for(let i=cards.length-1; i>0; i--){
+    const j = Math.floor(rng() * (i+1));
+    [cards[i], cards[j]] = [cards[j], cards[i]];
+  }
+  mmState.cards = cards;
+
+  // Update opponent bar
+  document.getElementById('mm-opp-avatar').textContent = mmState.opponentAvatar;
+  document.getElementById('mm-opp-name').textContent   = mmState.opponentName;
+  document.getElementById('mm-opp-pairs').textContent  = '0';
+  document.getElementById('mm-opp-score').textContent  = '0';
+
+  buildMMGrid();
+  showScreen('match-multi-game-screen');
+  document.getElementById('mm-result-overlay').classList.add('hidden');
+  updateMMHeader();
+
+  // Preview phase then start
+  startMMPreview();
+}
+
+function buildMMGrid(){
+  const grid = document.getElementById('mm-grid');
+  grid.innerHTML = '';
+  const cols = mmState.diff==='Easy' ? 2 : mmState.diff==='Medium' ? 3 : 4;
+  grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  mmState.cards.forEach((card, idx) => {
+    const div = document.createElement('div');
+    div.className = 'match-card' + (card.type==='a' ? ' is-answer' : '');
+    div.innerHTML = `<div class="match-front">🧩</div><div class="match-back">${card.text}</div>`;
+    div.onclick = () => flipMMCard(idx);
+    card.el = div;
+    grid.appendChild(div);
+  });
+}
+
+function startMMPreview(){
+  mmState.locked = true;
+  mmState._previewTimeouts = [];
+  const indices = mmState.cards.map((_,i) => i);
+  for(let i=indices.length-1; i>0; i--){
+    const j = randInt(0,i); [indices[i],indices[j]] = [indices[j],indices[i]];
+  }
+  const SHOW_MS = 900, STEP_MS = 1200;
+  indices.forEach((cardIdx, step) => {
+    mmState._previewTimeouts.push(setTimeout(() => {
+      const el = mmState.cards[cardIdx].el;
+      el.classList.add('flipped');
+      el.classList.remove('pop-reveal');
+      void el.offsetWidth;
+      el.classList.add('pop-reveal');
+    }, step * STEP_MS));
+    mmState._previewTimeouts.push(setTimeout(() => {
+      mmState.cards[cardIdx].el.classList.remove('flipped','pop-reveal');
+    }, step * STEP_MS + SHOW_MS));
+  });
+  const totalTime = indices.length * STEP_MS + 400;
+  mmState._previewTimeouts.push(setTimeout(() => {
+    // Show ready overlay — wired to Firebase signal (not instant start)
+    const overlay = document.getElementById('match-ready-overlay');
+    document.getElementById('ready-title').textContent     = '👀 Got it?';
+    document.getElementById('ready-subtitle').innerHTML    = 'Remember where everything is!<br>Both players must be ready to start.';
+    const btn = document.getElementById('ready-btn');
+    btn.textContent  = "I'm Ready!";
+    btn.disabled     = false;
+    btn.onclick      = signalMMReady;
+    overlay.classList.remove('hidden');
+  }, totalTime));
+}
+
+// Player signals they are ready → write to Firebase
+window.signalMMReady = async function(){
+  const btn = document.getElementById('ready-btn');
+  btn.textContent = '✅ Waiting for opponent...';
+  btn.disabled    = true;
+  document.getElementById('ready-subtitle').innerHTML = 'Waiting for your opponent to be ready...';
+  await update(ref(db, `rooms/${mmState.roomCode}/${mmState.playerId}`), { ready: true });
+};
+
+// Called by listener when both players are ready — starts actual game for this player
+function startMMAfterBothReady(){
+  document.getElementById('match-ready-overlay').classList.add('hidden');
+  mmState.cards.forEach(c => c.el.classList.remove('flipped','pop-reveal'));
+  mmState.locked = false;
+  mmState._startTimeout = setTimeout(() => {
+    clearInterval(mmState.timerInterval);
+    mmState.timerInterval = setInterval(() => {
+      if(mmState.timeLimit > 0){
+        mmState.timer--;
+        updateMMHeader();
+        if(mmState.timer <= 0){
+          clearInterval(mmState.timerInterval);
+          finishMMGame(true);
+        }
+      } else {
+        mmState.timer++;
+        updateMMHeader();
+      }
+    }, 1000);
+    updateMMHeader();
+  }, 600);
+}
+
+function flipMMCard(idx){
+  const card = mmState.cards[idx];
+  if(mmState.locked || card.matched || mmState.flipped.includes(idx)) return;
+  if(mmState.flipped.length === 0) mmState.flipStartTime = Date.now();
+  card.el.classList.add('flipped');
+  mmState.flipped.push(idx);
+  if(mmState.flipped.length === 2){
+    mmState.locked = true;
+    setTimeout(checkMMPair, 400);
+  }
+}
+
+function checkMMPair(){
+  const [i,j] = mmState.flipped;
+  const c1 = mmState.cards[i], c2 = mmState.cards[j];
+  if(c1.pairId === c2.pairId){
+    // Correct! Calculate score based on time taken
+    const elapsed = (Date.now() - mmState.flipStartTime) / 1000;
+    const pts = elapsed < 5 ? 100 : elapsed < 10 ? 70 : elapsed < 15 ? 40 : 20;
+    mmState.score += pts;
+    c1.matched = true; c2.matched = true;
+    c1.el.classList.add('matched'); c2.el.classList.add('matched');
+    mmState.matched++;
+    mmState.flipped = []; mmState.locked = false;
+    updateMMHeader();
+    SFX.correct();
+    // Fly-off animation
+    [c1, c2].forEach(c => {
+      c.el.classList.add('match-shake');
+    });
+    setTimeout(() => {
+      [c1, c2].forEach(c => {
+        const rect = c.el.getBoundingClientRect();
+        const goRight = (rect.left + rect.width/2) > window.innerWidth/2;
+        c.el.style.setProperty('--fly-x', goRight ? '220px' : '-220px');
+        c.el.style.setProperty('--fly-rot', goRight ? '25deg' : '-25deg');
+        c.el.classList.remove('match-shake');
+        c.el.classList.add('fly-off');
+      });
+    }, 380);
+    // Sync to Firebase
+    update(ref(db, `rooms/${mmState.roomCode}/${mmState.playerId}`), {
+      score: mmState.score, pairs: mmState.matched, mistakes: mmState.mistakes,
+    });
+    if(mmState.matched === mmState.total){
+      clearInterval(mmState.timerInterval);
+      mmState.score += 50; // finish first bonus (may be overwritten if opp also done)
+      setTimeout(() => finishMMGame(false), 700);
+    }
+  } else {
+    // Wrong
+    mmState.mistakes++;
+    mmState.score = Math.max(0, mmState.score - 25);
+    updateMMHeader();
+    SFX.wrong();
+    c1.el.classList.add('wrong-flash'); c2.el.classList.add('wrong-flash');
+    setTimeout(() => {
+      c1.el.classList.remove('flipped','wrong-flash');
+      c2.el.classList.remove('flipped','wrong-flash');
+      mmState.flipped = []; mmState.locked = false;
+    }, 900);
+    // Sync mistakes & score
+    update(ref(db, `rooms/${mmState.roomCode}/${mmState.playerId}`), {
+      score: mmState.score, pairs: mmState.matched, mistakes: mmState.mistakes,
+    });
+  }
+}
+
+function updateMMHeader(){
+  const t = mmState.timer;
+  const m = Math.floor(Math.abs(t)/60), s = Math.abs(t)%60;
+  const timeStr = `${m}:${String(s).padStart(2,'0')}`;
+  document.getElementById('mm-pairs-label').textContent  = `${mmState.matched} / ${mmState.total} ✅`;
+  const timerEl = document.getElementById('mm-timer-label');
+  timerEl.textContent = mmState.timeLimit > 0 ? `⏱ ${timeStr}` : timeStr;
+  timerEl.style.color = (mmState.timeLimit > 0 && t <= 30) ? 'var(--red)' : '';
+  document.getElementById('mm-score-label').textContent  = `${mmState.score} ⭐`;
+}
+
+async function finishMMGame(timedOut){
+  mmState.finished = true;
+  clearInterval(mmState.timerInterval);
+  await update(ref(db, `rooms/${mmState.roomCode}/${mmState.playerId}`), {
+    score: mmState.score, pairs: mmState.matched, mistakes: mmState.mistakes, finished: true,
+  });
+  // Wait for opponent to finish (listener will call showMatchMultiResult)
+  document.getElementById('mm-score-label').textContent = `${mmState.score} ⭐`;
+  if(timedOut){
+    const grid = document.getElementById('mm-grid');
+    if(grid) grid.style.opacity = '0.4';
+  }
+}
+
+function showMatchMultiResult(room){
+  const me  = room[mmState.playerId];
+  const opp = room[mmState.opponentId];
+  const myScore  = me?.score  || 0;
+  const oppScore = opp?.score || 0;
+  const won = myScore > oppScore;
+  const tie = myScore === oppScore;
+
+  document.getElementById('mm-res-emoji').textContent   = tie ? '🤝' : won ? '🏆' : '😔';
+  document.getElementById('mm-res-title').textContent   = tie ? "It's a Tie!" : won ? 'You Win!' : 'You Lose!';
+  document.getElementById('mm-res-subtitle').textContent= tie ? 'Equal scores — well matched!' : won ? 'Great job! 🎉' : `${opp?.name||'Opponent'} got more points!`;
+
+  document.getElementById('mm-res-me-avatar').textContent    = profile.avatar;
+  document.getElementById('mm-res-me-name').textContent      = profile.name;
+  document.getElementById('mm-res-me-score').textContent     = myScore;
+  document.getElementById('mm-res-me-pairs').textContent     = `${me?.pairs||0} pairs`;
+  document.getElementById('mm-res-me-mistakes').textContent  = `${me?.mistakes||0} mistakes`;
+
+  document.getElementById('mm-res-opp-avatar').textContent   = mmState.opponentAvatar;
+  document.getElementById('mm-res-opp-name').textContent     = mmState.opponentName;
+  document.getElementById('mm-res-opp-score').textContent    = oppScore;
+  document.getElementById('mm-res-opp-pairs').textContent    = `${opp?.pairs||0} pairs`;
+  document.getElementById('mm-res-opp-mistakes').textContent = `${opp?.mistakes||0} mistakes`;
+
+  document.getElementById('mm-result-overlay').classList.remove('hidden');
+  if(won) SFX.win(); else if(tie) SFX.tie(); else SFX.lose();
+}
+
+window.quitMatchMultiGame = function(){
+  (mmState._previewTimeouts||[]).forEach(t => clearTimeout(t));
+  mmState._previewTimeouts = [];
+  clearTimeout(mmState._startTimeout);
+  clearInterval(mmState.timerInterval);
+  mmState.locked = true; mmState.finished = true;
+  if(mmRoomListener){ mmRoomListener(); mmRoomListener = null; }
+  document.getElementById('mm-result-overlay').classList.add('hidden');
+  document.getElementById('match-ready-overlay').classList.add('hidden');
+  document.getElementById('pause-overlay').classList.add('hidden');
+  showScreen('home-screen');
 };
 
 function generateMatchQuestion(op, diff){
@@ -1351,6 +1734,45 @@ function generateMatchPairs(op, diff, count=12){
     pairs.push({...pair, id:pairs.length});
   }
   return pairs;
+}
+
+// Seeded version — uses provided rng function so both players get same pairs
+function generateMatchPairsSeeded(op, diff, count, rng){
+  const pairs=[], usedAnswers=new Set(), usedQ=new Set();
+  let attempts=0;
+  while(pairs.length<count && attempts<500){
+    attempts++;
+    const pair = generateMatchQuestionSeeded(op, diff, rng);
+    const key = pair.q;
+    if(usedQ.has(key)||usedAnswers.has(pair.a)) continue;
+    usedQ.add(key); usedAnswers.add(pair.a);
+    pairs.push({...pair, id:pairs.length});
+  }
+  return pairs;
+}
+
+function generateMatchQuestionSeeded(op, diff, rng){
+  const ri = (a,b) => Math.floor(rng()*(b-a+1))+a;
+  let o = op==='Mixed' ? ['Addition','Subtraction','Multiplication','Division'][ri(0,3)] : op;
+  if(diff==='Easy'){
+    if(o==='Addition')       { const a=ri(1,9),  b=ri(1,15); return {q:`${a} + ${b}`,  a:a+b}; }
+    if(o==='Subtraction')    { const a=ri(10,20), b=ri(1,9);  return {q:`${a} − ${b}`,  a:a-b}; }
+    if(o==='Multiplication') { const a=ri(2,9),  b=ri(2,9);   return {q:`${a} × ${b}`,  a:a*b}; }
+    if(o==='Division')       { const b=ri(2,9),  a=b*ri(2,9); return {q:`${a} ÷ ${b}`, a:a/b}; }
+  }
+  if(diff==='Medium'){
+    if(o==='Addition')       { const a=ri(10,50), b=ri(10,50); return {q:`${a} + ${b}`, a:a+b}; }
+    if(o==='Subtraction')    { const a=ri(20,80), b=ri(10,40); return {q:`${Math.max(a,b)} − ${Math.min(a,b)}`, a:Math.abs(a-b)}; }
+    if(o==='Multiplication') { const a=ri(2,12),  b=ri(10,30); return {q:`${a} × ${b}`, a:a*b}; }
+    if(o==='Division')       { const b=ri(2,12),  a=b*ri(2,12); return {q:`${a} ÷ ${b}`, a:a/b}; }
+  }
+  if(diff==='Hard'){
+    if(o==='Addition')       { const a=ri(50,150), b=ri(20,80); return {q:`${a} + ${b}`, a:a+b}; }
+    if(o==='Subtraction')    { const a=ri(50,150), b=ri(20,80); return {q:`${Math.max(a,b)} − ${Math.min(a,b)}`, a:Math.abs(a-b)}; }
+    if(o==='Multiplication') { const a=ri(10,25),  b=ri(10,25); return {q:`${a} × ${b}`, a:a*b}; }
+    if(o==='Division')       { const b=ri(2,12),   a=b*ri(5,20); return {q:`${a} ÷ ${b}`, a:a/b}; }
+  }
+  return {q:'1 + 1', a:2};
 }
 
 window.startMatchGame = function(){
