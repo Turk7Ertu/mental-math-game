@@ -2105,7 +2105,24 @@ window.quitMatchGame=function(){
   };
 };
 
+// ── Theme ─────────────────────────────────────────────────────────────────
+let currentTheme = localStorage.getItem('mmg_theme') || 'dark';
+
+function applyTheme(){
+  document.body.dataset.theme = currentTheme;
+  const btn = document.getElementById('theme-btn');
+  if(btn) btn.textContent = currentTheme === 'dark' ? '🌙 Dark' : '☀️ Light';
+}
+
+window.toggleTheme = function(){
+  currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('mmg_theme', currentTheme);
+  applyTheme();
+};
+
 // ── Start (must be last — needs showScreen to be defined) ─────────────────
 loadProfile();
 // Apply saved mute state to button
 applyMuteBtn();
+// Apply saved theme
+applyTheme();

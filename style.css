@@ -4,6 +4,38 @@
   --green:  #22c55e; --red:    #ef4444; --yellow: #f59e0b; --blue:   #3b82f6;
   --text:   #f1f5f9; --sub:    #94a3b8;
 }
+/* ── Light Mode ─────────────────────────────────────────────── */
+body[data-theme="light"] {
+  --bg:     #f1f5f9;
+  --card:   #ffffff;
+  --accent: #7c3aed;
+  --lite:   #a78bfa;
+  --green:  #16a34a;
+  --red:    #dc2626;
+  --yellow: #d97706;
+  --blue:   #2563eb;
+  --text:   #1e1b4b;
+  --sub:    #6b7280;
+}
+body[data-theme="light"] .btn.grey { background:#d1d5db; color:#1e1b4b; }
+body[data-theme="light"] .btn.grey:hover { background:#9ca3af; }
+body[data-theme="light"] .tab-bar { background:#ffffffee; border-top:1px solid #e2e8f0; box-shadow:0 -2px 12px rgba(0,0,0,.08); }
+body[data-theme="light"] .tab { color:#6b7280; }
+body[data-theme="light"] .tab.active { color:var(--accent); }
+body[data-theme="light"] .sidebar { background:#ffffffdd; border-right:1px solid #e2e8f0; }
+body[data-theme="light"] input[type="text"],
+body[data-theme="light"] input[type="number"] { background:#f8fafc; color:var(--text); }
+body[data-theme="light"] .match-card { background:#e0e7ff; color:var(--text); border-color:#c7d2fe; }
+body[data-theme="light"] .match-card.flipped { background:#ffffff; }
+body[data-theme="light"] .match-card.matched { background:rgba(22,163,74,.15); border-color:#16a34a; }
+body[data-theme="light"] .pause-box,
+body[data-theme="light"] .match-ready-box { background:#ffffff; color:var(--text); }
+body[data-theme="light"] .match-header { background:#ffffffcc; }
+body[data-theme="light"] .mm-opp-bar { background:#e0e7ff; color:var(--text); }
+body[data-theme="light"] .settings-card { background:#ffffff; }
+body[data-theme="light"] .mode-card { background:#ffffff; color:var(--text); }
+body[data-theme="light"] .scoring-info-box { background:#f8fafc; }
+body[data-theme="light"] .brain-svg { filter: drop-shadow(0 0 8px rgba(124,58,237,0.5)); }
 body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; min-height:100vh; display:flex; justify-content:center; align-items:flex-start; padding:20px 16px 60px; }
 .app { width:100%; max-width:480px; }
 .screen { display:none; } .screen.active { display:block; padding-top:70px; }
