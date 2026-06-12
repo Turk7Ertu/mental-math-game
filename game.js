@@ -174,12 +174,26 @@ function stopSoloGame(){
 }
 
 // ── Screens ───────────────────────────────────────────────────────────────
-window.showScreen = function(id){
+// Screens that shouldn't be pushed onto the back-stack (tab destinations)
+const TAB_SCREENS = new Set(['home-screen','stats-screen','settings-screen','guide-screen']);
+let screenHistory = [];
+
+window.showScreen = function(id, opts={}){
   // If leaving the solo game screen, kill all background activity
   const currentScreen = document.querySelector('.screen.active');
-  if(currentScreen && currentScreen.id === 'game-screen' && id !== 'game-screen'){
+  const currentId = currentScreen ? currentScreen.id : null;
+  if(currentId === 'game-screen' && id !== 'game-screen'){
     stopSoloGame();
   }
+  // Push to history unless this is a tab switch, a back navigation, or same screen
+  if(!opts.isBack && !opts.isTab && currentId && currentId !== id){
+    screenHistory.push(currentId);
+    // Keep history from growing unbounded
+    if(screenHistory.length > 20) screenHistory.shift();
+  }
+  // Clear history when going home via tab
+  if(opts.isTab) screenHistory = [];
+
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
@@ -191,17 +205,10 @@ window.showScreen = function(id){
   document.getElementById('math-bg').classList.toggle('visible', id==='home-screen');
   // Update active tab
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  if(id==='stats-screen')        document.getElementById('tab-stats').classList.add('active');
+  if(id==='stats-screen')         document.getElementById('tab-stats').classList.add('active');
   else if(id==='settings-screen') document.getElementById('tab-settings').classList.add('active');
-  else if(id==='guide-screen')   document.getElementById('tab-guide').classList.add('active');
-  else                           document.getElementById('tab-home').classList.add('active');
-  // Sidebar visibility
-  const sHome = document.getElementById('sidebar-home');
-  const sGame = document.getElementById('sidebar-game');
-  if(window.innerWidth >= 900){
-    sHome.style.display = (id==='home-screen'||id==='menu-screen'||id==='stats-screen'||id==='match-menu-screen'||id==='solo-select-screen'||id==='multi-select-screen'||id==='match-multi-menu-screen') ? 'block' : 'none';
-    sGame.style.display = id==='game-screen' ? 'block' : 'none';
-  }
+  else if(id==='guide-screen')    document.getElementById('tab-guide').classList.add('active');
+  else                            document.getElementById('tab-home').classList.add('active');
   // Stop all sounds when leaving game screens
   const gameScreens = ['game-screen','match-game-screen','match-multi-game-screen'];
   if(!gameScreens.includes(id) && audioCtx && audioCtx.state === 'running'){
@@ -212,11 +219,20 @@ window.showScreen = function(id){
   }
 };
 
+window.goBack = function(){
+  const prev = screenHistory.pop();
+  if(prev){
+    showScreen(prev, { isBack: true });
+  } else {
+    showScreen('home-screen', { isBack: true });
+  }
+};
+
 window.switchTab = function(tab){
-  if(tab==='home')     showScreen('home-screen');
-  if(tab==='stats')  { buildStatsScreen(); showScreen('stats-screen'); }
-  if(tab==='guide')    showScreen('guide-screen');
-  if(tab==='settings') showScreen('settings-screen');
+  if(tab==='home')     showScreen('home-screen',    { isTab:true });
+  if(tab==='stats')  { buildStatsScreen(); showScreen('stats-screen', { isTab:true }); }
+  if(tab==='guide')    showScreen('guide-screen',   { isTab:true });
+  if(tab==='settings') showScreen('settings-screen',{ isTab:true });
 };
 window.goToMenu = function(mode){
   state.mode=mode;

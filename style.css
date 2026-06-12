@@ -118,9 +118,25 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 .mode-card p  { color:var(--sub); font-size:.88rem; }
 .mode-card .icon { font-size:1.6rem; margin-bottom:8px; }
 
-/* Menu */
-#menu-screen .back { color:var(--sub); font-size:.9rem; cursor:pointer; margin-bottom:16px; display:inline-block; }
-#menu-screen .back:hover { color:var(--text); }
+/* Back button */
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--sub);
+  font-size: .88rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 16px;
+  padding: 6px 12px 6px 8px;
+  border-radius: 10px;
+  background: var(--card);
+  border: 1.5px solid rgba(255,255,255,.07);
+  transition: color .15s, background .15s, transform .1s;
+  user-select: none;
+}
+.back:hover { color: var(--text); background: var(--accent); border-color: var(--accent); }
+.back:active { transform: scale(.95); }
 
 /* Lobby */
 .room-code-display { background:var(--card); border-radius:16px; text-align:center; padding:28px; margin:16px 0; }

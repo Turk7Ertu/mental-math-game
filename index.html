@@ -13,7 +13,7 @@
     gtag('js', new Date());
     gtag('config', 'G-LJPP72DDRC');
   </script>
-  <link rel="stylesheet" href="style.css?v=40" />
+  <link rel="stylesheet" href="style.css?v=41" />
 </head>
 <body>
 
@@ -144,7 +144,7 @@
 
   <!-- SOLO SELECT -->
   <div id="solo-select-screen" class="screen">
-    <span class="back" onclick="showScreen('home-screen')">← Back</span>
+    <span class="back" onclick="goBack()">‹ Back</span>
     <h1 style="margin-bottom:6px">🎯 Solo Practice</h1>
     <p class="sub" style="margin-bottom:28px">Choose a game mode</p>
     <div class="mode-grid">
@@ -163,7 +163,7 @@
 
   <!-- MULTI SELECT -->
   <div id="multi-select-screen" class="screen">
-    <span class="back" onclick="showScreen('home-screen')">← Back</span>
+    <span class="back" onclick="goBack()">‹ Back</span>
     <h1 style="margin-bottom:6px">⚔️ Challenge a Friend</h1>
     <p class="sub" style="margin-bottom:28px">Choose a game mode</p>
     <div class="mode-grid">
@@ -182,7 +182,7 @@
 
   <!-- MENU -->
   <div id="menu-screen" class="screen">
-    <span class="back" onclick="showScreen('home-screen')">← Back</span>
+    <span class="back" onclick="goBack()">‹ Back</span>
     <h1 style="margin-bottom:6px" id="menu-title">Solo Practice</h1>
     <p class="sub" style="margin-bottom:24px">Choose your settings</p>
     <h2>Operation</h2>
@@ -217,7 +217,7 @@
 
   <!-- JOIN -->
   <div id="join-screen" class="screen">
-    <span class="back" onclick="showScreen('home-screen')">← Back</span>
+    <span class="back" onclick="goBack()">‹ Back</span>
     <h1 style="margin-bottom:24px">Join Game</h1>
     <h2>Room Code</h2>
     <input type="text" id="join-code-input" placeholder="Enter 4-digit code" maxlength="4" style="letter-spacing:8px;font-size:2rem"/>
@@ -315,7 +315,7 @@
 
   <!-- STATS -->
   <div id="stats-screen" class="screen">
-    <span class="back" onclick="showScreen('home-screen')">← Back</span>
+    <span class="back" onclick="goBack()">‹ Back</span>
     <h1 style="margin-bottom:16px">📊 My Stats</h1>
 
     <!-- Tier / rating card -->
@@ -427,7 +427,7 @@
 
   <!-- MATCH MENU -->
   <div id="match-menu-screen" class="screen">
-    <span class="back" onclick="showScreen('solo-select-screen')">← Back</span>
+    <span class="back" onclick="goBack()">‹ Back</span>
     <h1 style="margin-bottom:6px">🧩 Match & Find</h1>
     <p class="sub" style="margin-bottom:24px">Flip cards to match questions with answers!</p>
     <h2>Operation</h2>
@@ -456,7 +456,7 @@
 
   <!-- MATCH MULTI MENU -->
   <div id="match-multi-menu-screen" class="screen">
-    <span class="back" onclick="showScreen('multi-select-screen')">← Back</span>
+    <span class="back" onclick="goBack()">‹ Back</span>
     <h1 style="margin-bottom:6px">🧩 Match & Find Challenge</h1>
     <p class="sub" style="margin-bottom:20px">Same board, race your friend!</p>
 
@@ -701,6 +701,6 @@
   </div>
 </div>
 
-<script type="module" src="game.js?v=36"></script>
+<script type="module" src="game.js?v=37"></script>
 </body>
 </html>
