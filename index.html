@@ -13,7 +13,7 @@
     gtag('js', new Date());
     gtag('config', 'G-LJPP72DDRC');
   </script>
-  <link rel="stylesheet" href="style.css?v=41" />
+  <link rel="stylesheet" href="style.css?v=42" />
 </head>
 <body>
 
@@ -437,6 +437,7 @@
       <button class="pill" data-val="Multiplication">Multiplication</button>
       <button class="pill" data-val="Division">Division</button>
       <button class="pill" data-val="Mixed">Mixed ⚡</button>
+      <button class="pill like-terms-pill" data-val="Like Terms">🔤 Like Terms</button>
     </div>
     <h2>Difficulty</h2>
     <div class="pill-group" id="match-diff-group">
@@ -480,6 +481,7 @@
       <button class="pill" data-val="Multiplication">Multiplication</button>
       <button class="pill" data-val="Division">Division</button>
       <button class="pill" data-val="Mixed">Mixed ⚡</button>
+      <button class="pill like-terms-pill" data-val="Like Terms">🔤 Like Terms</button>
     </div>
     <h2>Difficulty</h2>
     <div class="pill-group" id="match-multi-diff-group">
@@ -561,6 +563,41 @@
         <span class="css-logo-line right"></span>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Like Terms Intro overlay -->
+<div class="pause-overlay hidden" id="like-terms-intro-overlay">
+  <div class="pause-box like-terms-intro-box">
+    <div style="font-size:2rem;margin-bottom:4px">🔤</div>
+    <h2 style="font-size:1.15rem;color:var(--text);margin-bottom:12px">What are Like Terms?</h2>
+    <p class="lt-intro-p">Like terms have the <strong>same variable</strong> and the <strong>same exponent</strong>.</p>
+
+    <div class="lt-example-grid">
+      <div class="lt-example yes">
+        <span class="lt-badge yes">✅ Like Terms</span>
+        <div class="lt-pair"><span>3x</span><span>&</span><span>-7x</span></div>
+        <div class="lt-reason">Both are <strong>x</strong></div>
+      </div>
+      <div class="lt-example yes">
+        <span class="lt-badge yes">✅ Like Terms</span>
+        <div class="lt-pair"><span>5x²</span><span>&</span><span>2x²</span></div>
+        <div class="lt-reason">Both are <strong>x²</strong></div>
+      </div>
+      <div class="lt-example no">
+        <span class="lt-badge no">❌ Not Like Terms</span>
+        <div class="lt-pair"><span>3x</span><span>&</span><span>3y</span></div>
+        <div class="lt-reason">Different <strong>variables</strong></div>
+      </div>
+      <div class="lt-example no">
+        <span class="lt-badge no">❌ Not Like Terms</span>
+        <div class="lt-pair"><span>4x</span><span>&</span><span>4x²</span></div>
+        <div class="lt-reason">Different <strong>exponents</strong></div>
+      </div>
+    </div>
+
+    <p class="lt-intro-p" style="margin-top:12px">👇 Flip two cards — if they are <strong>like terms</strong>, they match!</p>
+    <button class="btn" style="margin-top:12px" onclick="dismissLikeTermsIntro()">Got it, Let's Play! 🚀</button>
   </div>
 </div>
 
@@ -701,6 +738,6 @@
   </div>
 </div>
 
-<script type="module" src="game.js?v=37"></script>
+<script type="module" src="game.js?v=38"></script>
 </body>
 </html>

@@ -1562,8 +1562,12 @@ function launchMatchMultiGame(){
   document.getElementById('mm-result-overlay').classList.add('hidden');
   updateMMHeader();
 
-  // Preview phase then start
-  startMMPreview();
+  // Show Like Terms intro first for multiplayer too, then preview
+  if(mmState.op === 'Like Terms'){
+    showLikeTermsIntro(() => startMMPreview());
+  } else {
+    startMMPreview();
+  }
 }
 
 function buildMMGrid(){
@@ -1820,6 +1824,12 @@ function generateMatchQuestion(op, diff){
 }
 
 function generateMatchPairs(op, diff, count=12){
+  if(op === 'Like Terms'){
+    // Use a random seed for solo mode
+    const seed = Date.now() % 999983;
+    const rng = seededRand(seed);
+    return generateLikeTermsPairs(diff, count, rng);
+  }
   const pairs=[], usedAnswers=new Set(), usedQ=new Set();
   let attempts=0;
   while(pairs.length<count && attempts<500){
@@ -1835,6 +1845,7 @@ function generateMatchPairs(op, diff, count=12){
 
 // Seeded version — uses provided rng function so both players get same pairs
 function generateMatchPairsSeeded(op, diff, count, rng){
+  if(op === 'Like Terms') return generateLikeTermsPairs(diff, count, rng);
   const pairs=[], usedAnswers=new Set(), usedQ=new Set();
   let attempts=0;
   while(pairs.length<count && attempts<500){
@@ -1847,6 +1858,63 @@ function generateMatchPairsSeeded(op, diff, count, rng){
   }
   return pairs;
 }
+
+// ── Like Terms pair generation ────────────────────────────────────────────
+function fmtTerm(coeff, varType){
+  if(coeff ===  1) return varType;
+  if(coeff === -1) return '−' + varType;
+  if(coeff <   0)  return '−' + Math.abs(coeff) + varType;
+  return coeff + varType;
+}
+
+function generateLikeTermsPairs(diff, count, rng){
+  const ri = (a,b) => Math.floor(rng()*(b-a+1))+a;
+
+  // Variable type pools per difficulty
+  const pools = {
+    Easy:   ['x','y','z','a','b','c','m','n','p','q','r','t'],
+    Medium: ['x','y','z','a','b','c','x²','y²','z²','a²','b²','c²'],
+    Hard:   ['x','y','z','a','b','c','x²','y²','a²','b²','xy','xz','ab','ac','x³','y³']
+  };
+  const pool = [...(pools[diff] || pools['Easy'])];
+  // Shuffle pool with seeded rng
+  for(let i=pool.length-1;i>0;i--){
+    const j=Math.floor(rng()*(i+1));
+    [pool[i],pool[j]]=[pool[j],pool[i]];
+  }
+  // Take first `count` unique types
+  const types = [...new Set(pool)].slice(0, count);
+
+  // Coefficient ranges
+  const maxCoeff = diff === 'Hard' ? 12 : 9;
+
+  return types.map((varType, idx) => {
+    // Generate two different non-zero coefficients
+    let c1, c2;
+    do { c1 = ri(1, maxCoeff); } while(false);
+    do { c2 = ri(1, maxCoeff); } while(c2 === c1);
+    // Sprinkle in negatives — more negatives on harder difficulties
+    const negChance = diff === 'Easy' ? 0.3 : diff === 'Medium' ? 0.45 : 0.55;
+    if(rng() < negChance) c1 = -c1;
+    if(rng() < negChance) c2 = -c2;
+    const term1 = fmtTerm(c1, varType);
+    const term2 = fmtTerm(c2, varType);
+    return { q: term1, a: term2, id: idx };
+  });
+}
+
+// ── Like Terms intro overlay ──────────────────────────────────────────────
+let _likeTermsCallback = null;
+
+function showLikeTermsIntro(callback){
+  _likeTermsCallback = callback;
+  document.getElementById('like-terms-intro-overlay').classList.remove('hidden');
+}
+
+window.dismissLikeTermsIntro = function(){
+  document.getElementById('like-terms-intro-overlay').classList.add('hidden');
+  if(_likeTermsCallback){ _likeTermsCallback(); _likeTermsCallback = null; }
+};
 
 function generateMatchQuestionSeeded(op, diff, rng){
   const ri = (a,b) => Math.floor(rng()*(b-a+1))+a;
@@ -1909,6 +1977,15 @@ window.startMatchGame = function(){
   document.getElementById('match-ready-overlay').classList.add('hidden');
   updateMatchHeader();
 
+  // Show Like Terms intro first, then start preview
+  if(op === 'Like Terms'){
+    showLikeTermsIntro(() => startMatchPreview());
+    return;
+  }
+  startMatchPreview();
+};
+
+function startMatchPreview(){
   // Preview phase: show each card one at a time (open → bounce → close), then show Ready overlay
   matchState.locked = true;
   matchState._previewTimeouts = []; // track all preview timeouts so we can cancel on quit
@@ -1947,7 +2024,7 @@ window.startMatchGame = function(){
     const mpb2 = document.getElementById('match-pause-btn');
     if(mpb2){ mpb2.disabled = false; mpb2.style.opacity = ''; mpb2.style.cursor = ''; }
   }, totalTime));
-};
+}
 
 window.beginMatchGame = function(){
   document.getElementById('match-ready-overlay').classList.add('hidden');
