@@ -695,9 +695,7 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 .pause-box h2 { font-size: 1.7rem; font-weight: 900; margin-bottom: 6px; }
 .pause-box p  { color: var(--sub); margin-bottom: 24px; }
 
-/* ── Like Terms pill ─────────────────────────────────────── */
-.like-terms-pill.selected { background: #0e7490; border-color: #22d3ee; color: #fff; }
-.like-terms-pill:not(.selected) { color: #22d3ee; border-color: #22d3ee44; }
+/* Like Terms pill — same style as all other pills, no special color */
 
 /* ── Like Terms Intro Overlay ────────────────────────────── */
 .like-terms-intro-box {
