@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Math Crane 🏗️</title>
+  <link rel="stylesheet" href="crane.css" />
+</head>
+<body>
+  <!-- START SCREEN -->
+  <div id="start-screen" class="overlay">
+    <div class="overlay-box">
+      <div class="crane-logo">🏗️</div>
+      <h1>Math Crane</h1>
+      <p class="sub">Drop blocks to build the highest tower!</p>
+      <div class="how-to">
+        <div class="how-row">📦 Click or tap to drop a block</div>
+        <div class="how-row">✂️ Only the overlapping part stays</div>
+        <div class="how-row">❌ Miss completely = Game Over</div>
+        <div class="how-row">📐 Smaller block = harder to stack!</div>
+      </div>
+      <button class="big-btn" id="start-btn">▶ Start Game</button>
+      <a href="index.html" class="back-link">← Back to Mental Math</a>
+    </div>
+  </div>
+
+  <!-- GAME OVER SCREEN -->
+  <div id="gameover-screen" class="overlay hidden">
+    <div class="overlay-box">
+      <div class="crane-logo">💥</div>
+      <h1>Game Over!</h1>
+      <p class="sub">Your tower collapsed!</p>
+      <div class="score-display">
+        <div class="score-label">Height Reached</div>
+        <div class="score-value" id="final-score">0</div>
+        <div class="score-label">blocks</div>
+      </div>
+      <div class="score-display" id="best-wrap">
+        <div class="score-label">🏆 Best</div>
+        <div class="score-value" id="best-score">0</div>
+        <div class="score-label">blocks</div>
+      </div>
+      <button class="big-btn" id="retry-btn">🔄 Try Again</button>
+      <a href="index.html" class="back-link">← Back to Mental Math</a>
+    </div>
+  </div>
+
+  <!-- GAME UI -->
+  <div id="game-ui" class="hidden">
+    <div id="hud">
+      <div class="hud-item">
+        <span class="hud-label">HEIGHT</span>
+        <span class="hud-value" id="hud-score">0</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">BEST</span>
+        <span class="hud-value" id="hud-best">0</span>
+      </div>
+    </div>
+    <canvas id="gameCanvas"></canvas>
+    <div id="drop-hint">Tap anywhere to drop!</div>
+  </div>
+
+  <script src="crane.js"></script>
+</body>
+</html>
