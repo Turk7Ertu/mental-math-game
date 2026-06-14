@@ -480,22 +480,18 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: rgba(239,68,68,.13);
-  color: #f87171;
-  border: 1.5px solid rgba(239,68,68,.35);
-  border-radius: 8px;
-  padding: 5px 12px;
-  font-size: .82rem;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 6px 14px;
+  font-size: .85rem;
   font-weight: 700;
   cursor: pointer;
   transition: background .15s, color .15s, border-color .15s;
   letter-spacing: .01em;
 }
-.match-quit:hover {
-  background: rgba(239,68,68,.28);
-  color: #fff;
-  border-color: var(--red);
-}
+.match-quit:hover { background: #dc2626; }
 .match-stat {
   font-size: .82rem;
   font-weight: 700;
@@ -664,17 +660,18 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 
 /* ── Pause Button ────────────────────────────────────────── */
 .pause-btn {
-  background: var(--card);
-  border: 1.5px solid var(--border);
+  background: #2a2a3e;
+  border: 1.5px solid rgba(255,255,255,.12);
   color: var(--text);
   border-radius: 10px;
-  padding: 4px 12px;
+  padding: 5px 14px;
   font-size: 1rem;
+  font-weight: 700;
   cursor: pointer;
   transition: background .15s, color .15s;
-  margin-left: auto;
+  flex-shrink: 0;
 }
-.pause-btn:hover { background: var(--accent); color: #fff; }
+.pause-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
 
 /* ── Pause Overlay ───────────────────────────────────────── */
 .pause-overlay {
