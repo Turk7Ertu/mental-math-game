@@ -141,9 +141,34 @@
     </div>
   </div>
 
+  <!-- ── PAUSE OVERLAY ────────────────────────────────────────── -->
+  <div id="pause-overlay" class="overlay hidden">
+    <div class="overlay-box pause-box">
+      <div style="font-size:2.5rem;margin-bottom:8px">⏸️</div>
+      <h2 style="font-size:1.4rem;font-weight:900;margin-bottom:6px">Game Paused</h2>
+      <p style="color:var(--sub);font-size:.9rem;margin-bottom:20px">Take a breath!</p>
+      <button class="big-btn" id="resume-btn">▶ Resume</button>
+      <button class="big-btn grey-btn" id="pause-quit-btn">✕ Quit Game</button>
+    </div>
+  </div>
+
+  <!-- ── QUIT CONFIRM OVERLAY ──────────────────────────────────── -->
+  <div id="crane-quit-overlay" class="overlay hidden">
+    <div class="overlay-box pause-box">
+      <div style="font-size:2.5rem;margin-bottom:8px">⚠️</div>
+      <h2 style="font-size:1.3rem;font-weight:900;margin-bottom:6px">Quit Game?</h2>
+      <p style="color:var(--sub);font-size:.88rem;margin-bottom:20px">Your tower progress will be lost!</p>
+      <div style="display:flex;gap:10px">
+        <button class="big-btn grey-btn" style="margin:0;flex:1" id="quit-no-btn">✕ No, Stay</button>
+        <button class="big-btn" style="margin:0;flex:1;background:var(--red)" id="quit-yes-btn">✓ Yes, Quit</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ── GAME UI ────────────────────────────────────────────── -->
   <div id="game-ui" class="hidden">
     <div id="hud">
+      <button class="hud-quit-btn" id="hud-quit-btn" title="Quit">✕</button>
       <div class="hud-item">
         <span class="hud-label">HEIGHT</span>
         <span class="hud-value" id="hud-score">0</span>
@@ -156,6 +181,7 @@
         <span class="hud-label">BEST</span>
         <span class="hud-value" id="hud-best">0</span>
       </div>
+      <button class="hud-pause-btn" id="hud-pause-btn" title="Pause">⏸</button>
     </div>
     <canvas id="gameCanvas"></canvas>
     <div id="drop-hint">Tap anywhere to drop!</div>

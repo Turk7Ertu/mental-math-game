@@ -367,6 +367,10 @@ document.addEventListener('keydown', e => {
     if(e.key === 'Enter') submitAnswer();
     return;
   }
+  if(e.code === 'KeyP' || e.code === 'Escape'){
+    gamePaused ? resumeGame() : pauseGame();
+    return;
+  }
   if(e.code === 'Space' || e.code === 'ArrowDown') drop();
 });
 
@@ -375,9 +379,83 @@ document.getElementById('eq-input').addEventListener('keydown', e => {
   if(e.key === 'Enter') submitAnswer();
 });
 
+// ── Pause / Resume ────────────────────────────────────────────────────────
+let gamePaused = false;
+
+function pauseGame(){
+  if(state.gameOver || pendingQuestion) return;
+  gamePaused = true;
+  state.running = false;
+  cancelAnimationFrame(animId);
+  drawFrame();
+  document.getElementById('pause-overlay').classList.remove('hidden');
+}
+
+function resumeGame(){
+  gamePaused = false;
+  state.running = true;
+  document.getElementById('pause-overlay').classList.add('hidden');
+  loop();
+}
+
+document.getElementById('hud-pause-btn').addEventListener('click', pauseGame);
+document.getElementById('resume-btn').addEventListener('click', resumeGame);
+
+// ── Quit flow ─────────────────────────────────────────────────────────────
+function showQuitConfirm(){
+  // Pause first if not already
+  if(!gamePaused && !pendingQuestion){
+    state.running = false;
+    cancelAnimationFrame(animId);
+    drawFrame();
+  }
+  document.getElementById('pause-overlay').classList.add('hidden');
+  document.getElementById('crane-quit-overlay').classList.remove('hidden');
+}
+
+function cancelQuit(){
+  document.getElementById('crane-quit-overlay').classList.add('hidden');
+  // If we came from pause overlay, re-show it
+  if(gamePaused){
+    document.getElementById('pause-overlay').classList.remove('hidden');
+    return;
+  }
+  // If question was pending, re-show it
+  if(pendingQuestion){
+    document.getElementById('question-overlay').classList.remove('hidden');
+    return;
+  }
+  // Otherwise just resume
+  resumeGame();
+}
+
+function confirmQuit(){
+  clearInterval(countdownTimer);
+  cancelAnimationFrame(animId);
+  state.gameOver  = true;
+  state.running   = false;
+  gamePaused      = false;
+  pendingQuestion = false;
+  document.getElementById('crane-quit-overlay').classList.add('hidden');
+  document.getElementById('pause-overlay').classList.add('hidden');
+  document.getElementById('question-overlay').classList.add('hidden');
+  document.getElementById('game-ui').classList.add('hidden');
+  document.getElementById('topic-screen').classList.remove('hidden');
+}
+
+document.getElementById('hud-quit-btn').addEventListener('click',  showQuitConfirm);
+document.getElementById('pause-quit-btn').addEventListener('click', showQuitConfirm);
+document.getElementById('quit-no-btn').addEventListener('click',   cancelQuit);
+document.getElementById('quit-yes-btn').addEventListener('click',  confirmQuit);
+
+// Also allow quitting from the question overlay via the question's quit path
+// (user can tap HUD quit while question is showing — handled by showQuitConfirm above)
+
 // ── Retry / Change Topic ──────────────────────────────────────────────────
 document.getElementById('retry-btn').addEventListener('click', () => {
   document.getElementById('gameover-screen').classList.add('hidden');
+  document.getElementById('game-ui').classList.remove('hidden');
+  gamePaused = false;
   startGame();
 });
 
