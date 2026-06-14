@@ -357,6 +357,210 @@ h1 { font-size: 1.9rem; font-weight: 900; margin-bottom: 6px; }
   transition: opacity .5s;
 }
 
+/* ── Mode Banner ────────────────────────────────── */
+.mode-banner {
+  display: inline-block;
+  font-size: .8rem;
+  font-weight: 800;
+  border-radius: 20px;
+  padding: 5px 14px;
+  margin-bottom: 10px;
+  letter-spacing: .04em;
+}
+.solo-banner  { background: rgba(124,58,237,.2); color: var(--lite); border: 1px solid rgba(124,58,237,.4); }
+.multi-banner { background: rgba(239,68,68,.15); color: #f87171;    border: 1px solid rgba(239,68,68,.35); }
+
+/* ── Back link button ───────────────────────────── */
+.back-link-btn {
+  display: block;
+  background: none;
+  border: none;
+  color: var(--sub);
+  font-size: .88rem;
+  cursor: pointer;
+  margin-top: 4px;
+  text-decoration: none;
+  padding: 4px;
+}
+.back-link-btn:hover { color: var(--text); }
+
+/* ── Screen title ───────────────────────────────── */
+.screen-title { font-size: 1.3rem; font-weight: 900; margin-bottom: 6px; }
+
+/* ── Green button ───────────────────────────────── */
+.green-btn { background: var(--green); }
+.green-btn:hover { background: #16a34a; }
+
+/* ── Join code input ────────────────────────────── */
+.code-input {
+  display: block;
+  width: 140px;
+  margin: 0 auto 12px;
+  background: var(--bg);
+  border: 2px solid var(--accent);
+  border-radius: 14px;
+  color: var(--text);
+  font-size: 2.2rem;
+  font-weight: 900;
+  text-align: center;
+  padding: 12px 10px;
+  outline: none;
+  letter-spacing: .15em;
+}
+.code-input:focus { border-color: var(--lite); }
+
+.join-error {
+  font-size: .84rem;
+  color: var(--red);
+  font-weight: 700;
+  background: rgba(239,68,68,.1);
+  border-radius: 8px;
+  padding: 7px 12px;
+  margin-bottom: 10px;
+}
+.join-error.hidden { display: none; }
+
+/* ── Lobby ──────────────────────────────────────── */
+.lobby-box { max-width: 360px; }
+
+.lobby-code {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--lite);
+  letter-spacing: .2em;
+  background: var(--bg);
+  border-radius: 14px;
+  padding: 10px 20px;
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+.lobby-players {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.lobby-player-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 9px 14px;
+}
+.lp-avatar { font-size: 1.5rem; }
+.lp-name   { font-size: .95rem; font-weight: 700; color: var(--text); }
+
+.lobby-waiting-msg {
+  font-size: .8rem;
+  color: var(--sub);
+  margin-bottom: 12px;
+}
+
+/* ── Countdown overlay ──────────────────────────── */
+.countdown-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#countdown-num {
+  font-size: 7rem;
+  font-weight: 900;
+  color: var(--lite);
+  text-shadow: 0 0 40px rgba(124,58,237,.6);
+  animation: countPulse .8s ease-in-out;
+}
+@keyframes countPulse {
+  0%   { transform: scale(1.4); opacity: 0; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+/* ── Mini leaderboard (during multi game) ───────── */
+#mini-leaderboard {
+  width: 100%;
+  background: rgba(26,26,46,.95);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  padding: 4px 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  flex-shrink: 0;
+}
+#mini-leaderboard.hidden { display: none; }
+
+.ml-row {
+  font-size: .76rem;
+  font-weight: 700;
+  color: var(--lite);
+  white-space: nowrap;
+}
+.ml-dead { color: var(--sub); text-decoration: line-through; }
+
+/* ── Spectator overlay ──────────────────────────── */
+.spectator-box { max-width: 380px; }
+
+.live-leaderboard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.lb-row {
+  display: grid;
+  grid-template-columns: 28px 32px 1fr auto 24px;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 9px 12px;
+  border: 1px solid transparent;
+  transition: background .3s;
+}
+.lb-alive { border-color: rgba(34,197,94,.25); }
+.lb-dead  { opacity: .55; }
+.lb-rank   { font-size: .85rem; font-weight: 800; color: var(--sub); }
+.lb-avatar { font-size: 1.3rem; }
+.lb-name   { font-size: .9rem; font-weight: 700; color: var(--text); }
+.lb-score  { font-size: .85rem; font-weight: 700; color: var(--lite); text-align: right; }
+.lb-status { font-size: .9rem; }
+
+/* ── Final results ──────────────────────────────── */
+.results-box { max-width: 380px; }
+
+.final-rankings {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+  width: 100%;
+}
+
+.fr-row {
+  display: grid;
+  grid-template-columns: 28px 32px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 11px 14px;
+  border: 1px solid transparent;
+}
+.fr-me { border-color: var(--accent); background: rgba(124,58,237,.15); }
+.fr-medal  { font-size: 1.1rem; }
+.fr-avatar { font-size: 1.3rem; }
+.fr-name   { font-size: .9rem; font-weight: 700; color: var(--text); }
+.fr-score  { font-size: .88rem; font-weight: 700; color: var(--lite); text-align: right; }
+
 /* ── Next question counter on canvas ────────────── */
 #next-q-hint {
   position: fixed;

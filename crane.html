@@ -8,21 +8,20 @@
 </head>
 <body>
 
-  <!-- ── TOPIC SELECTION SCREEN ───────────────────────────── -->
+  <!-- ── TOPIC SELECTION ───────────────────────────────────── -->
   <div id="topic-screen" class="overlay">
     <div class="overlay-box topic-box">
       <div class="crane-logo">🏗️</div>
       <h1>Math Crane</h1>
+      <div id="mode-banner" class="mode-banner solo-banner">🎯 Solo Mode</div>
       <p class="sub">Choose a topic to play</p>
 
       <div class="topic-grid">
-        <!-- Active topic -->
         <div class="topic-card active-topic" onclick="selectTopic('equations')">
           <div class="topic-icon">📐</div>
           <div class="topic-name">1 &amp; 2 Step Equations</div>
           <div class="topic-desc">Solve for x to keep the crane slow!</div>
         </div>
-        <!-- Coming soon -->
         <div class="topic-card soon-topic">
           <div class="topic-icon">➗</div>
           <div class="topic-name">Fractions</div>
@@ -44,7 +43,46 @@
     </div>
   </div>
 
-  <!-- ── HOW TO PLAY OVERLAY ───────────────────────────────── -->
+  <!-- ── MULTI: CREATE OR JOIN ──────────────────────────────── -->
+  <div id="multi-mode-screen" class="overlay hidden">
+    <div class="overlay-box">
+      <div style="font-size:2.4rem;margin-bottom:8px">🏗️</div>
+      <h2 class="screen-title">Math Crane Multiplayer</h2>
+      <p class="sub" style="margin-bottom:24px">Topic: <strong id="multi-topic-label" style="color:var(--lite)">1 &amp; 2 Step Equations</strong></p>
+      <button class="big-btn" id="create-room-btn">🏠 Create a Room</button>
+      <button class="big-btn grey-btn" id="join-room-btn">🔗 Join with Code</button>
+      <button class="back-link-btn" id="multi-back-btn">← Back</button>
+    </div>
+  </div>
+
+  <!-- ── JOIN ROOM ──────────────────────────────────────────── -->
+  <div id="join-screen" class="overlay hidden">
+    <div class="overlay-box">
+      <div style="font-size:2rem;margin-bottom:8px">🔗</div>
+      <h2 class="screen-title">Join a Room</h2>
+      <p class="sub" style="margin-bottom:16px">Enter the 4-digit code</p>
+      <input type="number" id="join-code-input" inputmode="numeric" maxlength="4" placeholder="1234" class="code-input" />
+      <div id="join-error" class="join-error hidden">Room not found. Check the code!</div>
+      <button class="big-btn" id="join-submit-btn">→ Join</button>
+      <button class="back-link-btn" id="join-back-btn">← Back</button>
+    </div>
+  </div>
+
+  <!-- ── LOBBY ──────────────────────────────────────────────── -->
+  <div id="lobby-screen" class="overlay hidden">
+    <div class="overlay-box lobby-box">
+      <div style="font-size:1.8rem;margin-bottom:4px">🏗️</div>
+      <h2 class="screen-title">Room Code</h2>
+      <div class="lobby-code" id="lobby-code-display">----</div>
+      <p class="sub" style="margin-bottom:14px">Share this code with friends!</p>
+      <div class="lobby-players" id="lobby-players"></div>
+      <p id="lobby-waiting-msg" class="lobby-waiting-msg">Waiting for players… (up to 5)</p>
+      <button class="big-btn green-btn" id="lobby-start-btn" style="display:none">▶ Start Game!</button>
+      <button class="big-btn grey-btn" id="lobby-leave-btn">Leave Room</button>
+    </div>
+  </div>
+
+  <!-- ── HOW TO PLAY ────────────────────────────────────────── -->
   <div id="howto-overlay" class="overlay hidden">
     <div class="overlay-box howto-box">
       <div class="crane-logo" style="font-size:2.2rem">📐</div>
@@ -69,7 +107,7 @@
         </div>
         <div class="howto-step">
           <span class="step-icon">🏆</span>
-          <span>The <strong>higher your tower</strong>, the harder the equations. How high can you go?</span>
+          <span id="howto-goal-text">The <strong>higher your tower</strong>, the harder the equations. How high can you go?</span>
         </div>
       </div>
 
@@ -81,6 +119,13 @@
       <p style="font-size:.78rem;color:var(--sub);margin-bottom:16px">Answer quickly → crane stays slow → you stack higher!</p>
 
       <button class="big-btn" id="play-btn">▶ Let's Play!</button>
+    </div>
+  </div>
+
+  <!-- ── COUNTDOWN OVERLAY ──────────────────────────────────── -->
+  <div id="countdown-overlay" class="overlay hidden">
+    <div class="countdown-box">
+      <div id="countdown-num">3</div>
     </div>
   </div>
 
@@ -115,7 +160,54 @@
     </div>
   </div>
 
-  <!-- ── GAME OVER SCREEN ───────────────────────────────────── -->
+  <!-- ── PAUSE OVERLAY ─────────────────────────────────────── -->
+  <div id="pause-overlay" class="overlay hidden">
+    <div class="overlay-box pause-box">
+      <div style="font-size:2.5rem;margin-bottom:8px">⏸️</div>
+      <h2 style="font-size:1.4rem;font-weight:900;margin-bottom:6px">Game Paused</h2>
+      <p style="color:var(--sub);font-size:.9rem;margin-bottom:20px">Take a breath!</p>
+      <button class="big-btn" id="resume-btn">▶ Resume</button>
+      <button class="big-btn grey-btn" id="pause-quit-btn">✕ Quit Game</button>
+    </div>
+  </div>
+
+  <!-- ── QUIT CONFIRM ───────────────────────────────────────── -->
+  <div id="crane-quit-overlay" class="overlay hidden">
+    <div class="overlay-box pause-box">
+      <div style="font-size:2.5rem;margin-bottom:8px">⚠️</div>
+      <h2 style="font-size:1.3rem;font-weight:900;margin-bottom:6px">Quit Game?</h2>
+      <p style="color:var(--sub);font-size:.88rem;margin-bottom:20px">Your tower progress will be lost!</p>
+      <div style="display:flex;gap:10px">
+        <button class="big-btn grey-btn" style="margin:0;flex:1" id="quit-no-btn">✕ No, Stay</button>
+        <button class="big-btn" style="margin:0;flex:1;background:var(--red)" id="quit-yes-btn">✓ Yes, Quit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SPECTATOR (eliminated in multi) ────────────────────── -->
+  <div id="spectator-overlay" class="overlay hidden">
+    <div class="overlay-box spectator-box">
+      <div style="font-size:2.5rem;margin-bottom:6px">💥</div>
+      <h2 style="font-size:1.3rem;font-weight:900;margin-bottom:4px">You're Eliminated!</h2>
+      <p class="sub" style="margin-bottom:14px">Watch the remaining players…</p>
+      <div class="live-leaderboard" id="spectator-leaderboard"></div>
+      <p id="spectator-waiting" style="font-size:.8rem;color:var(--sub);margin-top:10px">Game in progress…</p>
+    </div>
+  </div>
+
+  <!-- ── FINAL RESULTS (multi) ──────────────────────────────── -->
+  <div id="final-results-screen" class="overlay hidden">
+    <div class="overlay-box results-box">
+      <div style="font-size:2.5rem;margin-bottom:6px">🏆</div>
+      <h2 style="font-size:1.4rem;font-weight:900;margin-bottom:4px">Game Over!</h2>
+      <p class="sub" style="margin-bottom:14px">Final Rankings</p>
+      <div class="final-rankings" id="final-rankings"></div>
+      <button class="big-btn green-btn" id="rematch-btn">🔄 Rematch</button>
+      <button class="big-btn grey-btn" id="results-home-btn">🏠 Back to Menu</button>
+    </div>
+  </div>
+
+  <!-- ── SOLO GAME OVER ────────────────────────────────────── -->
   <div id="gameover-screen" class="overlay hidden">
     <div class="overlay-box">
       <div class="crane-logo">💥</div>
@@ -141,31 +233,7 @@
     </div>
   </div>
 
-  <!-- ── PAUSE OVERLAY ────────────────────────────────────────── -->
-  <div id="pause-overlay" class="overlay hidden">
-    <div class="overlay-box pause-box">
-      <div style="font-size:2.5rem;margin-bottom:8px">⏸️</div>
-      <h2 style="font-size:1.4rem;font-weight:900;margin-bottom:6px">Game Paused</h2>
-      <p style="color:var(--sub);font-size:.9rem;margin-bottom:20px">Take a breath!</p>
-      <button class="big-btn" id="resume-btn">▶ Resume</button>
-      <button class="big-btn grey-btn" id="pause-quit-btn">✕ Quit Game</button>
-    </div>
-  </div>
-
-  <!-- ── QUIT CONFIRM OVERLAY ──────────────────────────────────── -->
-  <div id="crane-quit-overlay" class="overlay hidden">
-    <div class="overlay-box pause-box">
-      <div style="font-size:2.5rem;margin-bottom:8px">⚠️</div>
-      <h2 style="font-size:1.3rem;font-weight:900;margin-bottom:6px">Quit Game?</h2>
-      <p style="color:var(--sub);font-size:.88rem;margin-bottom:20px">Your tower progress will be lost!</p>
-      <div style="display:flex;gap:10px">
-        <button class="big-btn grey-btn" style="margin:0;flex:1" id="quit-no-btn">✕ No, Stay</button>
-        <button class="big-btn" style="margin:0;flex:1;background:var(--red)" id="quit-yes-btn">✓ Yes, Quit</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── GAME UI ────────────────────────────────────────────── -->
+  <!-- ── GAME UI ───────────────────────────────────────────── -->
   <div id="game-ui" class="hidden">
     <div id="hud">
       <button class="hud-quit-btn" id="hud-quit-btn" title="Quit">✕</button>
@@ -177,16 +245,18 @@
         <span class="hud-label">SOLVED</span>
         <span class="hud-value" id="hud-solved">0</span>
       </div>
-      <div class="hud-item">
+      <div class="hud-item" id="hud-best-item">
         <span class="hud-label">BEST</span>
         <span class="hud-value" id="hud-best">0</span>
       </div>
       <button class="hud-pause-btn" id="hud-pause-btn" title="Pause">⏸</button>
     </div>
+    <!-- Mini leaderboard shown during multiplayer -->
+    <div id="mini-leaderboard" class="hidden"></div>
     <canvas id="gameCanvas"></canvas>
     <div id="drop-hint">Tap anywhere to drop!</div>
   </div>
 
-  <script src="crane.js"></script>
+  <script type="module" src="crane.js"></script>
 </body>
 </html>
