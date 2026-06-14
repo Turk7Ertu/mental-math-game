@@ -114,12 +114,12 @@ document.getElementById('create-room-btn').addEventListener('click', function(){
   isMulti  = true;
   var seed = Math.floor(Math.random() * 999983) + 1;
 
-  db.ref('crane_rooms/' + roomCode).set({
-    topic: topic, seed: seed, status: 'lobby', hostId: playerId
+  db.ref('rooms/' + roomCode).set({
+    gameType: 'crane', topic: topic, seed: seed, status: 'lobby', hostId: playerId
   });
   var playerData = { name: profile.name, avatar: profile.avatar, height: 0, solved: 0, alive: true };
-  db.ref('crane_rooms/' + roomCode + '/players/' + playerId).set(playerData);
-  db.ref('crane_rooms/' + roomCode + '/players/' + playerId).onDisconnect().remove();
+  db.ref('rooms/' + roomCode + '/players/' + playerId).set(playerData);
+  db.ref('rooms/' + roomCode + '/players/' + playerId).onDisconnect().remove();
 
   hide('multi-mode-screen');
   showLobby();
@@ -142,7 +142,7 @@ function joinRoom(){
   var code = document.getElementById('join-code-input').value.trim();
   if(code.length !== 4){ showJoinError('Enter a 4-digit code!'); return; }
 
-  db.ref('crane_rooms/' + code).once('value').then(function(snap){
+  db.ref('rooms/' + code).once('value').then(function(snap){
     if(!snap.exists()){ showJoinError('Room not found. Check the code!'); return; }
     var room = snap.val();
     if(room.status !== 'lobby'){ showJoinError('This game already started!'); return; }
@@ -153,8 +153,8 @@ function joinRoom(){
     roomCode = code; isHost = false; isMulti = true; topic = room.topic || 'equations';
 
     var playerData = { name: profile.name, avatar: profile.avatar, height: 0, solved: 0, alive: true };
-    db.ref('crane_rooms/' + roomCode + '/players/' + playerId).set(playerData);
-    db.ref('crane_rooms/' + roomCode + '/players/' + playerId).onDisconnect().remove();
+    db.ref('rooms/' + roomCode + '/players/' + playerId).set(playerData);
+    db.ref('rooms/' + roomCode + '/players/' + playerId).onDisconnect().remove();
 
     hide('join-screen');
     showLobby();
@@ -177,7 +177,7 @@ function showLobby(){
 
 function listenToLobby(){
   if(roomRef && roomListener){ roomRef.off('value', roomListener); }
-  roomRef = db.ref('crane_rooms/' + roomCode);
+  roomRef = db.ref('rooms/' + roomCode);
 
   roomListener = function(snap){
     if(!snap.exists()) return;
@@ -217,15 +217,15 @@ function listenToLobby(){
 }
 
 document.getElementById('lobby-start-btn').addEventListener('click', function(){
-  db.ref('crane_rooms/' + roomCode).update({ status: 'countdown' });
+  db.ref('rooms/' + roomCode).update({ status: 'countdown' });
 });
 
 document.getElementById('lobby-leave-btn').addEventListener('click', leaveRoom);
 
 function leaveRoom(){
   if(roomRef && roomListener){ roomRef.off('value', roomListener); roomRef = null; roomListener = null; }
-  if(roomCode) db.ref('crane_rooms/' + roomCode + '/players/' + playerId).remove();
-  if(isHost)   db.ref('crane_rooms/' + roomCode).remove();
+  if(roomCode) db.ref('rooms/' + roomCode + '/players/' + playerId).remove();
+  if(isHost)   db.ref('rooms/' + roomCode).remove();
   roomCode = null; isHost = false; isMulti = false;
   hide('lobby-screen');
   show('topic-screen');
@@ -469,7 +469,7 @@ function triggerGameOver(){
 // ══════════════════════════════════════════════════════════════════════════════
 function syncToFirebase(){
   if(!roomCode) return;
-  db.ref('crane_rooms/' + roomCode + '/players/' + playerId).update({
+  db.ref('rooms/' + roomCode + '/players/' + playerId).update({
     height: state.score, solved: eqSolved, alive: true
   });
 }
@@ -477,14 +477,14 @@ function syncToFirebase(){
 function multiEliminate(){
   isEliminated=true;
   if(!roomCode) return;
-  db.ref('crane_rooms/' + roomCode + '/players/' + playerId).update({
+  db.ref('rooms/' + roomCode + '/players/' + playerId).update({
     height: state.score, solved: eqSolved, alive: false
   });
   hide('game-ui');
   show('spectator-overlay');
 
   if(playersRef && playersListener){ playersRef.off('value', playersListener); }
-  playersRef = db.ref('crane_rooms/' + roomCode + '/players');
+  playersRef = db.ref('rooms/' + roomCode + '/players');
   playersListener = function(snap){
     if(!snap.exists()) return;
     var players=snap.val();
@@ -500,7 +500,7 @@ function multiEliminate(){
 
 function listenToPlayers(){
   if(playersRef && playersListener){ playersRef.off('value', playersListener); }
-  playersRef = db.ref('crane_rooms/' + roomCode + '/players');
+  playersRef = db.ref('rooms/' + roomCode + '/players');
   playersListener = function(snap){
     if(!snap.exists()||isEliminated) return;
     var players=snap.val();
@@ -561,7 +561,7 @@ function showFinalResults(players){
 
 document.getElementById('rematch-btn').addEventListener('click', function(){
   hide('final-results-screen');
-  db.ref('crane_rooms/' + roomCode + '/players').once('value').then(function(snap){
+  db.ref('rooms/' + roomCode + '/players').once('value').then(function(snap){
     if(!snap.exists()) return;
     var updates={};
     Object.keys(snap.val()).forEach(function(pid){
@@ -571,7 +571,7 @@ document.getElementById('rematch-btn').addEventListener('click', function(){
     });
     updates['status']='lobby';
     updates['seed']=Math.floor(Math.random()*999983)+1;
-    db.ref('crane_rooms/' + roomCode).update(updates);
+    db.ref('rooms/' + roomCode).update(updates);
     isEliminated=false; equationList=[];
     showLobby();
   });
@@ -579,7 +579,7 @@ document.getElementById('rematch-btn').addEventListener('click', function(){
 
 document.getElementById('results-home-btn').addEventListener('click', function(){
   if(playersRef && playersListener){ playersRef.off('value', playersListener); playersListener=null; }
-  if(roomCode) db.ref('crane_rooms/' + roomCode + '/players/' + playerId).remove();
+  if(roomCode) db.ref('rooms/' + roomCode + '/players/' + playerId).remove();
   window.location.href='index.html';
 });
 
@@ -678,7 +678,7 @@ function confirmQuit(){
   state.gameOver=true; state.running=false; gamePaused=false; pendingQuestion=false;
   hide('crane-quit-overlay'); hide('pause-overlay'); hide('question-overlay'); hide('game-ui');
   if(isMulti&&roomCode){
-    db.ref('crane_rooms/'+roomCode+'/players/'+playerId).update({alive:false,height:state.score,solved:eqSolved});
+    db.ref('rooms/'+roomCode+'/players/'+playerId).update({alive:false,height:state.score,solved:eqSolved});
     if(playersRef&&playersListener){ playersRef.off('value',playersListener); playersListener=null; }
     isMulti=false;
   }
