@@ -346,6 +346,13 @@ window.joinRoom=async function(){
   const snap=await get(ref(db,`rooms/${code}`));
   if(!snap.exists()){errEl.textContent='Room not found';return;}
   const room=snap.val();
+
+  // Crane room — redirect to crane game
+  if(room.gameType==='crane'){
+    window.location='crane.html?mode=join&code='+code;
+    return;
+  }
+
   if(room.status!=='waiting'){errEl.textContent='Game already started';return;}
   if(room.guest){errEl.textContent='Room is full';return;}
 

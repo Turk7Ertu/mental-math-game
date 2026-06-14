@@ -21,8 +21,9 @@ const BLOCK_COLORS = [
 ];
 
 // ── Mode detection ────────────────────────────────────────────────────────────
-const urlParams = new URLSearchParams(window.location.search);
-const gameMode  = urlParams.get('mode') || 'solo';
+const urlParams  = new URLSearchParams(window.location.search);
+const gameMode   = urlParams.get('mode') || 'solo';
+const joinCode   = urlParams.get('code') || null;
 
 // ── Profile ───────────────────────────────────────────────────────────────────
 function getProfile(){
@@ -706,6 +707,18 @@ document.getElementById('change-topic-btn').addEventListener('click', function()
 
 document.getElementById('multi-back-btn').addEventListener('click', function(){ hide('multi-mode-screen'); show('topic-screen'); });
 document.getElementById('join-back-btn').addEventListener('click', function(){ hide('join-screen'); show('multi-mode-screen'); });
+
+// ── Auto-join if redirected from Mental Math join screen ──────────────────────
+if(gameMode === 'join' && joinCode){
+  // Skip topic screen, go straight to join flow
+  hide('topic-screen');
+  isMulti = true;
+  document.getElementById('join-code-input').value = joinCode;
+  document.getElementById('join-error').classList.add('hidden');
+  show('join-screen');
+  // Auto-trigger join after a short delay so Firebase is ready
+  setTimeout(joinRoom, 400);
+}
 
 // ── Next question hint ────────────────────────────────────────────────────────
 var nextHint=document.createElement('div');
