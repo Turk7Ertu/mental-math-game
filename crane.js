@@ -80,10 +80,11 @@ if(gameMode === 'multi'){
 
 // ── Resize ────────────────────────────────────────────────────────────────────
 function resize(){
-  const hudH  = document.getElementById('hud').offsetHeight;
-  const miniH = document.getElementById('mini-leaderboard').offsetHeight;
+  var hudH = document.getElementById('hud').offsetHeight;
   canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight - hudH - miniH;
+  canvas.height = window.innerHeight - hudH;
+  // Keep side leaderboard just below HUD
+  document.getElementById('mini-leaderboard').style.top = (hudH + 8) + 'px';
 }
 window.addEventListener('resize', function(){ resize(); if(state.running) drawFrame(); });
 
@@ -531,13 +532,49 @@ function sortPlayers(players){
     .sort(function(a,b){ return b.height-a.height; });
 }
 
+var ML_ROW_H = 56; // row height + gap in px
+
 function renderMiniLeaderboard(players){
-  var ml=document.getElementById('mini-leaderboard');
-  ml.innerHTML=sortPlayers(players).map(function(p,i){
-    return '<span class="ml-row' + (p.alive?'':' ml-dead') + '">' +
-      (i+1) + '.' + p.avatar + ' ' + p.name + ': ' + p.height + (p.alive?'':'💀') + '</span>';
-  }).join('');
-  resize();
+  var ml = document.getElementById('mini-leaderboard');
+  var sorted = sortPlayers(players);
+  var medals = ['🥇','🥈','🥉'];
+
+  // Build map of existing rows by playerId
+  var existing = {};
+  Array.from(ml.children).forEach(function(el){
+    existing[el.getAttribute('data-pid')] = el;
+  });
+
+  sorted.forEach(function(p, i){
+    var row = existing[p.id];
+    if(!row){
+      row = document.createElement('div');
+      row.setAttribute('data-pid', p.id);
+      // Start at current position (no jump on first render)
+      row.style.top = (i * ML_ROW_H) + 'px';
+      ml.appendChild(row);
+    }
+    // Animate to new position
+    row.style.top = (i * ML_ROW_H) + 'px';
+    row.className = 'ml-player-row' +
+      (i === 0 && p.alive ? ' ml-lead' : '') +
+      (!p.alive ? ' ml-dead' : '');
+    var medal = i < 3 ? medals[i] : (i + 1) + '.';
+    row.innerHTML =
+      '<span class="ml-p-rank">' + medal + '</span>' +
+      '<span class="ml-p-av">' + p.avatar + '</span>' +
+      '<div class="ml-p-info">' +
+        '<div class="ml-p-name">' + p.name + '</div>' +
+        '<div class="ml-p-ht">' + p.height + ' 📦</div>' +
+      '</div>';
+    delete existing[p.id];
+  });
+
+  // Remove rows for players who disconnected
+  Object.keys(existing).forEach(function(pid){ ml.removeChild(existing[pid]); });
+
+  // Set container height so it doesn't clip
+  ml.style.height = (sorted.length * ML_ROW_H) + 'px';
 }
 
 function renderSpectatorLeaderboard(players){

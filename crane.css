@@ -479,29 +479,44 @@ h1 { font-size: 1.9rem; font-weight: 900; margin-bottom: 6px; }
   100% { transform: scale(1);   opacity: 1; }
 }
 
-/* ── Mini leaderboard (during multi game) ───────── */
+/* ── Live side leaderboard (multiplayer) ────────── */
 #mini-leaderboard {
-  width: 100%;
-  background: rgba(26,26,46,.95);
-  border-bottom: 1px solid rgba(255,255,255,.06);
-  padding: 4px 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 12px;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-  flex-shrink: 0;
+  position: fixed;
+  right: 10px;
+  top: 60px;
+  width: 148px;
+  z-index: 50;
+  pointer-events: none;
 }
 #mini-leaderboard.hidden { display: none; }
 
-.ml-row {
-  font-size: .76rem;
-  font-weight: 700;
-  color: var(--lite);
-  white-space: nowrap;
+.ml-player-row {
+  position: absolute;
+  left: 0; right: 0;
+  transition: top 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(15, 15, 28, 0.88);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px;
+  padding: 7px 9px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
-.ml-dead { color: var(--sub); text-decoration: line-through; }
+.ml-player-row.ml-lead {
+  border-color: var(--yellow);
+  background: rgba(245,158,11,.18);
+}
+.ml-player-row.ml-dead { opacity: .38; }
+.ml-p-rank { font-size: .78rem; font-weight: 900; color: var(--sub); width: 18px; flex-shrink: 0; }
+.ml-p-av   { font-size: 1.15rem; flex-shrink: 0; }
+.ml-p-info { flex: 1; min-width: 0; }
+.ml-p-name {
+  font-size: .68rem; font-weight: 700; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ml-p-ht   { font-size: .82rem; font-weight: 900; color: var(--lite); }
 
 /* ── Spectator overlay ──────────────────────────── */
 .spectator-box { max-width: 380px; }
