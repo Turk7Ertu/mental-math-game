@@ -7,24 +7,115 @@
   <link rel="stylesheet" href="crane.css" />
 </head>
 <body>
-  <!-- START SCREEN -->
-  <div id="start-screen" class="overlay">
-    <div class="overlay-box">
+
+  <!-- ── TOPIC SELECTION SCREEN ───────────────────────────── -->
+  <div id="topic-screen" class="overlay">
+    <div class="overlay-box topic-box">
       <div class="crane-logo">🏗️</div>
       <h1>Math Crane</h1>
-      <p class="sub">Drop blocks to build the highest tower!</p>
-      <div class="how-to">
-        <div class="how-row">📦 Click or tap to drop a block</div>
-        <div class="how-row">✂️ Only the overlapping part stays</div>
-        <div class="how-row">❌ Miss completely = Game Over</div>
-        <div class="how-row">📐 Smaller block = harder to stack!</div>
+      <p class="sub">Choose a topic to play</p>
+
+      <div class="topic-grid">
+        <!-- Active topic -->
+        <div class="topic-card active-topic" onclick="selectTopic('equations')">
+          <div class="topic-icon">📐</div>
+          <div class="topic-name">1 &amp; 2 Step Equations</div>
+          <div class="topic-desc">Solve for x to keep the crane slow!</div>
+        </div>
+        <!-- Coming soon -->
+        <div class="topic-card soon-topic">
+          <div class="topic-icon">➗</div>
+          <div class="topic-name">Fractions</div>
+          <div class="topic-desc coming-soon-badge">Coming Soon</div>
+        </div>
+        <div class="topic-card soon-topic">
+          <div class="topic-icon">🔢</div>
+          <div class="topic-name">Powers &amp; Roots</div>
+          <div class="topic-desc coming-soon-badge">Coming Soon</div>
+        </div>
+        <div class="topic-card soon-topic">
+          <div class="topic-icon">📊</div>
+          <div class="topic-name">Inequalities</div>
+          <div class="topic-desc coming-soon-badge">Coming Soon</div>
+        </div>
       </div>
-      <button class="big-btn" id="start-btn">▶ Start Game</button>
+
       <a href="index.html" class="back-link">← Back to Mental Math</a>
     </div>
   </div>
 
-  <!-- GAME OVER SCREEN -->
+  <!-- ── HOW TO PLAY OVERLAY ───────────────────────────────── -->
+  <div id="howto-overlay" class="overlay hidden">
+    <div class="overlay-box howto-box">
+      <div class="crane-logo" style="font-size:2.2rem">📐</div>
+      <h2 style="font-size:1.3rem;font-weight:900;margin-bottom:4px">1 &amp; 2 Step Equations</h2>
+      <p class="sub" style="margin-bottom:16px">Here's how the crane game works</p>
+
+      <div class="howto-steps">
+        <div class="howto-step">
+          <span class="step-icon">📦</span>
+          <span>Click or tap to <strong>drop a block</strong>. Only the overlapping part stays!</span>
+        </div>
+        <div class="howto-step">
+          <span class="step-icon">📐</span>
+          <span>Every <strong>4 blocks</strong>, the game pauses and shows you an equation to solve.</span>
+        </div>
+        <div class="howto-step eq-example">
+          <span>Example: &nbsp;<strong>2x + 3 = 11</strong> &nbsp;→&nbsp; type <strong>4</strong></span>
+        </div>
+        <div class="howto-step">
+          <span class="step-icon">⚡</span>
+          <span><strong>Answer fast!</strong> Every 3 seconds you wait, the crane speeds up.</span>
+        </div>
+        <div class="howto-step">
+          <span class="step-icon">🏆</span>
+          <span>The <strong>higher your tower</strong>, the harder the equations. How high can you go?</span>
+        </div>
+      </div>
+
+      <div class="speed-legend">
+        <span>🐢 Slow</span>
+        <div class="speed-bar-bg"><div class="speed-bar-fill"></div></div>
+        <span>🚀 Fast</span>
+      </div>
+      <p style="font-size:.78rem;color:var(--sub);margin-bottom:16px">Answer quickly → crane stays slow → you stack higher!</p>
+
+      <button class="big-btn" id="play-btn">▶ Let's Play!</button>
+    </div>
+  </div>
+
+  <!-- ── MATH QUESTION OVERLAY ─────────────────────────────── -->
+  <div id="question-overlay" class="overlay hidden">
+    <div class="overlay-box question-box">
+      <div class="q-header">
+        <span class="q-badge">📐 Solve for x</span>
+        <span class="speed-warning" id="speed-warning">⚡ Speed up in <strong id="countdown">3</strong>s</span>
+      </div>
+
+      <div class="equation-display" id="eq-display">2x + 3 = 11</div>
+
+      <div class="speed-meter">
+        <span class="speed-label">Crane Speed:</span>
+        <div class="speed-dots" id="speed-dots">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </div>
+        <span class="speed-emoji" id="speed-emoji">🐢</span>
+      </div>
+
+      <div class="eq-input-row">
+        <span class="eq-x-label">x =</span>
+        <input type="number" id="eq-input" inputmode="numeric" placeholder="?" autocomplete="off" />
+      </div>
+
+      <div class="eq-feedback hidden" id="eq-feedback">❌ Not quite — try again!</div>
+
+      <button class="big-btn" id="eq-submit">✓ Submit Answer</button>
+      <p style="font-size:.78rem;color:var(--sub);margin-top:8px">Press Enter or tap Submit</p>
+    </div>
+  </div>
+
+  <!-- ── GAME OVER SCREEN ───────────────────────────────────── -->
   <div id="gameover-screen" class="overlay hidden">
     <div class="overlay-box">
       <div class="crane-logo">💥</div>
@@ -35,22 +126,31 @@
         <div class="score-value" id="final-score">0</div>
         <div class="score-label">blocks</div>
       </div>
-      <div class="score-display" id="best-wrap">
+      <div class="score-display">
         <div class="score-label">🏆 Best</div>
         <div class="score-value" id="best-score">0</div>
         <div class="score-label">blocks</div>
       </div>
-      <button class="big-btn" id="retry-btn">🔄 Try Again</button>
+      <div class="score-display" id="eq-stats-box">
+        <div class="score-label">✅ Equations Solved</div>
+        <div class="score-value" id="eq-solved-count" style="font-size:2rem">0</div>
+      </div>
+      <button class="big-btn" id="retry-btn">🔄 Play Again</button>
+      <button class="big-btn grey-btn" id="change-topic-btn">📐 Change Topic</button>
       <a href="index.html" class="back-link">← Back to Mental Math</a>
     </div>
   </div>
 
-  <!-- GAME UI -->
+  <!-- ── GAME UI ────────────────────────────────────────────── -->
   <div id="game-ui" class="hidden">
     <div id="hud">
       <div class="hud-item">
         <span class="hud-label">HEIGHT</span>
         <span class="hud-value" id="hud-score">0</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">SOLVED</span>
+        <span class="hud-value" id="hud-solved">0</span>
       </div>
       <div class="hud-item">
         <span class="hud-label">BEST</span>
