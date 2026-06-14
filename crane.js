@@ -108,6 +108,9 @@ function makeRoomCode(){
 }
 
 document.getElementById('create-room-btn').addEventListener('click', function(){
+  var btn = document.getElementById('create-room-btn');
+  btn.disabled = true; btn.textContent = 'Creating…';
+
   var profile = getProfile();
   roomCode = makeRoomCode();
   isHost   = true;
@@ -116,13 +119,18 @@ document.getElementById('create-room-btn').addEventListener('click', function(){
 
   db.ref('rooms/' + roomCode).set({
     gameType: 'crane', topic: topic, seed: seed, status: 'lobby', hostId: playerId
+  }).then(function(){
+    var playerData = { name: profile.name, avatar: profile.avatar, height: 0, solved: 0, alive: true };
+    return db.ref('rooms/' + roomCode + '/players/' + playerId).set(playerData);
+  }).then(function(){
+    db.ref('rooms/' + roomCode + '/players/' + playerId).onDisconnect().remove();
+    btn.disabled = false; btn.textContent = '🏠 Create a Room';
+    hide('multi-mode-screen');
+    showLobby();
+  }).catch(function(err){
+    btn.disabled = false; btn.textContent = '🏠 Create a Room';
+    alert('Could not create room: ' + err.message);
   });
-  var playerData = { name: profile.name, avatar: profile.avatar, height: 0, solved: 0, alive: true };
-  db.ref('rooms/' + roomCode + '/players/' + playerId).set(playerData);
-  db.ref('rooms/' + roomCode + '/players/' + playerId).onDisconnect().remove();
-
-  hide('multi-mode-screen');
-  showLobby();
 });
 
 document.getElementById('join-room-btn').addEventListener('click', function(){
