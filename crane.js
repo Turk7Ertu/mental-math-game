@@ -105,7 +105,10 @@ window.selectTopic = function(t){
 //  MULTIPLAYER LOBBY
 // ══════════════════════════════════════════════════════════════════════════════
 function makeRoomCode(){
-  return String(Math.floor(1000 + Math.random() * 9000));
+  var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no I/O/0/1 (confusing)
+  var code = '';
+  for(var i=0;i<4;i++) code += chars[Math.floor(Math.random()*chars.length)];
+  return code;
 }
 
 document.getElementById('create-room-btn').addEventListener('click', function(){
@@ -148,8 +151,8 @@ document.getElementById('join-code-input').addEventListener('keydown', function(
 });
 
 function joinRoom(){
-  var code = document.getElementById('join-code-input').value.trim();
-  if(code.length !== 4){ showJoinError('Enter a 4-digit code!'); return; }
+  var code = document.getElementById('join-code-input').value.trim().toUpperCase();
+  if(code.length !== 4){ showJoinError('Enter the 4-character code!'); return; }
 
   db.ref('rooms/' + code).once('value').then(function(snap){
     if(!snap.exists()){ showJoinError('Room not found. Check the code!'); return; }
