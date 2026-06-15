@@ -310,6 +310,17 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 
 /* ── Guide Screen ────────────────────────────────────────── */
 .guide-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.guide-grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:6px; }
+@media(max-width:700px){ .guide-grid-3 { grid-template-columns:1fr; } }
+.guide-section-label {
+  font-size:1rem;
+  font-weight:800;
+  color:var(--text);
+  margin:18px 0 10px;
+  padding-bottom:6px;
+  border-bottom:2px solid var(--border);
+  letter-spacing:.02em;
+}
 .guide-card {
   background:var(--card);
   border-radius:16px;
@@ -323,6 +334,8 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 .guide-card-purple { border-color:#a855f7; }
 .guide-card-blue   { border-color:#3b82f6; }
 .guide-card-yellow { border-color:#f59e0b; }
+.guide-card-crane  { border-color:#14b8a6; }
+.guide-card-green  { border-color:#22c55e; }
 .guide-card-title {
   font-size:.92rem;
   font-weight:800;
@@ -332,6 +345,8 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 .guide-card-purple .guide-card-title { color:#a855f7; }
 .guide-card-blue   .guide-card-title { color:#60a5fa; }
 .guide-card-yellow .guide-card-title { color:#f59e0b; }
+.guide-card-crane  .guide-card-title { color:#14b8a6; }
+.guide-card-green  .guide-card-title { color:#22c55e; }
 .guide-p { font-size:.82rem; color:var(--sub); line-height:1.6; margin-bottom:7px; }
 .guide-p strong { color:var(--text); }
 .guide-tip-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
@@ -340,6 +355,8 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 .guide-tip-purple { background:rgba(168,85,247,.15);  color:#a855f7; }
 .guide-tip-blue   { background:rgba(59,130,246,.15);  color:#60a5fa; }
 .guide-tip-yellow { background:rgba(245,158,11,.15);  color:#f59e0b; }
+.guide-tip-crane  { background:rgba(20,184,166,.15);  color:#14b8a6; }
+.guide-tip-green  { background:rgba(34,197,94,.15);   color:#22c55e; }
 .guide-pu-row { display:flex; gap:8px; align-items:flex-start; font-size:.8rem; color:var(--sub); line-height:1.5; }
 .guide-pu-row span:first-child { flex-shrink:0; font-size:1rem; }
 .guide-pu-row strong { color:var(--text); }

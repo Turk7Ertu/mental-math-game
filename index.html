@@ -13,7 +13,7 @@
     gtag('js', new Date());
     gtag('config', 'G-LJPP72DDRC');
   </script>
-  <link rel="stylesheet" href="style.css?v=46" />
+  <link rel="stylesheet" href="style.css?v=47" />
 </head>
 <body>
 
@@ -384,51 +384,81 @@
   <!-- GUIDE -->
   <div id="guide-screen" class="screen">
     <h1 style="margin-bottom:4px">📖 Guide</h1>
-    <p class="sub" style="margin-bottom:20px">Everything you need to know to play</p>
+    <p class="sub" style="margin-bottom:24px">Everything you need to know to play</p>
 
-    <div class="guide-grid">
+    <!-- ── SECTION: GAMES ──────────────────────────── -->
+    <div class="guide-section-label">🎮 Games</div>
+    <div class="guide-grid-3">
 
-      <!-- Solo Practice -->
       <div class="guide-card guide-card-pink">
-        <div class="guide-card-title">🎯 Solo Practice</div>
-        <p class="guide-p">Answer math questions <strong>as fast as you can</strong> — the quicker you answer, the more points you earn! ⚡</p>
-        <p class="guide-p">Play solo to build your <strong>rating</strong> and climb from 🎯 Beginner all the way to 👑 Legend!</p>
+        <div class="guide-card-title">🎯 Classic Solo</div>
+        <p class="guide-p">Answer math questions <strong>as fast as you can</strong>. The quicker you answer, the more points you earn!</p>
+        <p class="guide-p">Choose your topic, difficulty, question count and time limit. Play solo or challenge a friend head-to-head.</p>
         <div class="guide-tip-row">
           <span class="guide-tip guide-tip-pink">⏱️ Fast = more pts</span>
-          <span class="guide-tip guide-tip-pink">👑 Climb the tiers</span>
+          <span class="guide-tip guide-tip-pink">👑 Build your rating</span>
         </div>
       </div>
 
-      <!-- Match & Find -->
       <div class="guide-card guide-card-purple">
-        <div class="guide-card-title">🧩 Match & Find</div>
-        <p class="guide-p">A memory game with a math twist! 🃏 Cards are shown one by one first — memorise them, then find all the matching pairs!</p>
-        <p class="guide-p">Cards fly off the screen when matched. 🏎️ Wrong flip costs you <strong>−25 pts!</strong></p>
+        <div class="guide-card-title">🧩 Match &amp; Find</div>
+        <p class="guide-p">A memory game with a math twist! Cards are shown one by one — memorise them, then find all the matching pairs.</p>
+        <p class="guide-p">Cards fly off when matched. Wrong flip costs <strong>−25 pts!</strong> Play solo or race a friend on the same board.</p>
         <div class="guide-tip-row">
           <span class="guide-tip guide-tip-purple">✅ Match = +pts</span>
           <span class="guide-tip guide-tip-purple">❌ Wrong = −25</span>
         </div>
       </div>
 
-      <!-- Multiplayer -->
-      <div class="guide-card guide-card-blue">
-        <div class="guide-card-title">⚔️ Multiplayer</div>
-        <p class="guide-p">Create a room, share the <strong>4-digit code</strong> with a friend, and compete in real-time! 🔗</p>
-        <p class="guide-p">Answer faster to earn more points. Works for both <strong>Classic</strong> and <strong>Match & Find!</strong> 🧩</p>
+      <div class="guide-card guide-card-crane">
+        <div class="guide-card-title">🏗️ Math Crane</div>
+        <p class="guide-p">Tap to drop blocks — only the overlapping part stays! Every 4 blocks the crane stops and asks you an equation.</p>
+        <p class="guide-p"><strong>Answer fast</strong> or the crane speeds up every 3 seconds. Stack as high as you can before it collapses!</p>
         <div class="guide-tip-row">
-          <span class="guide-tip guide-tip-blue">🏆 Speed wins</span>
-          <span class="guide-tip guide-tip-blue">🔗 Share code</span>
+          <span class="guide-tip guide-tip-crane">📐 Solve to slow down</span>
+          <span class="guide-tip guide-tip-crane">🏆 Up to 5 players</span>
         </div>
       </div>
 
-      <!-- Power-Ups -->
+    </div>
+
+    <!-- ── SECTION: HOW IT WORKS ───────────────────── -->
+    <div class="guide-section-label">⚙️ How It Works</div>
+    <div class="guide-grid-3">
+
+      <div class="guide-card guide-card-blue">
+        <div class="guide-card-title">⚔️ Multiplayer</div>
+        <p class="guide-p">Create a room and share the <strong>code</strong> with friends. Works across all three games!</p>
+        <div style="margin-top:8px;display:flex;flex-direction:column;gap:5px">
+          <div class="guide-pu-row"><span>🎯</span><span><strong>Classic</strong> — 2 players, head-to-head</span></div>
+          <div class="guide-pu-row"><span>🧩</span><span><strong>Match &amp; Find</strong> — 2 players, same board</span></div>
+          <div class="guide-pu-row"><span>🏗️</span><span><strong>Math Crane</strong> — up to 5 players, last standing wins</span></div>
+        </div>
+        <div class="guide-tip-row" style="margin-top:10px">
+          <span class="guide-tip guide-tip-blue">🔗 Share code</span>
+          <span class="guide-tip guide-tip-blue">⏱️ Timeout button</span>
+        </div>
+      </div>
+
       <div class="guide-card guide-card-yellow">
         <div class="guide-card-title">⚡ Power-Ups</div>
-        <p class="guide-p">Win <strong>3 questions in a row</strong> faster than your opponent to unlock a power-up! Max 2 per game.</p>
+        <p class="guide-p">Only in <strong>Classic Multiplayer</strong>. Win 3 questions in a row faster than your opponent to unlock one. Max 2 per game.</p>
         <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px">
           <div class="guide-pu-row"><span>❄️</span><span><strong class="freeze-name">Freeze</strong> — opponent can't answer for 3s!</span></div>
           <div class="guide-pu-row"><span>💥</span><span><strong class="blast-name">Blast</strong> — knock 10 pts off their score!</span></div>
           <div class="guide-pu-row"><span>💰</span><span><strong class="steal-name">Steal</strong> — take 5 pts from them!</span></div>
+        </div>
+      </div>
+
+      <div class="guide-card guide-card-green">
+        <div class="guide-card-title">📊 Rating System</div>
+        <p class="guide-p">Only in <strong>Classic Solo</strong>. Your rating starts at <strong>1000</strong> and changes after every game based on speed and accuracy.</p>
+        <div style="margin-top:8px;display:flex;flex-direction:column;gap:5px">
+          <div class="guide-pu-row"><span>🎯</span><span>Beginner → Apprentice → Skilled</span></div>
+          <div class="guide-pu-row"><span>👑</span><span>Expert → Master → <strong>Legend</strong></span></div>
+        </div>
+        <div class="guide-tip-row" style="margin-top:10px">
+          <span class="guide-tip guide-tip-green">⚡ Fast answers = +rating</span>
         </div>
       </div>
 
