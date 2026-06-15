@@ -184,6 +184,48 @@
     </div>
   </div>
 
+  <!-- ── TIMEOUT: VOTE (shown to non-requesters) ──────────────── -->
+  <div id="timeout-vote-overlay" class="overlay hidden">
+    <div class="overlay-box pause-box">
+      <div style="font-size:2.5rem;margin-bottom:8px">⏱️</div>
+      <h2 style="font-size:1.2rem;font-weight:900;margin-bottom:6px">Timeout Requested!</h2>
+      <p id="timeout-requester-msg" style="color:var(--sub);font-size:.9rem;margin-bottom:20px">Player needs a break</p>
+      <div style="display:flex;gap:10px">
+        <button class="big-btn grey-btn" style="margin:0;flex:1" id="timeout-reject-btn">✕ Reject</button>
+        <button class="big-btn green-btn" style="margin:0;flex:1" id="timeout-accept-btn">✓ Accept</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TIMEOUT: WAITING (shown to requester) ─────────────────── -->
+  <div id="timeout-waiting-overlay" class="overlay hidden">
+    <div class="overlay-box pause-box">
+      <div style="font-size:2.5rem;margin-bottom:8px">⏱️</div>
+      <h2 style="font-size:1.2rem;font-weight:900;margin-bottom:6px">Timeout Requested</h2>
+      <p style="color:var(--sub);font-size:.88rem;margin-bottom:12px">Waiting for other players…</p>
+      <p id="timeout-vote-status" style="color:var(--lite);font-size:1rem;font-weight:800;margin-bottom:16px">0 / 0 accepted</p>
+      <button class="big-btn grey-btn" id="timeout-cancel-btn">Cancel Request</button>
+    </div>
+  </div>
+
+  <!-- ── TIMEOUT: COUNTDOWN (shown to all after accepted) ──────── -->
+  <div id="timeout-go-overlay" class="overlay hidden">
+    <div class="overlay-box pause-box" style="text-align:center">
+      <div style="font-size:2rem;margin-bottom:6px">⏱️ TIMEOUT</div>
+      <p style="color:var(--sub);font-size:.88rem;margin-bottom:12px">Resuming in…</p>
+      <div id="timeout-go-num" style="font-size:5rem;font-weight:900;color:var(--lite);line-height:1">10</div>
+    </div>
+  </div>
+
+  <!-- ── TIMEOUT: REJECTED ─────────────────────────────────────── -->
+  <div id="timeout-rejected-overlay" class="overlay hidden">
+    <div class="overlay-box pause-box" style="text-align:center">
+      <div style="font-size:2.5rem;margin-bottom:8px">❌</div>
+      <h2 style="font-size:1.2rem;font-weight:900;margin-bottom:6px">Timeout Rejected</h2>
+      <p style="color:var(--sub);font-size:.88rem">Resuming game…</p>
+    </div>
+  </div>
+
   <!-- ── SPECTATOR (eliminated in multi) ────────────────────── -->
   <div id="spectator-overlay" class="overlay hidden">
     <div class="overlay-box spectator-box">
@@ -249,6 +291,7 @@
         <span class="hud-label">BEST</span>
         <span class="hud-value" id="hud-best">0</span>
       </div>
+      <button class="hud-timeout-btn" id="hud-timeout-btn" title="Request Timeout" style="display:none">⏱️</button>
       <button class="hud-pause-btn" id="hud-pause-btn" title="Pause">⏸</button>
     </div>
     <!-- Mini leaderboard shown during multiplayer -->

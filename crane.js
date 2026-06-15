@@ -293,6 +293,7 @@ function initGameState(){
 
 function startSoloGame(){
   isMulti=false; isEliminated=false; eqSolved=0; pendingQuestion=false; gamePaused=false; equationList=[];
+  document.getElementById('hud-timeout-btn').style.display = 'none';
   resize();
   document.getElementById('hud-solved').textContent = '0';
   document.getElementById('hud-best').textContent   = best;
@@ -307,6 +308,10 @@ function startMultiGame(){
   document.getElementById('hud-best-item').style.display = 'none';
   show('mini-leaderboard');
   show('game-ui');
+  document.getElementById('hud-timeout-btn').style.display = 'flex';
+  document.getElementById('hud-timeout-btn').disabled = false;
+  document.getElementById('hud-timeout-btn').title = 'Request Timeout';
+  timeoutUsed = false;
   resize();
   document.getElementById('hud-solved').textContent = '0';
   document.getElementById('drop-hint').style.opacity = '1';
@@ -315,6 +320,7 @@ function startMultiGame(){
   loop();
   syncToFirebase();
   listenToPlayers();
+  listenToTimeout();
 }
 
 function loop(){
@@ -729,8 +735,10 @@ function confirmQuit(){
   if(isMulti&&roomCode){
     db.ref('rooms/'+roomCode+'/players/'+playerId).update({alive:false,height:state.score,solved:eqSolved});
     if(playersRef&&playersListener){ playersRef.off('value',playersListener); playersListener=null; }
+    stopTimeoutListener();
     isMulti=false;
   }
+  document.getElementById('hud-timeout-btn').style.display='none';
   show('topic-screen');
 }
 document.getElementById('hud-quit-btn').addEventListener('click', showQuitConfirm);
@@ -747,6 +755,191 @@ document.getElementById('change-topic-btn').addEventListener('click', function()
 
 document.getElementById('multi-back-btn').addEventListener('click', function(){ hide('multi-mode-screen'); show('topic-screen'); });
 document.getElementById('join-back-btn').addEventListener('click', function(){ hide('join-screen'); show('multi-mode-screen'); });
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  TIMEOUT SYSTEM
+// ══════════════════════════════════════════════════════════════════════════════
+var timeoutUsed      = false;
+var timeoutRef       = null;
+var timeoutListener  = null;
+var timeoutCountdown = null;
+var isRequester      = false;
+
+function listenToTimeout(){
+  if(timeoutRef && timeoutListener){ timeoutRef.off('value', timeoutListener); }
+  timeoutRef = db.ref('rooms/' + roomCode + '/timeoutReq');
+  timeoutListener = function(snap){
+    if(!snap.exists()) return;
+    var t = snap.val();
+
+    if(t.status === 'pending'){
+      if(t.by === playerId){
+        // I requested — show waiting screen
+        if(!document.getElementById('timeout-waiting-overlay').classList.contains('hidden')) return;
+        pauseForTimeout();
+        show('timeout-waiting-overlay');
+        updateVoteStatus(t);
+      } else {
+        // Someone else requested — show vote screen
+        pauseForTimeout();
+        document.getElementById('timeout-requester-msg').textContent =
+          t.byName + ' needs a 10-second timeout!';
+        hide('timeout-vote-overlay'); // reset
+        show('timeout-vote-overlay');
+      }
+    } else if(t.status === 'counting'){
+      hideAllTimeoutOverlays();
+      startTimeoutCountdown();
+    } else if(t.status === 'rejected'){
+      hideAllTimeoutOverlays();
+      show('timeout-rejected-overlay');
+      setTimeout(function(){
+        hide('timeout-rejected-overlay');
+        db.ref('rooms/' + roomCode + '/timeoutReq').remove();
+        resumeAfterTimeout();
+      }, 1800);
+    }
+  };
+  timeoutRef.on('value', timeoutListener);
+}
+
+function updateVoteStatus(t){
+  var votes   = t.votes || {};
+  var accepted = Object.values(votes).filter(function(v){ return v === true; }).length;
+  var total   = Object.keys(votes).length;
+  document.getElementById('timeout-vote-status').textContent = accepted + ' / ? accepted';
+}
+
+function pauseForTimeout(){
+  if(state.running){
+    state.running = false;
+    cancelAnimationFrame(animId);
+    drawFrame();
+  }
+  if(countdownTimer){ clearInterval(countdownTimer); }
+}
+
+function resumeAfterTimeout(){
+  if(!state.gameOver && !pendingQuestion){
+    state.running = true;
+    loop();
+  } else if(pendingQuestion){
+    // Restart penalty countdown
+    countdownTimer = setInterval(function(){
+      countdownVal--;
+      document.getElementById('countdown').textContent = countdownVal;
+      if(countdownVal <= 0){
+        speedPenalties++;
+        state.crane.speed = Math.min(state.crane.speed + 0.55, 11);
+        updateSpeedUI(); countdownVal = 3;
+        document.getElementById('countdown').textContent = countdownVal;
+      }
+    }, 1000);
+  }
+}
+
+function hideAllTimeoutOverlays(){
+  hide('timeout-vote-overlay');
+  hide('timeout-waiting-overlay');
+  hide('timeout-go-overlay');
+  hide('timeout-rejected-overlay');
+}
+
+// Request timeout
+document.getElementById('hud-timeout-btn').addEventListener('click', function(){
+  if(timeoutUsed){ return; }
+  var profile = getProfile();
+  timeoutUsed = true;
+  isRequester = true;
+  document.getElementById('hud-timeout-btn').disabled = true;
+  document.getElementById('hud-timeout-btn').title = 'Timeout used';
+
+  // Count other alive players
+  db.ref('rooms/' + roomCode + '/players').once('value').then(function(snap){
+    var players = snap.val() || {};
+    var aliveOthers = Object.keys(players).filter(function(pid){
+      return pid !== playerId && players[pid].alive;
+    }).length;
+
+    if(aliveOthers === 0){
+      // Solo survivor — just give 10s
+      db.ref('rooms/' + roomCode + '/timeoutReq').set({
+        by: playerId, byName: profile.name, status: 'counting', votes: {}
+      });
+    } else {
+      db.ref('rooms/' + roomCode + '/timeoutReq').set({
+        by: playerId, byName: profile.name, status: 'pending',
+        aliveOthers: aliveOthers, votes: {}
+      });
+    }
+  });
+});
+
+// Accept / Reject
+document.getElementById('timeout-accept-btn').addEventListener('click', function(){
+  hide('timeout-vote-overlay');
+  db.ref('rooms/' + roomCode + '/timeoutReq/votes/' + playerId).set(true).then(function(){
+    checkVotes();
+  });
+});
+
+document.getElementById('timeout-reject-btn').addEventListener('click', function(){
+  hide('timeout-vote-overlay');
+  db.ref('rooms/' + roomCode + '/timeoutReq').update({ status: 'rejected' });
+});
+
+// Cancel request (requester changes their mind)
+document.getElementById('timeout-cancel-btn').addEventListener('click', function(){
+  hide('timeout-waiting-overlay');
+  db.ref('rooms/' + roomCode + '/timeoutReq').remove();
+  resumeAfterTimeout();
+  isRequester = false;
+});
+
+function checkVotes(){
+  db.ref('rooms/' + roomCode + '/timeoutReq').once('value').then(function(snap){
+    if(!snap.exists()) return;
+    var t = snap.val();
+    var votes = t.votes || {};
+    var needed = t.aliveOthers || 1;
+    var accepted = Object.values(votes).filter(function(v){ return v === true; }).length;
+    var rejected = Object.values(votes).filter(function(v){ return v === false; }).length;
+
+    // Update waiting screen
+    document.getElementById('timeout-vote-status').textContent = accepted + ' / ' + needed + ' accepted';
+
+    if(rejected > 0){
+      db.ref('rooms/' + roomCode + '/timeoutReq').update({ status: 'rejected' });
+    } else if(accepted >= needed){
+      db.ref('rooms/' + roomCode + '/timeoutReq').update({ status: 'counting' });
+    }
+  });
+}
+
+function startTimeoutCountdown(){
+  show('timeout-go-overlay');
+  var n = 10;
+  document.getElementById('timeout-go-num').textContent = n;
+  if(timeoutCountdown) clearInterval(timeoutCountdown);
+  timeoutCountdown = setInterval(function(){
+    n--;
+    document.getElementById('timeout-go-num').textContent = n;
+    if(n <= 0){
+      clearInterval(timeoutCountdown); timeoutCountdown = null;
+      hide('timeout-go-overlay');
+      db.ref('rooms/' + roomCode + '/timeoutReq').remove();
+      resumeAfterTimeout();
+      isRequester = false;
+    }
+  }, 1000);
+}
+
+function stopTimeoutListener(){
+  if(timeoutRef && timeoutListener){ timeoutRef.off('value', timeoutListener); timeoutRef=null; timeoutListener=null; }
+  if(timeoutCountdown){ clearInterval(timeoutCountdown); timeoutCountdown=null; }
+  hideAllTimeoutOverlays();
+  timeoutUsed=false; isRequester=false;
+}
 
 // ── Auto-join if redirected from Mental Math join screen ──────────────────────
 if(gameMode === 'join' && joinCode){
