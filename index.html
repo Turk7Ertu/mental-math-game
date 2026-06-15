@@ -13,6 +13,12 @@
     gtag('js', new Date());
     gtag('config', 'G-LJPP72DDRC');
   </script>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1a1a2e" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Mental Math" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
   <link rel="stylesheet" href="style.css?v=48" />
 </head>
 <body>
@@ -780,6 +786,11 @@
 </div>
 
 <script type="module" src="game.js?v=39"></script>
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('service-worker.js');
+}
+</script>
 <script>
 (function(){
   var splash = document.getElementById('splash-screen');
