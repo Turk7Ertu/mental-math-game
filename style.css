@@ -310,8 +310,8 @@ input:focus { border-color:var(--lite); } input:disabled { opacity:.4; }
 
 /* ── Guide Screen ────────────────────────────────────────── */
 .guide-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-.guide-grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:6px; }
-@media(max-width:700px){ .guide-grid-3 { grid-template-columns:1fr; } }
+.guide-grid-3 { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:6px; }
+@media(max-width:500px){ .guide-grid-3 { grid-template-columns:1fr; } }
 .guide-section-label {
   font-size:1rem;
   font-weight:800;
