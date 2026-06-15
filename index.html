@@ -13,9 +13,18 @@
     gtag('js', new Date());
     gtag('config', 'G-LJPP72DDRC');
   </script>
-  <link rel="stylesheet" href="style.css?v=47" />
+  <link rel="stylesheet" href="style.css?v=48" />
 </head>
 <body>
+
+<!-- SPLASH SCREEN -->
+<div id="splash-screen">
+  <img src="logo.png" id="splash-logo" alt="Mental Math" />
+  <div id="splash-title">
+    <span class="splash-m">M</span><span class="splash-e">E</span><span class="splash-n">N</span><span class="splash-t">T</span><span class="splash-a">A</span><span class="splash-l">L</span>
+  </div>
+  <div id="splash-sub">MATH</div>
+</div>
 
 <!-- TAB BAR -->
 <div class="tab-bar">
@@ -743,5 +752,16 @@
 </div>
 
 <script type="module" src="game.js?v=39"></script>
+<script>
+(function(){
+  var splash = document.getElementById('splash-screen');
+  function dismiss(){
+    splash.classList.add('fade-out');
+    setTimeout(function(){ splash.style.display='none'; }, 650);
+  }
+  splash.addEventListener('click', dismiss);
+  setTimeout(dismiss, 2500);
+})();
+</script>
 </body>
 </html>

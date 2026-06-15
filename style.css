@@ -40,6 +40,43 @@ body[data-theme="light"] .scoring-info-box { background:#e8e9f0; }
 body[data-theme="light"] .pill { background:#d0d1e0; color:#374151; }
 body[data-theme="light"] .brain-svg { filter: drop-shadow(0 0 8px rgba(124,58,237,0.4)); }
 body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; min-height:100vh; display:flex; justify-content:center; align-items:flex-start; padding:20px 16px 60px; }
+
+/* ── Splash Screen ───────────────────────────────────── */
+#splash-screen {
+  position:fixed; inset:0; z-index:9999;
+  background:var(--bg);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;
+  cursor:pointer;
+  transition:opacity .6s ease;
+}
+#splash-screen.fade-out { opacity:0; pointer-events:none; }
+#splash-logo {
+  width:110px; height:110px; object-fit:contain;
+  animation:splash-pop .5s cubic-bezier(.34,1.56,.64,1) both;
+}
+#splash-title {
+  font-size:2.4rem; font-weight:900; letter-spacing:.25em;
+  animation:splash-rise .5s .2s ease both;
+}
+#splash-sub {
+  font-size:1rem; font-weight:700; letter-spacing:.5em;
+  color:var(--sub);
+  animation:splash-rise .5s .35s ease both;
+}
+.splash-m { color:#f472b6; }
+.splash-e { color:#c084fc; }
+.splash-n { color:#818cf8; }
+.splash-t { color:#60a5fa; }
+.splash-a { color:#34d399; }
+.splash-l { color:#f59e0b; }
+@keyframes splash-pop {
+  from { transform:scale(.5); opacity:0; }
+  to   { transform:scale(1);  opacity:1; }
+}
+@keyframes splash-rise {
+  from { transform:translateY(16px); opacity:0; }
+  to   { transform:translateY(0);    opacity:1; }
+}
 .app { width:100%; max-width:480px; }
 .screen { display:none; } .screen.active { display:block; padding-top:70px; }
 h1 { font-size:2rem; font-weight:800; text-align:center; }
